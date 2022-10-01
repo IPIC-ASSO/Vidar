@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp"
+    app:layout_anchorGravity="bottom|top"
+    tools:context=".Accueil">
+
+
+    <Button
+        android:id="@+id/nouv_conv"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="0"
+        android:text="Ouvrir une conversation"
+        app:icon="@android:drawable/ic_menu_add"
+        app:layout_constraintBottom_toTopOf="@id/mes_convs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/mes_convs"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="0"
+        android:text="Mes conversations"
+        app:icon="@drawable/ic_baseline_message_24"
+        app:layout_constraintBottom_toTopOf="@id/vers_messages"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nouv_conv" />
+
+    <Button
+        android:id="@+id/vers_messages"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="0"
+        android:text="Messages"
+        app:icon="@drawable/ic_baseline_text_snippet_24"
+        app:layout_constraintBottom_toTopOf="@id/vers_aide"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mes_convs" />
+
+    <Button
+        android:id="@+id/vers_aide"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="0"
+        android:text="aide"
+        app:icon="@drawable/ic_baseline_help_outline_24"
+        app:layout_constraintBottom_toTopOf="@id/vers_options"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/vers_messages" />
+
+    <Button
+        android:id="@+id/vers_options"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="0"
+        android:text="options"
+        app:icon="@drawable/ic_baseline_settings_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/vers_aide" />
+</androidx.constraintlayout.widget.ConstraintLayout>

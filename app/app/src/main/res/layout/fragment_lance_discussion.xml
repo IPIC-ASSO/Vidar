@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context=".LanceDiscussion">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/lire_texte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20sp"
+        android:layout_marginBottom="20sp"
+        android:clickable="true"
+        android:src="@drawable/ic_baseline_volume_up_24"
+        app:backgroundTint="#4BFF52" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/vers_activite_discussion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_baseline_arrow_forward_24"
+                android:text="interface de discussion"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/message_haut_Qr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TEXTE A AFFICHER \n\nblabla\n\nblabla\nbla\nbla\n\nBla"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/qr_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_launcher_foreground" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ce QR-Code vous redirigera vers le site-web de IPIC-ASSO, pour vous permettre de discuter par message.\nAucune information ne sera collectée, aucun programme ne sera installé... \n Il s'agit simplement d'une interface de discussion"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

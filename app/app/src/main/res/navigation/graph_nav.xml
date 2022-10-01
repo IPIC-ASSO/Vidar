@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/graph_nav"
+    app:startDestination="@id/accueil">
+
+    <fragment
+        android:id="@+id/accueil"
+        android:name="com.ipiccie.muetssages.Accueil"
+        android:label="fragment_accueil"
+        tools:layout="@layout/fragment_accueil" >
+        <action
+            android:id="@+id/action_accueil_to_tutoriel1"
+            app:destination="@id/tutoriel" />
+        <action
+            android:id="@+id/action_accueil_to_configLancerDiscussion"
+            app:destination="@id/configLancerDiscussion"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_accueil_to_listeMessages"
+            app:destination="@id/listeMessages"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_accueil_to_listeConversations"
+            app:destination="@id/listeConversations"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_accueil_to_aide"
+            app:destination="@id/aide"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_accueil_to_connexion"
+            app:destination="@id/connexion"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_accueil_to_parametres"
+            app:destination="@id/parametres"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/configLancerDiscussion"
+        android:name="com.ipiccie.muetssages.ConfigLancerDiscussion"
+        android:label="fragment_config_lancer_discussion"
+        tools:layout="@layout/fragment_config_lancer_discussion" >
+        <action
+            android:id="@+id/action_configLancerDiscussion_to_lanceDiscussion"
+            app:destination="@id/lanceDiscussion"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <navigation android:id="@+id/tutoriel"
+        app:startDestination="@id/tutoriel1">
+        <fragment
+            android:id="@+id/tutoriel3"
+            android:name="com.ipiccie.muetssages.tutoriel3"
+            android:label="fragment_tutoriel3"
+            tools:layout="@layout/fragment_tutoriel3">
+            <action
+                android:id="@+id/action_tutoriel3_to_accueil"
+                app:destination="@id/accueil"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"
+                />
+        </fragment>
+        <fragment
+            android:id="@+id/tutoriel2"
+            android:name="com.ipiccie.muetssages.tutoriel2"
+            android:label="fragment_tutoriel2"
+            tools:layout="@layout/fragment_tutoriel2">
+            <action
+                android:id="@+id/action_tutoriel2_to_tutoriel3"
+                app:destination="@id/tutoriel3"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"/>
+        </fragment>
+        <fragment
+            android:id="@+id/tutoriel1"
+            android:name="com.ipiccie.muetssages.tutoriel1"
+            android:label="fragment_tutoriel1"
+            tools:layout="@layout/fragment_tutoriel1">
+            <action
+                android:id="@+id/action_tutoriel1_to_tutoriel2"
+                app:destination="@id/tutoriel2"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"/>
+        </fragment>
+    </navigation>
+    <fragment
+        android:id="@+id/listeMessages"
+        android:name="com.ipiccie.muetssages.ListeMessages"
+        android:label="fragment_liste_messages"
+        tools:layout="@layout/fragment_liste_messages" >
+        <action
+            android:id="@+id/action_listeMessages_to_editeurMessage"
+            app:destination="@id/editeurMessage"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"/>
+    </fragment>
+    <fragment
+        android:id="@+id/listeConversations"
+        android:name="com.ipiccie.muetssages.listeConversations"
+        android:label="fragment_liste_conversations"
+        tools:layout="@layout/fragment_liste_conversations" >
+        <action
+            android:id="@+id/action_listeConversations_to_activiteDiscussion"
+            app:destination="@id/activiteDiscussion"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/lanceDiscussion"
+        android:name="com.ipiccie.muetssages.LanceDiscussion"
+        android:label="fragment_lance_discussion"
+        tools:layout="@layout/fragment_lance_discussion" >
+        <action
+            android:id="@+id/action_lanceDiscussion_to_activiteDiscussion"
+            app:destination="@id/activiteDiscussion"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/editeurMessage"
+        android:name="com.ipiccie.muetssages.EditeurMessage"
+        android:label="fragment_editeur_message"
+        tools:layout="@layout/fragment_editeur_message" >
+        <argument
+            android:name="intitule"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="inconnu au bataillon" />
+        <action
+            android:id="@+id/action_editeurMessage_to_listeMessages"
+            app:destination="@id/listeMessages"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"/>
+    </fragment>
+    <activity
+        android:id="@+id/activiteDiscussion"
+        android:name="com.ipiccie.muetssages.ActiviteDiscussion"
+        android:label="activity_activite_discussion"
+        tools:layout="@layout/activity_activite_discussion" />
+    <fragment
+        android:id="@+id/aide"
+        android:name="com.ipiccie.muetssages.Aide"
+        android:label="fragment_aide"
+        tools:layout="@layout/fragment_aide" />
+    <fragment
+        android:id="@+id/connexion"
+        android:name="com.ipiccie.muetssages.Connexion"
+        android:label="fragment_connexion"
+        tools:layout="@layout/fragment_connexion" >
+        <action
+            android:id="@+id/action_connexion_to_accueil"
+            app:destination="@id/accueil"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/parametres"
+        android:name="com.ipiccie.muetssages.Parametres"
+        android:label="fragment_parametres"
+        tools:layout="@layout/fragment_parametres" >
+        <action
+            android:id="@+id/action_parametres_to_connexion"
+            app:destination="@id/connexion"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out" />
+    </fragment>
+</navigation>
