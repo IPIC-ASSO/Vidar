@@ -107,10 +107,10 @@ public class Accueil extends Fragment {
         view.findViewById(R.id.nouv_conv).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_configLancerDiscussion));
         view.findViewById(R.id.vers_messages).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_listeMessages));
         view.findViewById(R.id.mes_convs).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_listeConversations));
-        //view.findViewById(R.id.vers_aide).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_aide));
-        //view.findViewById(R.id.vers_options).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_parametres));
-        view.findViewById(R.id.vers_aide).setOnClickListener(v-> Toast.makeText(this.getContext(), "Pas encore implémenté", Toast.LENGTH_SHORT).show());
-        view.findViewById(R.id.vers_options).setOnClickListener(v-> Toast.makeText(this.getContext(), "Pas encore implémenté", Toast.LENGTH_SHORT).show());
+        view.findViewById(R.id.vers_aide).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_aide));
+        view.findViewById(R.id.vers_options).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_parametres));
+        //view.findViewById(R.id.vers_aide).setOnClickListener(v-> Toast.makeText(this.getContext(), "Pas encore implémenté", Toast.LENGTH_SHORT).show());
+        //view.findViewById(R.id.vers_options).setOnClickListener(v-> Toast.makeText(this.getContext(), "Pas encore implémenté", Toast.LENGTH_SHORT).show());
         SharedPreferences prefs =this.getActivity().getBaseContext().getSharedPreferences("classes", Context.MODE_PRIVATE);//liste des intitulés et message associé
         if(prefs.getAll().keySet().isEmpty()){
             prefs.edit().putString("message par defaut", "Bonjour, pour communiquer plus facilement, je vous propose d'utiliser une application de messagerie instantanée").apply();

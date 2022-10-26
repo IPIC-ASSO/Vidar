@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.play.core.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,10 +32,9 @@ import com.ipiccie.muetssages.client.Chat;
 import com.ipiccie.muetssages.client.Utilisateur;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,8 +79,11 @@ public class ActiviteDiscussion extends AppCompatActivity {
             LinearLayoutManager manager = new LinearLayoutManager(this);
             manager.setStackFromEnd(true);
             recyclage.setLayoutManager(manager);
-            String idUti = getIntent().getStringExtra("id");
+            String idUti = getIntent().getStringExtra("id");    // id interlocuteur
+            String idDis = getIntent().getStringExtra("dis");    // id discussion
+            Log.d(TAG, "onCreate: "+idDis);
             reference = FirebaseDatabase.getInstance(dB).getReference().child("Users").child(idUti);
+            reference.child("contact").setValue(" ");
             TextView nomUti = findViewById(R.id.utilisateur_conv_dis);
             ImageView imgUti = findViewById(R.id.image_profile_dis);
             reference.addValueEventListener(new ValueEventListener() {
@@ -92,10 +92,10 @@ public class ActiviteDiscussion extends AppCompatActivity {
                     Utilisateur uti = snapshot.getValue(Utilisateur.class);
                     assert uti != null;
                     nomUti.setText(uti.getUsername());
-                    if (uti.getImageURL().equals("defaut")){
+                    if (uti.getImageURL()!= null && uti.getImageURL().equals("defaut")){
                         imgUti.setImageResource(R.drawable.ic_launcher_foreground);
                     }
-                    postier(fuser.getUid(),idUti);
+                    postier(fuser.getUid(),idUti, idDis);
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
@@ -103,10 +103,10 @@ public class ActiviteDiscussion extends AppCompatActivity {
                 }
             });
             if (getIntent().getStringExtra("message")!= null){
-                envoyerMessage(fuser.getUid(),idUti,getIntent().getStringExtra("message"));
+                envoyerMessage(fuser.getUid(),idDis,getIntent().getStringExtra("message"));
             }
             findViewById(R.id.envoyer_message).setOnClickListener(v->{
-                if (!msg.getText().toString().equals(""))envoyerMessage(fuser.getUid(),idUti,msg.getText().toString());
+                if (!msg.getText().toString().equals(""))envoyerMessage(fuser.getUid(),idDis,msg.getText().toString());
                 msg.setText("");
             });
         }
@@ -131,27 +131,24 @@ public class ActiviteDiscussion extends AppCompatActivity {
         // TODO: Implement this method to send token to your app server.
     }
 
-    public void envoyerMessage(String envoyeur, String destinataire, String message){
+    public void envoyerMessage(String envoyeur, String idDiscussion, String message){
         DatabaseReference reference2 = FirebaseDatabase.getInstance(dB).getReference();
         HashMap<String, String> carteDeH = new HashMap<>();
         carteDeH.put("envoyeur",envoyeur);
-        carteDeH.put("destinataire",destinataire);
         carteDeH.put("message",message);
-        reference2.child("Chats").push().setValue(carteDeH);
+        reference2.child("Chats").child(idDiscussion).child("messages").child(String.valueOf(System.currentTimeMillis())).setValue(carteDeH);
     }
 
-    public void postier(String mId, String uId){
+    public void postier(String mId, String uId, String idDiscussion){
         listeDeChats = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance(dB).getReference().child("Chats");
+        reference = FirebaseDatabase.getInstance(dB).getReference().child("Chats").child(idDiscussion).child("messages");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listeDeChats.clear();
                 for (DataSnapshot snap:snapshot.getChildren()){
                     Chat chaton = snap.getValue(Chat.class);
-                    if (chaton!=null && ((chaton.getDestinataire().equals(mId)&& chaton.getEnvoyeur().equals(uId))||(chaton.getDestinataire().equals(uId)&& chaton.getEnvoyeur().equals(mId)))){
-                        listeDeChats.add(chaton);
-                    }
+                    listeDeChats.add(chaton);
                 }
                 messagerAdapte = new MessagerAdapte(ActiviteDiscussion.this, listeDeChats);
                 recyclage.setAdapter(messagerAdapte);

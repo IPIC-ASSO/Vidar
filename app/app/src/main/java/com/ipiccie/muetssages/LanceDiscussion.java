@@ -104,7 +104,7 @@ public class LanceDiscussion extends Fragment {
         this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
         int height = displayMetrics.heightPixels;
-        // Initializing the QR Encoder with your value to be encoded, type you required and Dimension
+        // Initialisation du QR code, avec comme valeur l'uid.
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser!=null){
             QRGEncoder qrgEncoder = new QRGEncoder(firebaseUser.getUid(), null, QRGContents.Type.TEXT,Math.min(height,width));
@@ -119,8 +119,10 @@ public class LanceDiscussion extends Fragment {
                         Utilisateur uti = snapshot.getValue(Utilisateur.class);
                         if (uti != null) {
                             Intent intention = new Intent(getContext(),ActiviteDiscussion.class);
-                            intention.putExtra("id", uti.getContacts().get(uti.getContacts().size()-1));
-                            intention.putExtra("message", getArguments() != null ? getArguments().getString("msg_debut", "Bonjour") : null);
+                            Log.d(TAG, "onDataChange: "+snapshot.getValue());
+                            intention.putExtra("id", uti.getContact());    //identifiant interlocuteur
+                            intention.putExtra("dis", uti.getContact()+firebaseUser.getUid());   //identifiant discussion
+                            intention.putExtra("message", getArguments() != null ? getArguments().getString("msg_debut", "Bonjour") : null);    //message de départ
                             startActivity(intention);
                         }
                     }

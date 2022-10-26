@@ -21,11 +21,13 @@ public class AdaptateurAdapte extends RecyclerView.Adapter<AdaptateurAdapte.View
 
     private Context context;
     private List<Utilisateur> mUtilisateurs;
+    private List<String> idConversations;
 
 
-    public AdaptateurAdapte(@NonNull Context context, List<Utilisateur>mUtilisateurs) {
+    public AdaptateurAdapte(@NonNull Context context, List<Utilisateur>mUtilisateurs, List<String> idConversations) {
         this.context = context;
         this.mUtilisateurs = mUtilisateurs;
+        this.idConversations = idConversations;
     }
 
     @NonNull
@@ -44,6 +46,7 @@ public class AdaptateurAdapte extends RecyclerView.Adapter<AdaptateurAdapte.View
         }
         holder.itemView.setOnClickListener(v->{
             Intent intention = new Intent(context,ActiviteDiscussion.class);
+            intention.putExtra("dis",idConversations.get(position));
             intention.putExtra("id",utilisateur.getId());
             context.startActivity(intention);
         });

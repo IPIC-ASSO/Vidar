@@ -1,5 +1,7 @@
 package com.ipiccie.muetssages;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ipiccie.muetssages.adaptateur.AdaptateurAdapte;
+import com.ipiccie.muetssages.client.Discussion;
 import com.ipiccie.muetssages.client.Utilisateur;
 
 import java.util.ArrayList;
@@ -116,8 +119,33 @@ public class listeConversations extends Fragment {
 
             }
         });
-        databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users");
+        List<String> contacts = new ArrayList<>();
+        List<String> idConv = new ArrayList<>();
+        databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Chats");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                contacts.clear();
+                idConv.clear();
+                for (DataSnapshot snapshot1: snapshot.getChildren()){
+                    Discussion dis = snapshot1.getValue(Discussion.class);
+                    if (dis != null && dis.getUtilisateur1()!= null &&dis.getUtilisateur2()!=null) {
+                        if(dis.getUtilisateur1()==utilisateur.getId()){
+                            contacts.add(dis.getUtilisateur1());
+                        } else{
+                            contacts.add(dis.getUtilisateur2());
+                        }
+                        Log.d(TAG, "onDataChange: "+dis.getUtilisateur1()+dis.getUtilisateur2());
+                        idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
+        databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -125,12 +153,12 @@ public class listeConversations extends Fragment {
                 for (DataSnapshot snapshot1: snapshot.getChildren()){
                     Utilisateur utile = snapshot1.getValue(Utilisateur.class);
                     assert utile!=null;
-                    if(utilisateur.getContacts().contains(utile.getId())){
+                    if(contacts.contains(utile.getId())){
                         listeU.add(utile);
                     }
                 }
                 if(listeU.size()>0)vue.findViewById(R.id.pas_de_conv).setVisibility(View.GONE);
-                adaptateurAdapte = new AdaptateurAdapte(requireContext(),listeU);
+                adaptateurAdapte = new AdaptateurAdapte(requireContext(),listeU,idConv);
                 recyclerView.setAdapter(adaptateurAdapte);
             }
 

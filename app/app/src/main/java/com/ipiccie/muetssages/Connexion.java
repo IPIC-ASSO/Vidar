@@ -127,7 +127,7 @@ public class Connexion extends Fragment {
                 assert firebaseUser!=null;
                 String idUtilisateur = firebaseUser.getUid();
                 reference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(idUtilisateur);
-                Utilisateur uti = new Utilisateur(idUtilisateur,"defaut",nomUtilisateur,new ArrayList<>());
+                Utilisateur uti = new Utilisateur(idUtilisateur,"defaut",nomUtilisateur,"");
                 reference.setValue(uti).addOnCompleteListener(task1 -> {
                     if (task1.isSuccessful()|| task1.isComplete()) {
                         ca.onStop();
