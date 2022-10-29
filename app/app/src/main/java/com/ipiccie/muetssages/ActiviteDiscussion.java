@@ -132,41 +132,45 @@ public class ActiviteDiscussion extends AppCompatActivity {
     }
 
     public void envoyerMessage(String envoyeur, String idDiscussion, String message){
+        Log.d(TAG, "envoyerMessage: "+"OKOKHOK");
         DatabaseReference reference2 = FirebaseDatabase.getInstance(dB).getReference();
         HashMap<String, String> carteDeH = new HashMap<>();
         carteDeH.put("envoyeur",envoyeur);
         carteDeH.put("message",message);
-        reference2.child("Chats").child(idDiscussion).child("messages").child(String.valueOf(System.currentTimeMillis())).setValue(carteDeH);
+        reference2.child("Chats").child(idDiscussion).child(String.valueOf(System.currentTimeMillis())).setValue(carteDeH);
     }
 
     public void postier(String mId, String uId, String idDiscussion){
         listeDeChats = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance(dB).getReference().child("Chats").child(idDiscussion).child("messages");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listeDeChats.clear();
-                for (DataSnapshot snap:snapshot.getChildren()){
-                    Chat chaton = snap.getValue(Chat.class);
-                    listeDeChats.add(chaton);
-                }
-                messagerAdapte = new MessagerAdapte(ActiviteDiscussion.this, listeDeChats);
-                recyclage.setAdapter(messagerAdapte);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        reference = FirebaseDatabase.getInstance(dB).getReference().child("Chats").child(idDiscussion);
+        reference.addValueEventListener(ecouteNouvMessages);
     }
+
+    private ValueEventListener ecouteNouvMessages = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            listeDeChats.clear();
+            for (DataSnapshot snap:snapshot.getChildren()){
+                Chat chaton = snap.getValue(Chat.class);
+                listeDeChats.add(chaton);
+            }
+            messagerAdapte = new MessagerAdapte(ActiviteDiscussion.this, listeDeChats);
+            recyclage.setAdapter(messagerAdapte);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                startActivity(new Intent(this, MainActivity.class));
+                reference.removeEventListener(ecouteNouvMessages);
                 finish();
+                startActivity(new Intent(this, MainActivity.class));
                 return true;
             default:
                 return false;

@@ -6,18 +6,30 @@ import static android.content.ContentValues.TAG;
 
 import android.util.Log;
 
+import java.util.HashMap;
+
 
 public class Utilisateur {
     private String id;
     private String username;
     private String imageURL;
     private String contact;
+    private String messages;
 
     public Utilisateur(String id, String imageURL,  String username, String contact){
         this.id = id;
         this.username = username;
         this.imageURL = imageURL;
         this.contact = contact;
+        Log.d(TAG,"Utilisateur: "+contact);
+    }
+
+    public Utilisateur(String id, String imageURL,  String username, String contact, String messages){
+        this.id = id;
+        this.username = username;
+        this.imageURL = imageURL;
+        this.contact = contact;
+        this.messages = messages;
         Log.d(TAG,"Utilisateur: "+contact);
     }
 

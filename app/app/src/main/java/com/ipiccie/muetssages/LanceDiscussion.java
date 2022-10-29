@@ -123,7 +123,9 @@ public class LanceDiscussion extends Fragment {
                             intention.putExtra("id", uti.getContact());    //identifiant interlocuteur
                             intention.putExtra("dis", uti.getContact()+firebaseUser.getUid());   //identifiant discussion
                             intention.putExtra("message", getArguments() != null ? getArguments().getString("msg_debut", "Bonjour") : null);    //message de départ
+                            databaseReference.removeEventListener(this);
                             startActivity(intention);
+
                         }
                     }
                 }

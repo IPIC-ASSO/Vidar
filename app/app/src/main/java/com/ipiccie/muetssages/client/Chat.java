@@ -5,7 +5,7 @@ public class Chat {
     private String envoyeur;
     private String message;
 
-    public Chat(String envoyeur, String destinataire, String message){
+    public Chat(String envoyeur, String message){
         this.message = message;
         this.envoyeur = envoyeur;
     }

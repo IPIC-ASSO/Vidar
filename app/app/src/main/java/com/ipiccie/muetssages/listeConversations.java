@@ -30,6 +30,7 @@ import com.ipiccie.muetssages.client.Utilisateur;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EventListener;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,6 +53,8 @@ public class listeConversations extends Fragment {
     private Utilisateur utilisateur;
     private String mParam1;
     private String mParam2;
+    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReference2;
 
     public listeConversations() {
         // Required empty public constructor
@@ -108,11 +111,11 @@ public class listeConversations extends Fragment {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         assert firebaseUser != null;
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid());
+        databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    utilisateur = snapshot.getValue(Utilisateur.class);
+                utilisateur = snapshot.getValue(Utilisateur.class);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -121,7 +124,7 @@ public class listeConversations extends Fragment {
         });
         List<String> contacts = new ArrayList<>();
         List<String> idConv = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Chats");
+        databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("ListeChats");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -130,41 +133,45 @@ public class listeConversations extends Fragment {
                 for (DataSnapshot snapshot1: snapshot.getChildren()){
                     Discussion dis = snapshot1.getValue(Discussion.class);
                     if (dis != null && dis.getUtilisateur1()!= null &&dis.getUtilisateur2()!=null) {
-                        if(dis.getUtilisateur1()==utilisateur.getId()){
+                        if(Objects.equals(dis.getUtilisateur1(), utilisateur.getId())){
                             contacts.add(dis.getUtilisateur1());
-                        } else{
+                            idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
+                        } else if (Objects.equals(dis.getUtilisateur2(), utilisateur.getId())){
                             contacts.add(dis.getUtilisateur2());
+                            idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
                         }
                         Log.d(TAG, "onDataChange: "+dis.getUtilisateur1()+dis.getUtilisateur2());
-                        idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
                     }
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-        databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                databaseReference2 = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users");
                 listeU.clear();
-                for (DataSnapshot snapshot1: snapshot.getChildren()){
-                    Utilisateur utile = snapshot1.getValue(Utilisateur.class);
-                    assert utile!=null;
-                    if(contacts.contains(utile.getId())){
-                        listeU.add(utile);
-                    }
+                for (String contact: contacts){
+                    databaseReference2.child(contact).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Log.d(TAG, "onDataChange: "+snapshot.getValue());
+                            if (snapshot.getValue()!= null) listeU.add(snapshot.getValue(Utilisateur.class));
+                            Log.d(TAG, "onDataChange: "+listeU.size());
+                            databaseReference2.removeEventListener(this);
+                            if(contact==contacts.get(contacts.size()-1))affiche(vue, idConv, this);
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
                 }
-                if(listeU.size()>0)vue.findViewById(R.id.pas_de_conv).setVisibility(View.GONE);
-                adaptateurAdapte = new AdaptateurAdapte(requireContext(),listeU,idConv);
-                recyclerView.setAdapter(adaptateurAdapte);
-            }
 
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    public void affiche(View vue, List<String> idConv, ValueEventListener v){
+        if(listeU.size()>0)vue.findViewById(R.id.pas_de_conv).setVisibility(View.GONE);
+        adaptateurAdapte = new AdaptateurAdapte(requireContext(),listeU,idConv);
+        recyclerView.setAdapter(adaptateurAdapte);
+        databaseReference.removeEventListener(v);
     }
 }

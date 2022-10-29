@@ -1,5 +1,6 @@
 package com.ipiccie.muetssages;
 
+import static android.content.ContentValues.TAG;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
 import android.content.Context;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,21 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ListeMessages#newInstance} factory method to
@@ -28,14 +45,8 @@ import android.widget.TextView;
  */
 public class ListeMessages extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private HashMap<String, String> listeDeMessages;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public ListeMessages() {
         // Required empty public constructor
@@ -53,8 +64,6 @@ public class ListeMessages extends Fragment {
     public static ListeMessages newInstance(String param1, String param2) {
         ListeMessages fragment = new ListeMessages();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,10 +86,6 @@ public class ListeMessages extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -92,24 +97,46 @@ public class ListeMessages extends Fragment {
 
     public void inflation(){
         SharedPreferences prefs =this.getActivity().getBaseContext().getSharedPreferences("classes", Context.MODE_PRIVATE);//liste des intitulés et message associé
-        if(prefs.getAll().keySet().isEmpty()){
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        listeDeMessages = new HashMap<>();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listeDeMessages.clear();
+                Log.d(TAG, "onDataChange: "+snapshot.getValue());
+                listeDeMessages = (HashMap<String, String>) snapshot.getValue();
+                databaseReference.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        if (listeDeMessages.isEmpty())listeDeMessages.put("message par defaut", "Bonjour, pour communiquer plus facilement, je vous propose d'utiliser une application de messagerie instantanée");
+        else this.getView().findViewById(R.id.instruc_liste_msg).setVisibility(View.INVISIBLE);
+        /*if(prefs.getAll().keySet().isEmpty()){
             prefs.edit().putString("message par defaut", "Bonjour, pour communiquer plus facilement, je vous propose d'utiliser une application de messagerie instantanée").apply();
         }else{
             this.getView().findViewById(R.id.instruc_liste_msg).setVisibility(View.INVISIBLE);
-        }
+        }*/
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(2,5, 2,5);
         LinearLayout liste = this.getView().findViewById(R.id.liste_messages);
         int stylebouton = com.google.android.material.R.style.Widget_MaterialComponents_Button_OutlinedButton;
-        for (String intitule:prefs.getAll().keySet()){
+        Log.d(TAG, "inflation: "+listeDeMessages);
+        for (String intitule:listeDeMessages.keySet()){
             Button txt = new Button(new ContextThemeWrapper(this.getContext(),stylebouton), null, stylebouton);
             txt.setText(intitule);
             txt.setBackgroundColor(Color.parseColor("#DDDDDD"));
             txt.setLayoutParams(params);
             liste.addView(txt);
+            final String msg = listeDeMessages.get(intitule);
             txt.setOnClickListener(w->{
                 Bundle bundle = new Bundle();
                 bundle.putString("intitulé", intitule);
+                bundle.putString("message",msg);
                 findNavController(this).navigate(R.id.action_listeMessages_to_editeurMessage,bundle);
             });
         }
