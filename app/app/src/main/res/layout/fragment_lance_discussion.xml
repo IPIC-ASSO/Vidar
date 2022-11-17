@@ -42,6 +42,15 @@
                 android:text="TEXTE A AFFICHER \n\nblabla\n\nblabla\nbla\nbla\n\nBla"
                 android:textSize="20sp" />
 
+            <TextView
+                android:id="@+id/instruction_scan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#BFBFBF"
+                android:backgroundTint="#DFDFDF"
+                android:text="Flash me"
+                android:textSize="20sp" />
+
             <ImageView
                 android:id="@+id/qr_code"
                 android:layout_width="match_parent"

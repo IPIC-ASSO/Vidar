@@ -145,6 +145,7 @@ public class listeConversations extends Fragment {
                 }
                 databaseReference2 = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users");
                 listeU.clear();
+                ValueEventListener ecoute = this;
                 for (String contact: contacts){
                     databaseReference2.child(contact).addValueEventListener(new ValueEventListener() {
                         @Override
@@ -153,14 +154,13 @@ public class listeConversations extends Fragment {
                             if (snapshot.getValue()!= null) listeU.add(snapshot.getValue(Utilisateur.class));
                             Log.d(TAG, "onDataChange: "+listeU.size());
                             databaseReference2.removeEventListener(this);
-                            if(contact==contacts.get(contacts.size()-1))affiche(vue, idConv, this);
+                            if(Objects.equals(contact, contacts.get(contacts.size()-1)))affiche(vue, idConv, ecoute);
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                         }
                     });
                 }
-
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

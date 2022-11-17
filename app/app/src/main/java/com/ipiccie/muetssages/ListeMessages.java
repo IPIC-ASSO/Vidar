@@ -34,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,7 @@ import java.util.Map;
 public class ListeMessages extends Fragment {
 
     private HashMap<String, String> listeDeMessages;
+    private FirebaseUser firebaseUser;
 
 
     public ListeMessages() {
@@ -76,6 +78,7 @@ public class ListeMessages extends Fragment {
             bundle.putString("intitulé", "inconnu au bataillon");
             findNavController(this).navigate(R.id.action_listeMessages_to_editeurMessage,bundle);
         });
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         inflation();
         ActionBar ab = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if(ab != null){
@@ -97,7 +100,6 @@ public class ListeMessages extends Fragment {
 
     public void inflation(){
         SharedPreferences prefs =this.getActivity().getBaseContext().getSharedPreferences("classes", Context.MODE_PRIVATE);//liste des intitulés et message associé
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         listeDeMessages = new HashMap<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -105,8 +107,11 @@ public class ListeMessages extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listeDeMessages.clear();
                 Log.d(TAG, "onDataChange: "+snapshot.getValue());
-                listeDeMessages = (HashMap<String, String>) snapshot.getValue();
-                databaseReference.removeEventListener(this);
+                if (snapshot.getValue()!= null){
+                    listeDeMessages = (HashMap<String, String>) snapshot.getValue();
+
+                }
+                inflate(this, databaseReference);
             }
 
             @Override
@@ -114,13 +119,15 @@ public class ListeMessages extends Fragment {
 
             }
         });
-        if (listeDeMessages.isEmpty())listeDeMessages.put("message par defaut", "Bonjour, pour communiquer plus facilement, je vous propose d'utiliser une application de messagerie instantanée");
+
+    }
+    public void inflate(ValueEventListener ecoute, DatabaseReference db){
+        if (listeDeMessages.isEmpty()){
+            FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages").child("message par defaut").setValue("Bonjour, pour communiquer plus facilement, je vous propose d'utiliser une application de messagerie instantanée");
+            Log.d(TAG, "inflate: vide");
+            return;
+        }
         else this.getView().findViewById(R.id.instruc_liste_msg).setVisibility(View.INVISIBLE);
-        /*if(prefs.getAll().keySet().isEmpty()){
-            prefs.edit().putString("message par defaut", "Bonjour, pour communiquer plus facilement, je vous propose d'utiliser une application de messagerie instantanée").apply();
-        }else{
-            this.getView().findViewById(R.id.instruc_liste_msg).setVisibility(View.INVISIBLE);
-        }*/
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(2,5, 2,5);
         LinearLayout liste = this.getView().findViewById(R.id.liste_messages);
@@ -140,5 +147,7 @@ public class ListeMessages extends Fragment {
                 findNavController(this).navigate(R.id.action_listeMessages_to_editeurMessage,bundle);
             });
         }
+        db.removeEventListener(ecoute);
     }
+
 }

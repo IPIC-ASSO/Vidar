@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Vidar</title>
+    <link rel="stylesheet" href="./authentification.css">
+    <link rel="stylesheet" href="/nouvelle_conversation.css" />
+
+  </head>
+  <body>
+    <div id="codeu">
+        <form class="form" id="code">
+            <p class="fieldset">
+                <label class="image-replace code" for="destinataire">Code</label>
+                <input class="full-width has-padding has-border" id="destinataire-input" type="text" placeholder="code">
+            </p>
+            <p class="fieldset">
+                <input class="full-width" type="submit" value="Rejoindre la conversation">
+            </p>
+            
+            
+        </form>
+
+        <form class="form" id="QR-code">
+            <label style="margin-left: 10px;">OU</label>
+            <p class="fieldset">
+                <input class="full-width" type="submit" id="btn-scan-qr" value="Scanner un QR-code">
+            </p>
+            
+        </form>
+            
+
+        <canvas hidden="" id="qr-canvas"></canvas>
+
+        <div id="qr-result" hidden="">
+            <b>Data:</b> <span id="outputData"></span>
+        </div>
+    </div>
+   
+    <script src="https://rawgit.com/sitepoint-editors/jsqrcode/master/src/qr_packed.js"></script>
+    <script src="nouvelle_conversation.js"></script>
+  </body>
+</html>

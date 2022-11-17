@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Firebase RealTime Chat</title>
+    <link rel="stylesheet" href="./index.css">
+  </head>
+  <body>
+    <header>
+      <h2>Vidar, application de messagerie instantanée</h2>
+      <button class="open-button" onclick="afficheConnexion()">Connexion</button>
+      <button class="open-button" onclick="afficheInscription()">Inscription</button>
+    </header>
+
+    <!-- Page de Connexion -->
+    <div class="form-popup" id="formulaireConnexion">
+      <form id="connexion-form" class="form-container">
+        <h1  >Connexion</h1>
+
+        <label for="email"><b>Email</b></label>
+        <input id="e-mail" type="text" placeholder="Adresse e-mail" required >
+
+        <label for="psw"><b>Password</b></label>
+        <input id="mot-de-passe" type="password" placeholder="Mot de passe" required >
+
+        <button type="submit" class="btn">Connexion</button>
+        <button type="button" class="btn cancel" onclick="fermeFormulaire()">Fermer</button>
+      </form>
+    </div>
+
+     <!-- Page d'Inscription -->
+     <div class="form-popup" id="formulaireInscription">
+      <form id="inscription-form" class="form-container">
+        <h1 >Inscription</h1>
+
+        <label for="email"><b>Email</b></label>
+        <input id="e-mail-inscr"type="text" placeholder="adresse-super@ipic.asso" name="email" required >
+
+        <label for="pseudo"><b>Nom d'utilisateur</b></label>
+        <input id="pseudo" type="text" placeholder="M. De Chez-Moi" name="pseudo" required >
+
+        <label for="psw"><b>Password</b></label>
+        <input id="mot-de-passe-inscr" type="password" placeholder="Mot de passe" name="psw" required >
+
+        <button type="submit" class="btn">S'inscrire</button>
+        <button type="button" class="btn cancel" onclick="fermeFormulaire()">Fermer</button>
+      </form>
+    </div>
+
+    <div id="chat">
+      <!-- liste des messages -->
+      <ul id="messages"></ul>
+
+      <!-- champs de rédaction des messages -->
+      <form id="message-form">
+        <input id="message-input" type="text" />
+        <button id="message-btn" type="submit">Envoyer</button>
+      </form>
+    </div>
+      <!-- scripts (SDK+ code) -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+    <script src="index2.js"></script>
+  </body>
+</html>

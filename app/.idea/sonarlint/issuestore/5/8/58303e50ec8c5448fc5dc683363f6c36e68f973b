@@ -1,0 +1,7 @@
+
+s
+java:S1104="XMake texteMessage a static final constant or non-public and provide accessors if needed.(Ρ‹Χ©ωÿÿÿÿ
+x	java:S116"^Rename this field "MESSAGE_TYPE_GAUCHE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(·τίώÿÿÿÿ
+w	java:S116"]Rename this field "MESSAGE_TYPE_DROIT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¶¤¶όÿÿÿÿ
+p
+java:S1450"[Remove the "firebaseUser" field and declare it as a local variable in the relevant methods.(©™

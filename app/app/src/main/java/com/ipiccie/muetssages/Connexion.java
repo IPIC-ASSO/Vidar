@@ -3,6 +3,7 @@ package com.ipiccie.muetssages;
 import static androidx.fragment.app.FragmentManager.TAG;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -133,10 +135,16 @@ public class Connexion extends Fragment {
                         ca.onStop();
                         findNavController(ca).navigate(R.id.action_connexion_to_accueil);
                     }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @SuppressLint("RestrictedApi")
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: "+e);
+                    }
                 });
                 Toast.makeText(getContext(), "Bienvenue "+nomUtilisateur, Toast.LENGTH_SHORT).show();
             }else{
-                Toast.makeText(getContext(), "Enregistrement impossible avec cet email ou ce mot de passe"+task.getResult()+" "+task.getException(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Enregistrement impossible avec cet email ou ce mot de passe"+" "+task.getException(), Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Vidar -connexion</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="./authentification.css">
+
+</head>
+<body>
+    <!-- SDK-->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase.js"></script>
+<!-- partial:index.partial.html -->
+<nav class="main-nav">
+	<ul>
+		<li><a class="signin" href="#0">Connexion</a></li>
+		<li><a class="signup" href="#0">Inscription</a></li>
+        <li><a class="continue" href="nouvelle_conversation.html"> Continuer sans se connecter</a></li>
+	</ul>
+</nav>
+
+<div class="user-modal">
+		<div class="user-modal-container">
+			<ul class="switcher">
+				<li><a href="#0">Connexion</a></li>
+				<li><a href="#0">Inscription</a></li>
+			</ul>
+
+			<div id="login">
+				<form class="form" id="connexion-form">
+					<p class="fieldset">
+						<label class="image-replace email" for="e-mail">E-mail</label>
+						<input class="full-width has-padding has-border" id="e-mail" type="email" placeholder="E-mail">
+						<span class="error-message">An account with this email address does not exist!</span>
+					</p>
+
+					<p class="fieldset">
+						<label class="image-replace password" for="mot-de-passe">Password</label>
+						<input class="full-width has-padding has-border" id="mot-de-passe" type="password"  placeholder="Password">
+						<a href="#0" class="hide-password">Afficher</a>
+						<span class="error-message">Wrong password! Try again.</span>
+					</p>
+
+					<p class="fieldset">
+						<input type="checkbox" id="remember-me" checked>
+						<label for="remember-me">Se souvenir de moi</label>
+					</p>
+
+					<p class="fieldset">
+						<input class="full-width" type="submit" value="Connexion">
+					</p>
+				</form>
+				
+				<p class="form-bottom-message"><a href="#0">Mot de passe oublié?</a></p>
+				<!-- <a href="#0" class="close-form">Close</a> -->
+			</div>
+
+			<div id="signup">
+				<form class="form" id="inscription-form"> 
+					<p class="fieldset">
+						<label class="image-replace email" for="e-mail-inscription">E-mail</label>
+						<input class="full-width has-padding has-border" id="e-mail-inscription" type="email" placeholder="E-mail">
+						<span class="error-message">Entrez une adresse e-mail valide!</span>
+					</p>
+
+                    <p class="fieldset">
+						<label class="image-replace username" for="pseudo">Username</label>
+						<input class="full-width has-padding has-border" id="pseudo" type="text" placeholder="Username">
+						<span class="error-message">Votre nom d'utilisateur ne peut contenir que des caractères alphanumériques!</span>
+					</p>
+
+					<p class="fieldset">
+						<label class="image-replace password" for="mot-de-passe-inscription">Password</label>
+						<input class="full-width has-padding has-border" id="mot-de-passe-inscription" type="password"  placeholder="Password">
+						<a href="#0" class="hide-password">Afficher</a>
+						<span class="error-message">Votre mot de passe doit faire au moins 6 caractères!</span>
+					</p>
+
+					<p class="fieldset">
+						<input type="checkbox" id="accept-terms">
+						<label for="accept-terms">J'accepte les  <a class="accept-terms" href="http://perdu.com/">Conditions Générales d'Utilisation</a></label>
+					</p>
+
+					<p class="fieldset">
+						<input class="full-width has-padding" type="submit" value="S'inscrire">
+					</p>
+				</form>
+
+				<!-- <a href="#0" class="cd-close-form">Close</a> -->
+			</div>
+
+			<div id="reset-password">
+				<p class="form-message">Mot de passe oublié? Entrez votre adresse e-mail.</br> Vous recevrez un message permettant de réinitialiser le mot de passe (pensez à vérifier les spams)</p>
+
+				<form class="form">
+					<p class="fieldset">
+						<label class="image-replace email" for="reset-email">E-mail</label>
+						<input class="full-width has-padding has-border" id="reset-email" type="email" placeholder="E-mail">
+						<span class="error-message">An account with this email does not exist!</span>
+					</p>
+
+					<p class="fieldset">
+						<input class="full-width has-padding" type="submit" value="Réinitialiser le mot de passe">
+					</p>
+				</form>
+
+				<p class="form-bottom-message"><a href="#0">Retour</a></p>
+			</div>
+			<a href="#0" class="close-form">Fermer</a>
+		</div>
+	</div>
+    <!-- partial -->
+    <!-- scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <script src="authentification.js"></script>
+
+</body>
+</html>

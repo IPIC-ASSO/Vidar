@@ -107,6 +107,8 @@ public class LanceDiscussion extends Fragment {
         // Initialisation du QR code, avec comme valeur l'uid.
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser!=null){
+            TextView instructions = view.findViewById(R.id.instruction_scan);
+            instructions.setText("scanner le QR-code ou rendez vous sur http://ipic-asso.ddns.net, puis entrez le code: "+firebaseUser.getUid());
             QRGEncoder qrgEncoder = new QRGEncoder(firebaseUser.getUid(), null, QRGContents.Type.TEXT,Math.min(height,width));
             image.setImageBitmap(qrgEncoder.getBitmap());
             DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid());

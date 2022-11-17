@@ -82,18 +82,20 @@ public class EditeurMessage extends Fragment {
             inti.setText(intitule);
             msg.setText(corpsMessage);
         }
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages").child(intitule);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages");
         view.findViewById(R.id.enregistre_msg).setOnClickListener(v->{
             if(!inti.getText().toString().equals("") && !msg.getText().toString().equals("")){
-                databaseReference.setValue(msg.getText().toString());
+                databaseReference.child(inti.getText().toString()+" ").removeValue();
+                databaseReference.child(inti.getText().toString()+" ").setValue(msg.getText().toString());
                 findNavController(this).navigate(R.id.action_editeurMessage_to_listeMessages);
             }else{
                 Toast.makeText(this.getContext(),"Veuillez remplir tous les champs",Toast.LENGTH_SHORT).show();
             }
         });
         view.findViewById(R.id.supr_msg).setOnClickListener(v->{
-            if (!inti.getText().toString().equals("") && prefs.getAll().containsKey(inti.getText().toString())){
-                databaseReference.setValue(null);
+            if (!inti.getText().toString().equals("")){
+                databaseReference.child(inti.getText().toString()).removeValue();
+                Log.d(TAG, "onViewCreated: supr");
             }
             findNavController(this).navigate(R.id.action_editeurMessage_to_listeMessages);
         });

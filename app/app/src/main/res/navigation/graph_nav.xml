@@ -152,6 +152,8 @@
         <action
             android:id="@+id/action_editeurMessage_to_listeMessages"
             app:destination="@id/listeMessages"
+            app:popUpTo="@+id/liste_messages"
+            app:popUpToInclusive="true"
             app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"/>
     </fragment>
