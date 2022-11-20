@@ -2,17 +2,20 @@ package com.ipiccie.muetssages;
 
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -64,6 +67,21 @@ public class Parametres extends Fragment {
         view.findViewById(R.id.deco).setOnClickListener(v->{
             FirebaseAuth.getInstance().signOut();
             findNavController(this).navigate(R.id.action_parametres_to_connexion);
+        });
+        com.google.android.material.switchmaterial.SwitchMaterial modeSombre = view.findViewById(R.id.switch_mode_sombre);
+        int currentNightMode = getContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                modeSombre.setChecked(false);
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                // Night mode is active, we're using dark theme
+                modeSombre.setChecked(true);
+                break;
+        }
+        modeSombre.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         });
     }
 

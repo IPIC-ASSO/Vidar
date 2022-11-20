@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="10dp"
-    android:animateLayoutChanges="true"
     tools:context=".ConfigLancerDiscussion">
-
-    <!-- TODO: Update blank fragment layout -->
 
     <Button
         android:id="@+id/creer_qr"
@@ -17,100 +16,114 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:text="Créer un QR-code" />
+        android:text="@string/txt_creer_QR"
+        app:icon="@drawable/ic_baseline_add_comment_24"
+        tools:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/groupe2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
 
         <TextView
+            style="@style/TextViewFond"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_titre_config_QR"
+            android:textAlignment="center"
+            android:textSize="22sp"
+            app:drawableEndCompat="@drawable/ic_baseline_qr_code_scanner_24" />
+
+        <TextView
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="1. Choisissez le message à afficher au dessus du code barre"
+            android:text="@string/txt_indic_message_dessus_QR"
             android:textSize="18sp" />
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_margin="5dp"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/liste_msg_ecrit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="(LISTE)" />
+                android:layout_weight="1"
+                android:text="@string/btn_liste" />
 
             <TextView
                 android:id="@+id/message_ecrit"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="9"
                 android:gravity="center"
-                android:text="Nom du message" />
+                android:text="@string/defaut" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/textView6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="2. Lire un message différent (optionel)"
+            android:text="@string/txt_indic_msg_lu"
             android:textSize="18sp" />
 
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/liste_msg_lu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="(liste)" />
+                android:layout_weight="1"
+                android:text="@string/btn_liste" />
 
             <TextView
                 android:id="@+id/message_lu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Nom du message"
+                android:layout_weight="9"
+                android:text="@string/defaut"
                 android:textAlignment="center" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/textView10"
-            android:textSize="18sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="3.Message au début de la conversation" />
+            android:text="@string/txt_indic_msg_debut_conv"
+            android:textSize="18sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/liste_msg_debut"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="(liste)" />
+                android:layout_weight="1"
+                android:text="@string/btn_liste" />
 
             <TextView
                 android:id="@+id/message_debut"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAlignment="center"
-                android:text="Nom du message" />
+                android:layout_weight="9"
+                android:text="@string/defaut"
+                android:textAlignment="center" />
         </LinearLayout>
 
         <Button
@@ -129,12 +142,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:visibility="gone">
 
         <View
             android:id="@+id/divider2"
             android:layout_width="match_parent"
             android:layout_height="3dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:background="?android:attr/listDivider" />
 
         <TextView
@@ -148,6 +164,8 @@
             android:id="@+id/divider3"
             android:layout_width="match_parent"
             android:layout_height="3dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:background="?android:attr/listDivider" />
 
         <Button
@@ -156,8 +174,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="Scanner un QR-CODE" />
+            android:text="Scanner un QR-CODE"
+            app:icon="@drawable/ic_baseline_qr_code_scanner_24" />
     </LinearLayout>
-
-
 </LinearLayout>

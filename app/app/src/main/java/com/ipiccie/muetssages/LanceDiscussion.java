@@ -52,7 +52,6 @@ public class LanceDiscussion extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private int drapeau = 0;
@@ -69,7 +68,6 @@ public class LanceDiscussion extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment LanceDiscussion.
      */
-    // TODO: Rename and change types and number of parameters
     public static LanceDiscussion newInstance(String param1, String param2) {
         LanceDiscussion fragment = new LanceDiscussion();
         Bundle args = new Bundle();
@@ -87,14 +85,8 @@ public class LanceDiscussion extends Fragment {
         TextToSpeech textToSpeech = new TextToSpeech(this.getContext(), status -> {});
         textToSpeech.setLanguage(Locale.FRANCE);
         textToSpeech.setSpeechRate(1.3F);
-
-        view.findViewById(R.id.vers_activite_discussion).setOnClickListener(v->{
-            Intent intention = new Intent(this.getContext(),ActiviteDiscussion.class);
-            intention.putExtra("code_discussion","plouf");
-            startActivity(intention);
-        } );
         TextView msg = view.findViewById(R.id.message_haut_Qr);
-        msg.setText(getArguments().getString("msg_ecrit"));
+        msg.setText(getArguments().getString("msg_ecrit"," "));
         view.findViewById(R.id.lire_texte).setOnClickListener(v->{
             textToSpeech.speak(getArguments().getString("msg_lu"),TextToSpeech.QUEUE_FLUSH,null);
             Toast.makeText(this.getContext(),"Lecture en cours",Toast.LENGTH_SHORT).show();
@@ -108,7 +100,7 @@ public class LanceDiscussion extends Fragment {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser!=null){
             TextView instructions = view.findViewById(R.id.instruction_scan);
-            instructions.setText("scanner le QR-code ou rendez vous sur http://ipic-asso.ddns.net, puis entrez le code: "+firebaseUser.getUid());
+            instructions.setText(String.format("%s%s", getString(R.string.txt_infos_scan), firebaseUser.getUid()));
             QRGEncoder qrgEncoder = new QRGEncoder(firebaseUser.getUid(), null, QRGContents.Type.TEXT,Math.min(height,width));
             image.setImageBitmap(qrgEncoder.getBitmap());
             DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid());
@@ -120,6 +112,7 @@ public class LanceDiscussion extends Fragment {
                     }else{
                         Utilisateur uti = snapshot.getValue(Utilisateur.class);
                         if (uti != null) {
+                            Log.d(TAG, "onDataChange: OKOKOKOKOKOK");
                             Intent intention = new Intent(getContext(),ActiviteDiscussion.class);
                             Log.d(TAG, "onDataChange: "+snapshot.getValue());
                             intention.putExtra("id", uti.getContact());    //identifiant interlocuteur
@@ -127,14 +120,13 @@ public class LanceDiscussion extends Fragment {
                             intention.putExtra("message", getArguments() != null ? getArguments().getString("msg_debut", "Bonjour") : null);    //message de départ
                             databaseReference.removeEventListener(this);
                             startActivity(intention);
-
                         }
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    //RàS
                 }
             });
         }else{

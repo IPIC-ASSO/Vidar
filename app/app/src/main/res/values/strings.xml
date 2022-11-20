@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Vidar</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="defaut">[Erreur  >:| ]</string>
+    <string name="hello_blank_fragment">Imposteur!</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
@@ -13,7 +13,29 @@
     <!-- Sync Preferences -->
     <string name="sync_title">Sync email periodically</string>
     <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="txt_titre_config_QR">Configuration du QR-code</string>
+    <string name="txt_creer_QR">Créer un QR-code</string>
+    <string name="txt_indic_message_dessus_QR">Message à afficher au dessus du code barre</string>
+    <string name="btn_liste">MODIFIER</string>
+    <string name="txt_indic_msg_lu">Message à lire</string>
+    <string name="txt_indic_msg_debut_conv">Message au début de la conversation</string>
+    <string name="msg_defaut">message par defaut</string>
+    <string name="erreur">Une erreur est survenue</string>
+    <string name="txt_titre_compte">Compte</string>
+    <string name="txt_changer_pseudo">Changer de nom d\'utilisateur:</string>
+    <string name="hint_nom_uti">Nom d\'utilisateur</string>
+    <string name="btn_changer_mdp">Changer le mot de passe</string>
+    <string name="btn_deco">Se déconnecter</string>
+    <string name="txt_titre_affichage">Affichage</string>
+    <string name="switch_mode_combre">Mode sombre</string>
+    <string name="btn_reinit_app">Reinitialiser l\'application</string>
+    <string name="defaut_scan_QR">Flash me</string>
+    <string name="img_qr_code_flasher">QR-code à flasher</string>
+    <string name="txt_mentions_legales">Ce QR-Code vous redirigera vers le site-web de IPIC-ASSO, pour vous permettre de discuter par message.\nAucune information ne sera collectée, aucun programme ne sera installé… \n Il s\'agit simplement d\'une interface de discussion</string>
+    <string name="txt_defaut_msgèdessus_QR">TEXTE A AFFICHER \n\nblabla\n\nblabla\nbla\nbla\n\nBla</string>
+    <string name="btn_lire_msg">Lire le message</string>
+    <string name="txt_infos_scan">\"Scannez le QR-code ou rendez vous sur http://ipic-asso.ddns.net, puis entrez le code: \"</string>
+    <string name="verite_generale">Ipic vaincra!</string>
 </resources>

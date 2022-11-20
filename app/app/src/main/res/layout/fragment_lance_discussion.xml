@@ -17,7 +17,8 @@
         android:layout_marginBottom="20sp"
         android:clickable="true"
         android:src="@drawable/ic_baseline_volume_up_24"
-        app:backgroundTint="#4BFF52" />
+        app:backgroundTint="#4BFF52"
+        android:contentDescription="@string/btn_lire_msg" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -27,40 +28,32 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/vers_activite_discussion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/ic_baseline_arrow_forward_24"
-                android:text="interface de discussion"
-                android:visibility="gone" />
-
             <TextView
                 android:id="@+id/message_haut_Qr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TEXTE A AFFICHER \n\nblabla\n\nblabla\nbla\nbla\n\nBla"
+                android:text="@string/txt_defaut_msgèdessus_QR"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/instruction_scan"
+                style="@style/TextViewFond"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#BFBFBF"
-                android:backgroundTint="#DFDFDF"
-                android:text="Flash me"
+                android:text="@string/defaut_scan_QR"
                 android:textSize="20sp" />
 
             <ImageView
                 android:id="@+id/qr_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground" />
+                android:src="@drawable/ic_launcher_foreground"
+                android:contentDescription="@string/img_qr_code_flasher" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ce QR-Code vous redirigera vers le site-web de IPIC-ASSO, pour vous permettre de discuter par message.\nAucune information ne sera collectée, aucun programme ne sera installé... \n Il s'agit simplement d'une interface de discussion"
+                android:text="@string/txt_mentions_legales"
                 android:textAlignment="center"
                 android:textSize="16sp" />
 

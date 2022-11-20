@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:padding="5dp"
-        android:text="Ipic vaincra!"
+        android:text="@string/verite_generale"
         android:textSize="18sp"
         android:background="@drawable/bords_arrondis"
         app:layout_constraintEnd_toEndOf="parent"

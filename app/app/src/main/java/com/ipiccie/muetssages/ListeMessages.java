@@ -99,7 +99,6 @@ public class ListeMessages extends Fragment {
     }
 
     public void inflation(){
-        SharedPreferences prefs =this.getActivity().getBaseContext().getSharedPreferences("classes", Context.MODE_PRIVATE);//liste des intitulés et message associé
         listeDeMessages = new HashMap<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages");
         databaseReference.addValueEventListener(new ValueEventListener() {

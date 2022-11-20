@@ -41,12 +41,8 @@ import java.util.List;
 
 public class ActiviteDiscussion extends AppCompatActivity {
 
-    private Socket clientSocket;
-    private BufferedReader entre;
-    private PrintWriter sort;
     private DatabaseReference reference;
     private FirebaseUser fuser;
-    private MessagerAdapte messagerAdapte;
     private List<Chat> listeDeChats;
     private RecyclerView recyclage;
 
@@ -154,7 +150,7 @@ public class ActiviteDiscussion extends AppCompatActivity {
                 Chat chaton = snap.getValue(Chat.class);
                 listeDeChats.add(chaton);
             }
-            messagerAdapte = new MessagerAdapte(ActiviteDiscussion.this, listeDeChats);
+            MessagerAdapte messagerAdapte = new MessagerAdapte(ActiviteDiscussion.this, listeDeChats);
             recyclage.setAdapter(messagerAdapte);
         }
 

@@ -16,7 +16,7 @@
         android:src="@drawable/ic_baseline_post_add_24"
         android:backgroundTint="#00FF00"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="Bouton pour créer un nouveau message." />
 
     <TextView

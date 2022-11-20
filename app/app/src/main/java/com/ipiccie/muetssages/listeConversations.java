@@ -45,6 +45,7 @@ public class listeConversations extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private ValueEventListener grosEcouteur;
 
 
     private RecyclerView recyclerView;
@@ -88,12 +89,26 @@ public class listeConversations extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (grosEcouteur!= null){
+            databaseReference.removeEventListener(grosEcouteur);
+        }
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -125,7 +140,7 @@ public class listeConversations extends Fragment {
         List<String> contacts = new ArrayList<>();
         List<String> idConv = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("ListeChats");
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        grosEcouteur = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 contacts.clear();
@@ -165,13 +180,17 @@ public class listeConversations extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
-        });
+        };
+
+        databaseReference.addValueEventListener(grosEcouteur);
     }
 
     public void affiche(View vue, List<String> idConv, ValueEventListener v){
-        if(listeU.size()>0)vue.findViewById(R.id.pas_de_conv).setVisibility(View.GONE);
-        adaptateurAdapte = new AdaptateurAdapte(requireContext(),listeU,idConv);
-        recyclerView.setAdapter(adaptateurAdapte);
-        databaseReference.removeEventListener(v);
+        if(getContext()!= null){
+            if(listeU.size()>0)vue.findViewById(R.id.pas_de_conv).setVisibility(View.GONE);
+            adaptateurAdapte = new AdaptateurAdapte(requireContext(),listeU,idConv);
+            recyclerView.setAdapter(adaptateurAdapte);
+            databaseReference.removeEventListener(v);
+        }
     }
 }

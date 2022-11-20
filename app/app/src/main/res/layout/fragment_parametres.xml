@@ -10,11 +10,10 @@
 
     <TextView
         android:id="@+id/textView11"
+        style="@style/TextViewFond"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#EAEAEA"
-        android:backgroundTint="#E3E3E3"
-        android:text="Compte"
+        android:text="@string/txt_titre_compte"
         android:textSize="16sp"
         app:drawableStartCompat="@drawable/ic_baseline_account_circle_24" />
 
@@ -25,7 +24,7 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="5dp"
         android:textSize="16sp"
-        android:text="Changer de nom d'utilisateur:" />
+        android:text="@string/txt_changer_pseudo" />
 
     <EditText
         android:id="@+id/editTextTextPersonName"
@@ -33,24 +32,23 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:ems="10"
-        android:hint="Nom d'utilisateur"
+        android:hint="@string/hint_nom_uti"
         android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:text="Nom d'utilisateur" />
+        android:minHeight="48dp" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:text="Changer le mot de passe" />
+        android:text="@string/btn_changer_mdp" />
 
     <Button
         android:id="@+id/deco"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:text="Se déconnecter"
+        android:text="@string/btn_deco"
         app:icon="@drawable/ic_baseline_logout_24" />
 
     <View
@@ -62,20 +60,19 @@
         android:background="?android:attr/listDivider" />
 
     <TextView
+        style="@style/TextViewFond"
         android:id="@+id/textView12"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#E3E3E3"
-        android:backgroundTint="#E3E3E3"
-        android:text="Affichage"
+        android:text="@string/txt_titre_affichage"
         android:textSize="16sp"
         app:drawableStartCompat="@drawable/ic_baseline_image_24" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switch1"
+        android:id="@+id/switch_mode_sombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mode sombre"
+        android:text="@string/switch_mode_combre"
         android:layout_marginStart="15dp"
         android:layout_marginTop="5dp"
         android:textSize="16sp" />
@@ -84,6 +81,6 @@
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reinitialiser l'application"
+        android:text="@string/btn_reinit_app"
         app:backgroundTint="#777777" />
 </LinearLayout>
