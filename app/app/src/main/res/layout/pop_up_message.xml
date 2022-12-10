@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <Button
+        android:id="@+id/pop_enr_mes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_pop_enr_msg"
+        app:icon="@drawable/ic_baseline_save_24" />
+
+    <Button
+        android:id="@+id/pop_lit_mes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_lire_msg"
+        app:icon="@drawable/ic_baseline_volume_up_24" />
+
+    <Button
+        android:id="@+id/pop_rep_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_pop_rep_msg"
+        app:icon="@drawable/ic_baseline_redo_24" />
+</LinearLayout>

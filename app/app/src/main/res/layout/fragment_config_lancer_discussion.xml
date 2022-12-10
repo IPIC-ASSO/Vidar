@@ -64,6 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
                 android:gravity="center"
+                android:singleLine="true"
                 android:text="@string/defaut" />
         </LinearLayout>
 
@@ -93,6 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
+                android:singleLine="true"
                 android:text="@string/defaut"
                 android:textAlignment="center" />
         </LinearLayout>
@@ -122,6 +124,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
+                android:singleLine="true"
                 android:text="@string/defaut"
                 android:textAlignment="center" />
         </LinearLayout>

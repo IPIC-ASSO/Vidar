@@ -48,7 +48,7 @@
         <ImageButton
             android:id="@+id/liste_messages_enr"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="0"
             android:contentDescription="Choisir un messages enregistré"
             android:minWidth="48dp"
@@ -67,7 +67,7 @@
         <ImageButton
             android:id="@+id/envoyer_message"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="0"
             android:contentDescription="Envoyer le message"
             android:minWidth="48dp"

@@ -3,11 +3,12 @@ package com.ipiccie.muetssages;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -17,19 +18,13 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.fragment.NavHostFragment.*;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,7 +68,6 @@ public class Accueil extends Fragment {
     private String mParam1;
     private String mParam2;
     private FirebaseUser firebaseUser;
-    private DatabaseReference reference;
 
     public Accueil() {
         // Required empty public constructor
@@ -104,6 +98,10 @@ public class Accueil extends Fragment {
         if(ab != null){
             ab.setDisplayHomeAsUpEnabled(false);
         }
+        if (Objects.equals(getActivity().getIntent().getStringExtra("disc"), "go")){
+            getActivity().getIntent().putExtra("disc","pasgo");
+            findNavController(this).navigate(R.id.action_accueil_to_listeConversations);
+        }
         view.findViewById(R.id.nouv_conv).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_configLancerDiscussion));
         view.findViewById(R.id.vers_messages).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_listeMessages));
         view.findViewById(R.id.mes_convs).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_listeConversations));
@@ -111,15 +109,9 @@ public class Accueil extends Fragment {
         view.findViewById(R.id.vers_options).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_parametres));
         //view.findViewById(R.id.vers_aide).setOnClickListener(v-> Toast.makeText(this.getContext(), "Pas encore implémenté", Toast.LENGTH_SHORT).show());
         //view.findViewById(R.id.vers_options).setOnClickListener(v-> Toast.makeText(this.getContext(), "Pas encore implémenté", Toast.LENGTH_SHORT).show());
-        SharedPreferences prefs =this.getActivity().getBaseContext().getSharedPreferences("classes", Context.MODE_PRIVATE);//liste des intitulés et message associé
-        if(prefs.getAll().keySet().isEmpty()){
-            prefs.edit().putString("message par defaut", "Bonjour, pour communiquer plus facilement, je vous propose d'utiliser une application de messagerie instantanée").apply();
-        }
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser == null){
             findNavController(this).navigate(R.id.action_accueil_to_connexion);
-        }else{
-            reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
         }
 
     }

@@ -1,15 +1,17 @@
 
-s
-java:S1450,"VRemove the "mParam1" field and declare it as a local variable in the relevant methods.(•Íï‘8ŸÅ§­È0
-s
-java:S1450-"VRemove the "mParam2" field and declare it as a local variable in the relevant methods.(¡ˆ€ 8¡Å§­È0
-T
-java:S1135&"2Complete the task associated to this TODO comment.(ÜûŠ—øÿÿÿÿ8ÏÅ§­È0
-T
-java:S1135+"2Complete the task associated to this TODO comment.(ğï¢öúÿÿÿÿ8ÒÅ§­È0
-T
-java:S1135>"2Complete the task associated to this TODO comment.(ßíŠÿÿÿÿÿ8öÅ§­È0
-H
-java:S1068,"+Remove this unused "mParam1" private field.(•Íï‘8ãÆ§­È0
-H
-java:S1068-"+Remove this unused "mParam2" private field.(¡ˆ€ 8äÆ§­È0
+k	java:S117]"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ª‰™Êÿÿÿÿÿ
+k	java:S117_"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ĞøÔ±şÿÿÿÿ
+l
+java:S14500"VRemove the "mParam1" field and declare it as a local variable in the relevant methods.(•Íï‘
+l
+java:S14501"VRemove the "mParam2" field and declare it as a local variable in the relevant methods.(¡ˆ€ 
+M
+java:S1135*"2Complete the task associated to this TODO comment.(ÜûŠ—øÿÿÿÿ
+M
+java:S1135/"2Complete the task associated to this TODO comment.(ğï¢öúÿÿÿÿ
+M
+java:S1135B"2Complete the task associated to this TODO comment.(ßíŠÿÿÿÿÿ
+A
+java:S10680"+Remove this unused "mParam1" private field.(•Íï‘
+A
+java:S10681"+Remove this unused "mParam2" private field.(¡ˆ€ 

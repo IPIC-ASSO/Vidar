@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="S'INscrire" />
+            android:text="S'Inscrire" />
 
         <TextView
             android:id="@+id/textView8"
@@ -78,7 +78,8 @@
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
 
         <EditText
             android:id="@+id/mail_connexion"
@@ -97,15 +98,30 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:ems="10"
-            android:hint="Mot de passe"
+            android:hint="@string/hint_mdp"
             android:inputType="textPassword"
             android:minHeight="48dp" />
+
+        <CheckBox
+            android:id="@+id/souvenir_moi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Se souvenir de moi"
+            android:textStyle="italic" />
 
         <Button
             android:id="@+id/btn_valider_connection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Connexion" />
+
+        <Button
+            android:id="@+id/button3"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Mot de passe oublié" />
     </LinearLayout>
 
     <LinearLayout
@@ -115,8 +131,7 @@
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/mail_inscription"
@@ -133,11 +148,10 @@
             android:id="@+id/nom_utilisateur"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:ems="10"
-            android:hint="Nom d'utilisateur"
+            android:hint="@string/hint_pseudo"
             android:inputType="textPersonName" />
 
         <EditText

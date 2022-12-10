@@ -2,20 +2,28 @@ package com.ipiccie.muetssages;
 
 import static android.content.ContentValues.TAG;
 
+import static androidx.navigation.fragment.FragmentKt.findNavController;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,6 +46,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class ActiviteDiscussion extends AppCompatActivity {
 
@@ -45,6 +54,7 @@ public class ActiviteDiscussion extends AppCompatActivity {
     private FirebaseUser fuser;
     private List<Chat> listeDeChats;
     private RecyclerView recyclage;
+    private HashMap<String, String> listeDeMessages;
 
     private String dB = "https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app";
 
@@ -62,10 +72,53 @@ public class ActiviteDiscussion extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activite_discussion);
-        SharedPreferences prefs =this.getBaseContext().getSharedPreferences("classes", Context.MODE_PRIVATE);//liste des intitulés et message associé
+
+        // This callback will only be called when MyFragment is at least Started.
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                this.remove();
+                Intent intention = new Intent(getBaseContext(), MainActivity.class);
+                intention.putExtra("disc","go");
+                startActivity(intention);
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
+
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        listeDeMessages = new HashMap<>();
         EditText msg = findViewById(R.id.mon_message);
-        String[] listeMsg =prefs.getAll().keySet().toArray(new String[0]);
-        findViewById(R.id.liste_messages_enr).setOnClickListener(w->new MaterialAlertDialogBuilder(this).setTitle("Message à afficher").setItems(listeMsg, (dialog, which) -> msg.setText(msg.getText().toString()+prefs.getString(listeMsg[which],"oups"))).show());
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listeDeMessages.clear();
+                Log.d(TAG, "onDataChange: "+snapshot.getValue());
+                if (snapshot.getValue()!= null){
+                    listeDeMessages = (HashMap<String, String>) snapshot.getValue();
+                }
+                String[] listeMsg = listeDeMessages.keySet().toArray(new String[0]);
+
+                findViewById(R.id.liste_messages_enr).setOnClickListener(w->{
+                    AlertDialog.Builder constr= new AlertDialog.Builder(getApplicationContext());
+                    constr.setTitle("Message à afficher");
+                    constr.setMessage("BjR");
+                    //constr.setItems(listeMsg, (dialog, which) -> msg.setText(msg.getText().toString() + listeDeMessages.get(listeMsg[which])));
+                    constr.show();
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+
+        Log.d(TAG, "onCreate: "+listeDeMessages);
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         if (fuser == null){
             Toast.makeText(this,"Une erreur est survenue. Veuillez redémarer l'application",Toast.LENGTH_LONG).show();
@@ -106,10 +159,10 @@ public class ActiviteDiscussion extends AppCompatActivity {
                 msg.setText("");
             });
         }
-        ActionBar ab = (this.getSupportActionBar());
+        /*ActionBar ab = (this.getSupportActionBar());
         if(ab != null){
             ab.setDisplayHomeAsUpEnabled(true);
-        }
+        }*/
     }
 
     public void notif(String sujet){
@@ -142,7 +195,7 @@ public class ActiviteDiscussion extends AppCompatActivity {
         reference.addValueEventListener(ecouteNouvMessages);
     }
 
-    private ValueEventListener ecouteNouvMessages = new ValueEventListener() {
+    private final ValueEventListener ecouteNouvMessages = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             listeDeChats.clear();
@@ -156,7 +209,7 @@ public class ActiviteDiscussion extends AppCompatActivity {
 
         @Override
         public void onCancelled(@NonNull DatabaseError error) {
-
+            // RàS
         }
     };
 
@@ -171,5 +224,30 @@ public class ActiviteDiscussion extends AppCompatActivity {
             default:
                 return false;
         }
+    }
+
+    public void popUp(String texte){
+        AlertDialog.Builder constr = new AlertDialog.Builder(this);
+        constr.setTitle("Actions sur le message");
+        View vue = View.inflate(this, R.layout.pop_up_message,null);
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages");
+        constr.setView(vue);
+        AlertDialog show = constr.show();
+        vue.findViewById(R.id.pop_enr_mes).setOnClickListener(v->{
+            databaseReference.child(texte.substring(0,Math.min(20, texte.length()))).removeValue();
+            databaseReference.child(texte.substring(0,Math.min(20, texte.length()))).setValue(texte);
+            Toast.makeText(this, "Enregistré !", Toast.LENGTH_SHORT).show();
+            show.dismiss();
+        });
+        vue.findViewById(R.id.pop_lit_mes).setOnClickListener(v->{
+            TextToSpeech textToSpeech = new TextToSpeech(this, status -> {});
+            textToSpeech.setLanguage(Locale.FRANCE);
+            textToSpeech.setSpeechRate(1.3F);
+            textToSpeech.speak(texte, TextToSpeech.QUEUE_FLUSH,null);
+            Toast.makeText(this,"Lecture en cours",Toast.LENGTH_SHORT).show();
+            show.dismiss();
+        });
+        show.show();
     }
 }

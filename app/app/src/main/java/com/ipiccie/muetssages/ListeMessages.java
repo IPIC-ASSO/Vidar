@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -73,9 +74,22 @@ public class ListeMessages extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // This callback will only be called when MyFragment is at least Started.
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                findNavController(getParentFragment()).navigate(R.id.action_listeMessages_to_accueil);
+                this.remove();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
+
         view.findViewById(R.id.nouveau_message).setOnClickListener(w->{
             Bundle bundle = new Bundle();
             bundle.putString("intitulé", "inconnu au bataillon");
+            callback.remove();
             findNavController(this).navigate(R.id.action_listeMessages_to_editeurMessage,bundle);
         });
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();

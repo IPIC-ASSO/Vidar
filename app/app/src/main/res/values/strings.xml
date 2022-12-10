@@ -38,4 +38,14 @@
     <string name="btn_lire_msg">Lire le message</string>
     <string name="txt_infos_scan">\"Scannez le QR-code ou rendez vous sur http://ipic-asso.ddns.net, puis entrez le code: \"</string>
     <string name="verite_generale">Ipic vaincra!</string>
+    <string name="btn_pop_enr_msg">Enregistrer le message</string>
+    <string name="btn_pop_rep_msg">Répondre au message</string>
+    <string name="btn_ouvrir_conv">Ouvrir une conversation</string>
+    <string name="btn_mes_convs">Mes conversations</string>
+    <string name="btn_mes_msg">Messages</string>
+    <string name="btn_vers_aide">aide</string>
+    <string name="btn_options">options</string>
+    <string name="hint_pseudo">Nom d\'utilisateur</string>
+    <string name="btn_changer_btn">Changer le pseudo</string>
+    <string name="hint_mdp">Mot de passe</string>
 </resources>

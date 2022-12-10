@@ -85,7 +85,6 @@ public class ConfigLancerDiscussion extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SharedPreferences prefs =this.getActivity().getBaseContext().getSharedPreferences("classes", Context.MODE_PRIVATE);//liste des intitulés et message associé
         Button versLanceDis = view.findViewById(R.id.vers_lance_discussion);
         Button versScanneur = view.findViewById(R.id.vers_scanneur);
         TextView msgEcrit = view.findViewById(R.id.message_ecrit);

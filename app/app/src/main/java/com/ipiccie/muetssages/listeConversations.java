@@ -2,8 +2,11 @@ package com.ipiccie.muetssages;
 
 import static android.content.ContentValues.TAG;
 
+import static androidx.navigation.fragment.FragmentKt.findNavController;
+
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -86,6 +89,15 @@ public class listeConversations extends Fragment {
         if(ab != null){
             ab.setDisplayHomeAsUpEnabled(true);
         }
+        // This callback will only be called when MyFragment is at least Started.
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                findNavController(getParentFragment()).navigate(R.id.action_listeConversations_to_accueil);
+                this.remove();
+                }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
     }
 
     @Override
@@ -131,58 +143,58 @@ public class listeConversations extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 utilisateur = snapshot.getValue(Utilisateur.class);
+                List<String> contacts = new ArrayList<>();
+                List<String> idConv = new ArrayList<>();
+                databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("ListeChats");
+                grosEcouteur = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        contacts.clear();
+                        idConv.clear();
+                        for (DataSnapshot snapshot1: snapshot.getChildren()){
+                            Discussion dis = snapshot1.getValue(Discussion.class);
+                            if (dis != null && dis.getUtilisateur1()!= null && dis.getUtilisateur2()!=null && utilisateur != null) {
+                                if(Objects.equals(dis.getUtilisateur1(), utilisateur.getId())){
+                                    contacts.add(dis.getUtilisateur1());
+                                    idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
+                                } else if (Objects.equals(dis.getUtilisateur2(), utilisateur.getId())){
+                                    contacts.add(dis.getUtilisateur2());
+                                    idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
+                                }
+                                Log.d(TAG, "onDataChange: "+dis.getUtilisateur1()+dis.getUtilisateur2());
+                            }
+                        }
+                        databaseReference2 = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users");
+                        listeU.clear();
+                        ValueEventListener ecoute = this;
+                        for (String contact: contacts){
+                            databaseReference2.child(contact).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    Log.d(TAG, "onDataChange: "+snapshot.getValue());
+                                    if (snapshot.getValue()!= null) listeU.add(snapshot.getValue(Utilisateur.class));
+                                    Log.d(TAG, "onDataChange: "+listeU.size());
+                                    databaseReference2.removeEventListener(this);
+                                    if(Objects.equals(contact, contacts.get(contacts.size()-1)))affiche(vue, idConv, ecoute);
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                }
+                            });
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                };
+
+                databaseReference.addValueEventListener(grosEcouteur);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-        List<String> contacts = new ArrayList<>();
-        List<String> idConv = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("ListeChats");
-        grosEcouteur = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                contacts.clear();
-                idConv.clear();
-                for (DataSnapshot snapshot1: snapshot.getChildren()){
-                    Discussion dis = snapshot1.getValue(Discussion.class);
-                    if (dis != null && dis.getUtilisateur1()!= null &&dis.getUtilisateur2()!=null) {
-                        if(Objects.equals(dis.getUtilisateur1(), utilisateur.getId())){
-                            contacts.add(dis.getUtilisateur1());
-                            idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
-                        } else if (Objects.equals(dis.getUtilisateur2(), utilisateur.getId())){
-                            contacts.add(dis.getUtilisateur2());
-                            idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
-                        }
-                        Log.d(TAG, "onDataChange: "+dis.getUtilisateur1()+dis.getUtilisateur2());
-                    }
-                }
-                databaseReference2 = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users");
-                listeU.clear();
-                ValueEventListener ecoute = this;
-                for (String contact: contacts){
-                    databaseReference2.child(contact).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Log.d(TAG, "onDataChange: "+snapshot.getValue());
-                            if (snapshot.getValue()!= null) listeU.add(snapshot.getValue(Utilisateur.class));
-                            Log.d(TAG, "onDataChange: "+listeU.size());
-                            databaseReference2.removeEventListener(this);
-                            if(Objects.equals(contact, contacts.get(contacts.size()-1)))affiche(vue, idConv, ecoute);
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
-                    });
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        };
-
-        databaseReference.addValueEventListener(grosEcouteur);
     }
 
     public void affiche(View vue, List<String> idConv, ValueEventListener v){

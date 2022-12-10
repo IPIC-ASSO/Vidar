@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -62,7 +63,17 @@ public class EditeurMessage extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ActionBar ab = ((AppCompatActivity) requireActivity()).getSupportActionBar();
-        SharedPreferences prefs =this.getActivity().getBaseContext().getSharedPreferences("classes", Context.MODE_PRIVATE);//liste des intitulés et message associé
+        // This callback will only be called when MyFragment is at least Started.
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                assert getParentFragment() != null;
+                findNavController(getParentFragment()).navigate(R.id.action_editeurMessage_to_listeMessages);
+                this.remove();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
         String intitule = "une erreur est survenue";        //message par défaut, ne devrait jamais s'afficher...
         String corpsMessage;
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -85,8 +96,9 @@ public class EditeurMessage extends Fragment {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages");
         view.findViewById(R.id.enregistre_msg).setOnClickListener(v->{
             if(!inti.getText().toString().equals("") && !msg.getText().toString().equals("")){
-                databaseReference.child(inti.getText().toString()+" ").removeValue();
-                databaseReference.child(inti.getText().toString()+" ").setValue(msg.getText().toString());
+                databaseReference.child(inti.getText().toString()).removeValue();
+                databaseReference.child(inti.getText().toString()).setValue(msg.getText().toString());
+                callback.remove();
                 findNavController(this).navigate(R.id.action_editeurMessage_to_listeMessages);
             }else{
                 Toast.makeText(this.getContext(),"Veuillez remplir tous les champs",Toast.LENGTH_SHORT).show();
@@ -108,6 +120,7 @@ public class EditeurMessage extends Fragment {
             textToSpeech.speak(msg.getText().toString(),TextToSpeech.QUEUE_FLUSH,null);
             Toast.makeText(this.getContext(),"Lecture en cours",Toast.LENGTH_SHORT).show();
         });
+
     }
 
     @Override

@@ -1,0 +1,15 @@
+
+g
+java:S1301‚"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ
+l
+java:S1450<"VRemove the "mParam1" field and declare it as a local variable in the relevant methods.(•Íï‘
+l
+java:S1450="VRemove the "mParam2" field and declare it as a local variable in the relevant methods.(¡ˆ€ 
+f
+java:S1874"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(èëÔíÿÿÿÿÿ
+d	java:S100š"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ä§Ğı
+d	java:S100·"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(½õ¦Ê
+A
+java:S1068<"+Remove this unused "mParam1" private field.(•Íï‘
+A
+java:S1068="+Remove this unused "mParam2" private field.(¡ˆ€ 

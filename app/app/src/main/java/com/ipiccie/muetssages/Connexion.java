@@ -4,11 +4,15 @@ import static androidx.fragment.app.FragmentManager.TAG;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -81,6 +85,17 @@ public class Connexion extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        SharedPreferences prefs =this.getContext().getSharedPreferences("classes", Context.MODE_PRIVATE);
+        CheckBox souviens = view.findViewById(R.id.souvenir_moi);
+
+        if (prefs.getBoolean("souvenir",false)){
+            souviens.setChecked(true);
+            EditText mail_co= view.findViewById(R.id.mail_connexion);
+            mail_co.setText(prefs.getString("mail",""));
+            EditText mdp_co= view.findViewById(R.id.motdepasse_connexion);
+            mdp_co.setText(prefs.getString("mdp",""));
+        }
+        souviens.setOnCheckedChangeListener((compoundButton, b) -> prefs.edit().putBoolean("souvenir",b).apply());
         auth = FirebaseAuth.getInstance();
         view.findViewById(R.id.connexion).setOnClickListener(v->{
             view.findViewById(R.id.bloc_1).setVisibility(View.GONE);
@@ -93,7 +108,13 @@ public class Connexion extends Fragment {
         view.findViewById(R.id.btn_valider_connection).setOnClickListener(v->{
             EditText mail = view.findViewById(R.id.mail_connexion);
             EditText motDePasse = view.findViewById(R.id.motdepasse_connexion);
-            if(!mail.getText().toString().equals("")&&!motDePasse.getText().toString().equals("")) connexion(mail.getText().toString(),motDePasse.getText().toString());
+            if(!mail.getText().toString().equals("")&&!motDePasse.getText().toString().equals("")) {
+                if (souviens.isChecked()){
+                    prefs.edit().putString("mail",mail.getText().toString()).apply();
+                    prefs.edit().putString("mdp",motDePasse.getText().toString()).apply();
+                }
+                connexion(mail.getText().toString(),motDePasse.getText().toString());
+            }
             else{
                 Toast.makeText(getContext(),"Veuillez remplir tous les champs",Toast.LENGTH_SHORT).show();
             }

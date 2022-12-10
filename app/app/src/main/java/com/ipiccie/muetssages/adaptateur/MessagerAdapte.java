@@ -18,6 +18,8 @@ import com.ipiccie.muetssages.R;
 import com.ipiccie.muetssages.client.Chat;
 import com.ipiccie.muetssages.client.Utilisateur;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class MessagerAdapte extends RecyclerView.Adapter<MessagerAdapte.ViewHolder> {
@@ -37,13 +39,18 @@ public class MessagerAdapte extends RecyclerView.Adapter<MessagerAdapte.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
         if (viewType == MESSAGE_TYPE_DROIT){
-            View view = LayoutInflater.from(context).inflate(R.layout.message_droitier, parent,false);
-            return new MessagerAdapte.ViewHolder(view);
+            view = LayoutInflater.from(context).inflate(R.layout.message_droitier, parent,false);
+
         }else{
-            View view = LayoutInflater.from(context).inflate(R.layout.message_gauchiste, parent,false);
-            return new MessagerAdapte.ViewHolder(view);
+            view = LayoutInflater.from(context).inflate(R.layout.message_gauchiste, parent,false);
         }
+        if (context instanceof ActiviteDiscussion){
+            TextView txt = view.findViewById(R.id.texte_message_dis);
+            view.setOnClickListener(x -> ((ActiviteDiscussion) context).popUp(txt.getText().toString()));
+        }
+        return new MessagerAdapte.ViewHolder(view);
     }
 
     @Override

@@ -13,35 +13,36 @@
         style="@style/TextViewFond"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:text="@string/txt_titre_compte"
         android:textSize="16sp"
         app:drawableStartCompat="@drawable/ic_baseline_account_circle_24" />
 
-    <TextView
-        android:id="@+id/textView7"
+    <Button
+        android:id="@+id/change_pseudo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="5dp"
-        android:textSize="16sp"
-        android:text="@string/txt_changer_pseudo" />
-
-    <EditText
-        android:id="@+id/editTextTextPersonName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:ems="10"
-        android:hint="@string/hint_nom_uti"
-        android:inputType="textPersonName"
-        android:minHeight="48dp" />
+        android:backgroundTint="@color/bleu_doux"
+        android:text="@string/btn_changer_btn" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/change_mdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
+        android:backgroundTint="@color/bleu_doux"
         android:text="@string/btn_changer_mdp" />
+
+    <View
+        android:id="@+id/divider6"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="?android:attr/listDivider" />
 
     <Button
         android:id="@+id/deco"
@@ -51,19 +52,13 @@
         android:text="@string/btn_deco"
         app:icon="@drawable/ic_baseline_logout_24" />
 
-    <View
-        android:id="@+id/divider6"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:background="?android:attr/listDivider" />
-
     <TextView
-        style="@style/TextViewFond"
         android:id="@+id/textView12"
+        style="@style/TextViewFond"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:text="@string/txt_titre_affichage"
         android:textSize="16sp"
         app:drawableStartCompat="@drawable/ic_baseline_image_24" />
