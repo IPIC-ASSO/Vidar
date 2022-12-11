@@ -86,28 +86,20 @@ public class ActiviteDiscussion extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, callback);
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        listeDeMessages = new HashMap<>();
+
         EditText msg = findViewById(R.id.mon_message);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listeDeMessages.clear();
+                listeDeMessages = new HashMap<>();
                 Log.d(TAG, "onDataChange: "+snapshot.getValue());
                 if (snapshot.getValue()!= null){
                     listeDeMessages = (HashMap<String, String>) snapshot.getValue();
                 }
-                String[] listeMsg = listeDeMessages.keySet().toArray(new String[0]);
+                listeMessages();
+            };
 
-                findViewById(R.id.liste_messages_enr).setOnClickListener(w->{
-                    AlertDialog.Builder constr= new AlertDialog.Builder(getApplicationContext());
-                    constr.setTitle("Message à afficher");
-                    constr.setMessage("BjR");
-                    //constr.setItems(listeMsg, (dialog, which) -> msg.setText(msg.getText().toString() + listeDeMessages.get(listeMsg[which])));
-                    constr.show();
-                });
-
-            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -249,5 +241,16 @@ public class ActiviteDiscussion extends AppCompatActivity {
             show.dismiss();
         });
         show.show();
+    }
+
+    public void listeMessages(){
+        String[] listeMsg = listeDeMessages.keySet().toArray(new String[0]);
+        EditText msg = findViewById(R.id.mon_message);
+        findViewById(R.id.liste_messages_enr).setOnClickListener(w->{
+            AlertDialog.Builder constr= new AlertDialog.Builder(this);
+            constr.setTitle("Message à afficher");
+            constr.setItems(listeMsg, (dialog, which) -> msg.setText(msg.getText().toString() + listeDeMessages.get(listeMsg[which])));
+            constr.show();
+            });
     }
 }

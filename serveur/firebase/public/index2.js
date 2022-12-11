@@ -139,8 +139,9 @@ function initFinale(){  //met en place les écouteurs et affiche les messages
   fetchChat.on("child_added", function (snapshot) {
     const messages = snapshot.val();  //messages contient: l'envoyeur et le message
     const message = `<li class=${   //créer un nouvel élément <li> pour chaque message
-      pseudo === messages.envoyeur ? "sent" : "receive"
-    }><span>${messages.envoyeur}: </span>${messages.message}</li>`;
+      utilisateur.uid === messages.envoyeur ? "sent" : "receive"
+    }>${messages.message}</li>`;
+    /* <span>${messages.envoyeur}: </span> --> à ajouter pour avoir l'envoyeur*/ 
     // ajout de la balise dans la page
     document.getElementById("messages").innerHTML += message;
   }); 
@@ -164,24 +165,24 @@ function sendMessage(e) {
   // envoit vers la base de données
   if (message.length>0){ 
     db.ref(chemin+timestamp).set({
-      envoyeur:pseudo,
+      envoyeur:utilisateur.uid,
       message:message,
     });
   }
 }
 
+
+//--------DEBUT----------\\
+
 const SessionCo = sessionStorage.getItem("co")
-const valDepart = sessionStorage.getItem("destinataire");
-if(valDepart==null){
-  const destinataire = prompt("Destinataire?"); //identifiant du destinataire (valeur que donne le QR-code). Le système avec un code n'est pas encore mis en place. Peut être sauté.
+var destinataire = sessionStorage.getItem("destinataire");
+if(destinataire==null){
+  destinataire = prompt("Destinataire?"); //identifiant du destinataire (valeur que donne le QR-code). Le système avec un code n'est pas encore mis en place. Peut être sauté.
 }
 
-if (firebase.auth.currentUser==null && SessionCo == null){
+if (firebase.auth.currentUser==null && SessionCo == null){  //créé une session temporaire
   connecteAnonyme();  //session temporaire
-}else{
-  alert("wèlcome")
-  utilisateur = firebase.auth.currentUser;
-  initConv();
+  alert("session temporaire")
 }
 
 document.getElementById("message-form").addEventListener("submit", sendMessage);

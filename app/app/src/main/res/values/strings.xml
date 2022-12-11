@@ -48,4 +48,8 @@
     <string name="hint_pseudo">Nom d\'utilisateur</string>
     <string name="btn_changer_btn">Changer le pseudo</string>
     <string name="hint_mdp">Mot de passe</string>
+    <string name="btn_mdp_oublie">Mot de passe oublié</string>
+    <string name="btn_connexion">Connexion</string>
+    <string name="check_souviens_moi">Se souvenir de moi</string>
+    <string name="hint_mail">Adresse mail</string>
 </resources>

@@ -6,9 +6,18 @@
       margin: 0;
       padding: 0;
   }
+
+
   
   body {
-    background-image: url("logo_sans_fondtexte.png");
+    font-family: Arial, Helvetica, sans-serif;
+    /* background-image: url("logo_sans_fondtexte.png"); */
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    max-width:fit-content;
   }
   
   .main-nav {
@@ -37,7 +46,7 @@
     display: block;
     height: 50px;
       margin: 10px;
-      padding: 2px 25px;
+      padding: 2px 5px;
       text-decoration: none;
       border-radius: 30px;
     line-height: 45px;
@@ -48,29 +57,33 @@
         -o-transition: all 0.30s ease-in-out;
   }
   
-  .main-nav li:nth-child(1) a {
+  .main-nav li:nth-child(2) a {
       background: #d83d3d;
       border: 2px solid #fff;
   }
-  .main-nav li:nth-child(1) a:hover {
+  .main-nav li:nth-child(2) a:hover {
       background: #fff;
       color: #d83d3d;
+      border: 2px solid #4b0000;
   }
   
-  .main-nav li:nth-child(2) a {
+  .main-nav li:nth-child(3) a {
     background: #9e2c2c;
     border: 2px solid #fff;
   }
-  .main-nav li:nth-child(2) a:hover {
-      background: #b13131;
-      border: 2px solid #b13131;
+  .main-nav li:nth-child(3) a:hover {
+    background: #fff;
+    color: #d83d3d;
+    border: 2px solid #4b0000;
   }
-  .main-nav li:nth-child(3) a {
+  .main-nav li:nth-child(4) a {
+    white-space: normal;
+    width: auto;
     background: #939393;
       border: 2px solid #505050;
   }
-  .main-nav li:nth-child(3) a:hover {
-      background: #cac7c7;
+  .main-nav li:nth-child(4) a:hover {
+      background: #545353;
       border: 2px solid #696868;
   }
   

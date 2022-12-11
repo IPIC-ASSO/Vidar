@@ -9,16 +9,10 @@ y
 Iapp/src/main/java/com/ipiccie/muetssages/adaptateur/AdaptateurAdapte.java,5\e\5ea32f7ae753ef692ae9995dd8d3c6b28ff33233
 b
 2app/src/main/java/com/ipiccie/muetssages/Aide.java,f\8\f871aa34c75d0b67f1e7fe49a226c24eae1a8bc8
-@
-app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 m
 =app/src/main/java/com/ipiccie/muetssages/LanceDiscussion.java,2\6\26653faf02e984d48399e82ee95bf71a093514de
 k
 ;app/src/main/java/com/ipiccie/muetssages/ListeMessages.java,8\1\81e3e7b1d54e36177790f41ae0762951a0484fe7
-g
-7app/src/main/java/com/ipiccie/muetssages/Connexion.java,7\8\78d6b9e7e4748ca40abacc1e6db3ef3d67a13fb2
-p
-@app/src/main/java/com/ipiccie/muetssages/ActiviteDiscussion.java,7\a\7a3fc1b6d163db8d4f29735e10f11b3e8beb6772
 p
 @app/src/main/java/com/ipiccie/muetssages/listeConversations.java,3\9\39b52b5a8045b7dce172d505d8887bf3968ec5f4
 h
@@ -37,3 +31,9 @@ S
 #.idea/sonarlint/issuestore/index.pb,9\f\9fe84ebb15faf917b7def6236dba604453cc61e0
 P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+p
+@app/src/main/java/com/ipiccie/muetssages/ActiviteDiscussion.java,7\a\7a3fc1b6d163db8d4f29735e10f11b3e8beb6772
+g
+7app/src/main/java/com/ipiccie/muetssages/Connexion.java,7\8\78d6b9e7e4748ca40abacc1e6db3ef3d67a13fb2
+@
+app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164

@@ -88,7 +88,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:ems="10"
-            android:hint="Adresse mail"
+            android:hint="@string/hint_mail"
             android:minHeight="48dp" />
 
         <EditText
@@ -106,22 +106,22 @@
             android:id="@+id/souvenir_moi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Se souvenir de moi"
+            android:text="@string/check_souviens_moi"
             android:textStyle="italic" />
 
         <Button
             android:id="@+id/btn_valider_connection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Connexion" />
+            android:text="@string/btn_connexion" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/mdp_oublie"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Mot de passe oublié" />
+            android:text="@string/btn_mdp_oublie" />
     </LinearLayout>
 
     <LinearLayout
@@ -140,7 +140,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:ems="10"
-            android:hint="Adresse mail"
+            android:hint="@string/hint_mail"
 
             android:inputType="textPersonName" />
 

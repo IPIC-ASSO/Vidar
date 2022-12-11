@@ -4,6 +4,10 @@ margin: 0;
 padding: 15px;
 }
 
+.form label.destinataire{
+    background-image:"" ;
+}
+
 #container {
 text-align: center;
 margin: 0;

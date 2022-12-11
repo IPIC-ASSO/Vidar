@@ -77,9 +77,10 @@ var $form_modal = $('.user-modal'),
     $forgot_password_link = $form_login.find('.form-bottom-message a'),
     $back_to_login_link = $form_forgot_password.find('.form-bottom-message a'),
     $main_nav = $('.main-nav');
+    $enr = $('.enr')
 
 //open modal
-$main_nav.on('click', function(event){
+$enr.on('click', function(event){
 
     if( $(event.target).is($main_nav) ) {
     // on mobile open the submenu
@@ -120,7 +121,7 @@ $('.hide-password').on('click', function(){
     $password_field = $this.prev('input');
     
     ( 'password' == $password_field.attr('type') ) ? $password_field.attr('type', 'text') : $password_field.attr('type', 'password');
-    ( 'Show' == $this.text() ) ? $this.text('Hide') : $this.text('Show');
+    ( 'Afficher' == $this.text() ) ? $this.text('Cacher') : $this.text('Afficher');
     //focus and move cursor to the end of input field
     $password_field.putCursorAtEnd();
 });
@@ -163,16 +164,14 @@ $form_login.find('input[type="submit"]').on('click', function(event)
 {
     event.preventDefault();
     connecte();
-    $form_login.find('input[type="email"]').toggleClass('has-error').next('span').toggleClass('is-visible');//message d'erreur
+    //$form_login.find('input[type="email"]').toggleClass('has-error').next('span').toggleClass('is-visible');//message d'erreur
 });
 $form_signup.find('input[type="submit"]').on('click', function(event){
     event.preventDefault();
     inscrit();
-    $form_signup.find('input[type="email"]').toggleClass('has-error').next('span').toggleClass('is-visible');   //message d'erreur
+    //$form_signup.find('input[type="email"]').toggleClass('has-error').next('span').toggleClass('is-visible');   //message d'erreur
 });
-$form_code.find('input[type="submit"]').on('click', function(event){
 
-});
 
 });
   

@@ -8,13 +8,31 @@ body {
 h1{
     text-align: center;
 }
+h2{
+    margin: 0px;
+}
 
 header {
+    top:0px;
     text-align: center;
+    background-color: #e3e3e3;
+    position: fixed;
+    width: -moz-available;
+    padding: 2px;
+}
+
+img{
+    
+    max-height: 100px;
 }
 
 #messages{
-    padding-bottom: 30%;
+    margin-top: 150px;
+    padding-bottom: 50px;
+}
+
+ul{
+    padding-left: 0%;
 }
 
 li {
@@ -34,11 +52,12 @@ li span {
 }
 
 #chat {
-    width: 80%;
+    width: 90%;
     margin: auto;
 }
 
 #message-form {
+    max-height: 50px;
     text-align: center;
     position: fixed;
     left: 0;
@@ -61,7 +80,9 @@ button {
     text-align: right;
     background-color: #00FFEE;
     border-bottom-right-radius:0px ;
-    margin-left: 50%;
+    margin-left: auto;
+    margin-right: 0;
+    width: fit-content;
     color:#7c7b7d
 }
 
@@ -69,7 +90,8 @@ button {
     text-align: left;
     background-color: #00AAEE;
     border-top-left-radius:0px ;
-    margin-right: 50%;
+    margin-right: auto;
+    width: fit-content;
 }
 
 

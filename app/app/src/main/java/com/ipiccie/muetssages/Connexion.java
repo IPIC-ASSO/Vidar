@@ -22,7 +22,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -127,6 +130,27 @@ public class Connexion extends Fragment {
             else{
                 Toast.makeText(getContext(),"Veuillez remplir tous les champs",Toast.LENGTH_SHORT).show();
             }
+        });
+
+        view.findViewById(R.id.mdp_oublie).setOnClickListener(v->{
+            EditText mail = new EditText(this.getContext());
+            mail.setHint("adresse e-mail");
+            new MaterialAlertDialogBuilder(this.getContext())
+                    .setTitle("Mot de passe oublié")
+                    .setView(mail)
+                    .setMessage("Saisissez votre adresse e-mail pour recevoir un lien de réinitialisation.\nPensez à vérifier vos spam.")
+                    .setNegativeButton("annuler",((dialogInterface, i) -> dialogInterface.dismiss()))
+                    .setPositiveButton("Valider",((dialogInterface, i) -> {
+                        FirebaseAuth.getInstance().sendPasswordResetEmail(mail.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @SuppressLint("RestrictedApi")
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d(TAG, "onCompledddddte: "+task.isSuccessful());
+                            }
+                        });
+                        dialogInterface.dismiss();
+                        Toast.makeText(this.getContext(), "Un lien de récupération vous a été envoyé", Toast.LENGTH_LONG).show();}))
+                    .show();
         });
 
     }
