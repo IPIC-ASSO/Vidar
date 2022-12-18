@@ -10,56 +10,25 @@
   <body>
     <header>
       <ul class="bande">
-        <li  class="bande2"><button class="btn bande2"><i class="fa fa-home"></i></button></li>
+        <li  id="maison" class="invisible bande2"><button class="btn bande2"><i class="fa fa-home"></i></button></li>
         <li  class="bande2" id="destinataire">Vidar</li>
       </ul>
       
     </header>
 
-    <!-- Page de Connexion -->
-    <div class="form-popup" id="formulaireConnexion">
-      <form id="connexion-form" class="form-container">
-        <h1  >Connexion</h1>
-
-        <label for="email"><b>Email</b></label>
-        <input id="e-mail" type="text" placeholder="Adresse e-mail" required >
-
-        <label for="psw"><b>Password</b></label>
-        <input id="mot-de-passe" type="password" placeholder="Mot de passe" required >
-
-        <button type="submit" class="btn">Connexion</button>
-        <button type="button" class="btn cancel" onclick="fermeFormulaire()">Fermer</button>
-      </form>
-    </div>
-
-     <!-- Page d'Inscription -->
-     <div class="form-popup" id="formulaireInscription">
-      <form id="inscription-form" class="form-container">
-        <h1 >Inscription</h1>
-
-        <label for="email"><b>Email</b></label>
-        <input id="e-mail-inscr"type="text" placeholder="adresse-super@ipic.asso" name="email" required >
-
-        <label for="pseudo"><b>Nom d'utilisateur</b></label>
-        <input id="pseudo" type="text" placeholder="M. De Chez-Moi" name="pseudo" required >
-
-        <label for="psw"><b>Password</b></label>
-        <input id="mot-de-passe-inscr" type="password" placeholder="Mot de passe" name="psw" required >
-
-        <button type="submit" class="btn">S'inscrire</button>
-        <button type="button" class="btn cancel" onclick="fermeFormulaire()">Fermer</button>
-      </form>
-    </div>
-
     <div id="chat">
       <!-- liste des messages -->
       <ul id="messages"></ul>
-
-      <!-- champs de rédaction des messages -->
     </div>
+    <!-- messages pré-enregistrés -->
+    <div id="inner">
+    <ul class="invisible" id="liste_des_messages">  
+    </ul>
+    </div>
+    <!-- champs de rédaction des messages -->
     <form id="message-form">
-      <button class="bas"><i class="fa fa-file-text-o"></i></button>
-      <input id="message-input" type="text" placeholder="Votre message" />
+      <button id="mes_msg" class="bas"><i class="fa fa-file-text-o"></i></button>
+      <input id="message-input" type="text" placeholder="Votre message"/>
       <button id="message-btn" type="submit">Envoyer</button>
     </form>
       <!-- scripts (SDK+ code) -->

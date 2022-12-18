@@ -98,7 +98,7 @@ button:hover{
     border-radius: 3px;
     position: fixed;
     right: 10px;
-    top: 10px;
+    top: 8px;
     padding: 12px 14px;
     background-color: RoyalBlue;
 }
@@ -154,11 +154,11 @@ header {
     overflow-x: hidden;
     margin: 10px;
     
+    
 }
 
 .liste_msg{
     left: 0;
-    padding: 10px;
     border-right: rgba(128, 128, 128, 0.595) 4px solid;
 }
 

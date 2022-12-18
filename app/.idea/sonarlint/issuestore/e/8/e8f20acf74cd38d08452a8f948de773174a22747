@@ -1,0 +1,24 @@
+
+f
+java:S1301D"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ
+H
+java:S18743"3Remove this use of "NetworkInfo"; it is deprecated.(‡æÍ%
+Q
+java:S18743"<Remove this use of "getActiveNetworkInfo"; it is deprecated.(‡æÍ%
+N
+java:S18744"3Remove this use of "isConnected"; it is deprecated.(ûæ¤ñÿÿÿÿÿ
+j
+java:S1874:"MRemove this use of "SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION"; it is deprecated.(İŒÖÛ8½ßÌÜÑ0
+j
+java:S1874;"HRemove this use of "SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN"; it is deprecated.(¢÷¬ÿÿÿÿÿ8¾ßÌÜÑ0
+h
+java:S1874<"FRemove this use of "SYSTEM_UI_FLAG_HIDE_NAVIGATION"; it is deprecated.(ßÓ›Ùüÿÿÿÿ8¾ßÌÜÑ0
+c
+java:S1874="ARemove this use of "SYSTEM_UI_FLAG_FULLSCREEN"; it is deprecated.(é•éàıÿÿÿÿ8¾ßÌÜÑ0
+d
+java:S1874>"GRemove this use of "SYSTEM_UI_FLAG_IMMERSIVE_STICKY"; it is deprecated.(ÈÉÀ8¿ßÌÜÑ0
+_
+java:S1874?"=Remove this use of "setSystemUiVisibility"; it is deprecated.(ıÅ¨©şÿÿÿÿ8¿ßÌÜÑ0
+_
+java:S1874N"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(¹Î¾
+V	java:S125z"<This block of commented-out lines of code should be removed.(œƒƒ©ùÿÿÿÿ

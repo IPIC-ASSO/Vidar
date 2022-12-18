@@ -1,0 +1,26 @@
+
+E
+java:S5411-"*Use the primitive boolean expression here.(‚ÚïÃøÿÿÿÿ
+p
+java:S1450M"[Remove the "firebaseUser" field and declare it as a local variable in the relevant methods.(©™Š
+l
+java:S1450K"VRemove the "mParam1" field and declare it as a local variable in the relevant methods.(•Íï‘
+l
+java:S1450L"VRemove the "mParam2" field and declare it as a local variable in the relevant methods.(¡ˆ€ 
+v
+java:S3923-"[Remove this conditional structure or edit its code blocks so that they're not all the same.(‚ÚïÃøÿÿÿÿ
+G
+java:S11350"2Complete the task associated to this TODO comment.(Ã’´g
+M
+java:S1135;"2Complete the task associated to this TODO comment.(¬¸İöûÿÿÿÿ
+M
+java:S1135F"2Complete the task associated to this TODO comment.(ÜûŠ—øÿÿÿÿ
+M
+java:S1135\"2Complete the task associated to this TODO comment.(ßíŠÿÿÿÿÿ
+V	java:S125w"<This block of commented-out lines of code should be removed.(´í®àùÿÿÿÿ
+A
+java:S1068K"+Remove this unused "mParam1" private field.(•Íï‘
+A
+java:S1068L"+Remove this unused "mParam2" private field.(¡ˆ€ 
+Y
+java:S11444">Remove this unused private "askNotificationPermission" method.(¿ş¹¬øÿÿÿÿ

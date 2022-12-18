@@ -74,6 +74,7 @@ const outputData = document.getElementById("outputData");
 const btnScanQR = document.getElementById("btn-scan-qr");
 
 let scanning = false;
+const SessionCo = sessionStorage.getItem("co")
 
 if (firebase.auth.currentUser==null && SessionCo == null){  //créé une session temporaire
   connecteAnonyme();  //session temporaire
@@ -137,9 +138,7 @@ function scan() {
     }
 }
 
-function envoieCode(e){
-    e.preventDefault();
-    alert ("ok");
+function envoieCode(){
     sessionStorage.setItem("destinataire",document.getElementById("destinataire-input").value+"");
     window.location = "index2.html";
 }
@@ -151,8 +150,8 @@ function generateBarCode(code)
     $('#qr-canvas').attr('src', url);
 }
   
-
-document.getElementById("code").addEventListener("submit", envoieCode);
-
+$("#vers_dis").on("click", function(event){
+  envoieCode()
+});
 
 

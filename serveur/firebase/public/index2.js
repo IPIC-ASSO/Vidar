@@ -88,7 +88,7 @@ function connecteAnonyme(){   //session temporaire
         });
       }
     });
-    $()
+    $("#maison").removeClass("invisible");
   })
   .catch((error) => {
     var errorCode = error.code;
@@ -107,6 +107,22 @@ firebase.auth().onAuthStateChanged((user) => {  //écoute le changement de statu
   }
 });
 
+function charge_msg(){
+  chemin2 = "/Users/"+utilisateur.uid+"/messages"
+  const fetchChat = db.ref(chemin2); 
+  //écoute l'arrivée de nouveaux messages
+  fetchChat.on("child_added", function (snapshot) {
+      listemsg = snapshot;
+      const message = `<li class=msg_boite_leger id="${listemsg.key}">${listemsg.key}</li>`;
+      // ajout de la balise dans la page
+      document.getElementById("liste_des_messages").innerHTML += message;
+  });
+  fetchChat.on("child_removed",function(childSnapshot){
+    document.getElementById("liste_des_messages").innerHTML=null;
+    initmsg()
+  });
+}
+
 function initConv(destinataire){  //créé une nouvelle conversation
   const cheminBase = "ListeChats/" + utilisateur.uid + destinataire;
   db.ref(cheminBase).get().then((snapshot) =>{
@@ -123,6 +139,7 @@ function initConv(destinataire){  //créé une nouvelle conversation
 }
 
 function initFinale(){  //met en place les écouteurs et affiche les messages
+  charge_msg();
   const chemin2 = "/Users/"+destinataire+"/username"
   db.ref(chemin2).get().then((snapshot) => {
     contact = "Inconnu au bataillon";
@@ -200,9 +217,6 @@ if (firebase.auth.currentUser==null && SessionCo == null){  //créé une session
 }
 
 document.getElementById("message-form").addEventListener("submit", sendMessage);
-document.getElementById("connexion-form").addEventListener("submit",connecte);
-document.getElementById("inscription-form").addEventListener("submit",inscrit);
-
 
 function afficheConnexion() {
   fermeFormulaire();
@@ -217,3 +231,18 @@ function fermeFormulaire() {
   document.getElementById("formulaireConnexion").style.display = "none";
   document.getElementById("formulaireInscription").style.display = "none";
 }
+
+$("#mes_msg").click(function(event){
+  $("#liste_des_messages").toggleClass("invisible");
+})
+
+$("#liste_des_messages").on("click", ".msg_boite_leger", function(event){
+  const tete = this.textContent
+  db.ref("/Users/"+utilisateur.uid+"/messages/"+tete).get().then((snapshot) => {
+    if (snapshot.exists()) {
+      $("#message-input").val($("#message-input").val()+snapshot.val());
+    }
+    $("#liste_des_messages").addClass("invisible");
+
+  });
+});
