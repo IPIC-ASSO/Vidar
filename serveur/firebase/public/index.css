@@ -8,26 +8,39 @@ body {
 h1{
     text-align: center;
 }
-h2{
-    margin: 0px;
+.bande{
+    display: flex;
+    align-content: center;
+    margin-bottom: 0;
+    margin: auto;
+    
+}
+
+.bande2{
+    color: #000000;
+    width: auto;
+}
+
+#destinataire{
+    margin: auto;
 }
 
 header {
     top:0px;
     text-align: center;
     background-color: #e3e3e3;
-    position: fixed;
+    position: sticky;
     width: -moz-available;
     padding: 2px;
 }
 
 img{
-    
-    max-height: 100px;
+    max-height: 90px;
+    margin: 0px;
 }
 
 #messages{
-    margin-top: 150px;
+    margin-top: 10px;
     padding-bottom: 50px;
 }
 
@@ -39,7 +52,7 @@ li {
     list-style-type: none;
     margin-bottom: 10px;
     
-    padding: 5px;
+    padding: 6px;
     border-radius: 10px;
     color: white;
     width: 50%;
@@ -54,7 +67,7 @@ li span {
 #chat {
     width: 90%;
     margin: auto;
-}
+    }
 
 #message-form {
     max-height: 50px;
@@ -64,31 +77,59 @@ li span {
     bottom: 0;
     width: 100%;
     background-color: #b7b5b9;
+    display: flex;
 }
 
 input {
     width: 70%;
     height: 30px;
+    margin: 2px;
 }
 
 button {
     width: 25%;
-    height: 30px;
+    height: auto;
+    margin: 2px;
 }
+
+.bas{
+    width: fit-content;
+    margin: 2px;   
+    padding: 5px 10px ;
+    height: auto;
+}
+
+ /* Style buttons */
+.btn {
+    background-color: DodgerBlue; /* Blue background */
+    border: none; /* Remove borders */
+    color: white; /* White text */
+    padding: 5px 15px; /* Some padding */
+    font-size: 16px; /* Set a font size */
+    cursor: pointer; /* Mouse pointer on hover */
+    width: auto;
+    border-radius: 3px;
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+    background-color: RoyalBlue;
+} 
 
 .sent {
     text-align: right;
-    background-color: #00FFEE;
+    color: #000000;
+    background-color: #00AEFF;
     border-bottom-right-radius:0px ;
     margin-left: auto;
     margin-right: 0;
     width: fit-content;
-    color:#7c7b7d
 }
 
 .receive {
+    color: #000000;
     text-align: left;
-    background-color: #00AAEE;
+    background-color: #B8B8B8;
     border-top-left-radius:0px ;
     margin-right: auto;
     width: fit-content;

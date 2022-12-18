@@ -12,28 +12,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ipiccie.muetssages.client.Utilisateur;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,14 +34,10 @@ import java.util.HashMap;
  */
 public class Connexion extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private FirebaseAuth auth;
     private DatabaseReference reference;
@@ -79,24 +67,20 @@ public class Connexion extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SharedPreferences prefs =this.getContext().getSharedPreferences("classes", Context.MODE_PRIVATE);
+        SharedPreferences prefs = requireContext().getSharedPreferences("classes", Context.MODE_PRIVATE);
         CheckBox souviens = view.findViewById(R.id.souvenir_moi);
 
         if (prefs.getBoolean("souvenir",false)){
             souviens.setChecked(true);
-            EditText mail_co= view.findViewById(R.id.mail_connexion);
-            mail_co.setText(prefs.getString("mail",""));
-            EditText mdp_co= view.findViewById(R.id.motdepasse_connexion);
-            mdp_co.setText(prefs.getString("mdp",""));
+            EditText mailCo= view.findViewById(R.id.mail_connexion);
+            mailCo.setText(prefs.getString("mail",""));
+            EditText mdpCo= view.findViewById(R.id.motdepasse_connexion);
+            mdpCo.setText(prefs.getString("mdp",""));
         }
         souviens.setOnCheckedChangeListener((compoundButton, b) -> prefs.edit().putBoolean("souvenir",b).apply());
         auth = FirebaseAuth.getInstance();
@@ -135,19 +119,13 @@ public class Connexion extends Fragment {
         view.findViewById(R.id.mdp_oublie).setOnClickListener(v->{
             EditText mail = new EditText(this.getContext());
             mail.setHint("adresse e-mail");
-            new MaterialAlertDialogBuilder(this.getContext())
+            new MaterialAlertDialogBuilder(this.requireContext())
                     .setTitle("Mot de passe oublié")
                     .setView(mail)
                     .setMessage("Saisissez votre adresse e-mail pour recevoir un lien de réinitialisation.\nPensez à vérifier vos spam.")
                     .setNegativeButton("annuler",((dialogInterface, i) -> dialogInterface.dismiss()))
                     .setPositiveButton("Valider",((dialogInterface, i) -> {
-                        FirebaseAuth.getInstance().sendPasswordResetEmail(mail.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @SuppressLint("RestrictedApi")
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.d(TAG, "onCompledddddte: "+task.isSuccessful());
-                            }
-                        });
+                        FirebaseAuth.getInstance().sendPasswordResetEmail(mail.getText().toString());
                         dialogInterface.dismiss();
                         Toast.makeText(this.getContext(), "Un lien de récupération vous a été envoyé", Toast.LENGTH_LONG).show();}))
                     .show();

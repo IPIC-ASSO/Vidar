@@ -17,8 +17,7 @@
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
 
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="invisible">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView"
@@ -68,7 +67,8 @@
             android:id="@+id/textView8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cette étape est nécessaire. Cela nous permettra d'identifier les destinataires des discussions" />
+            android:text="Cette étape est nécessaire. Cela nous permettra d'identifier les destinataires des discussions"
+            android:textAlignment="center" />
     </LinearLayout>
 
     <LinearLayout
@@ -78,8 +78,7 @@
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/mail_connexion"

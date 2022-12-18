@@ -93,9 +93,9 @@ public class ConfigLancerDiscussion extends Fragment {
         Bundle bundle = new Bundle();
 
         versLanceDis.setOnClickListener(v->{
-            bundle.putString("msg_ecrit",listeDeMessages.getOrDefault(msgEcrit.getText().toString(),getString(R.string.erreur)));
-            bundle.putString("msg_lu",listeDeMessages.getOrDefault(msgLu.getText().toString(),getString(R.string.erreur)));
-            bundle.putString("msg_debut",listeDeMessages.getOrDefault(msgDebut.getText().toString(),getString(R.string.erreur)));
+            bundle.putString("msg_ecrit",listeDeMessages.getOrDefault(msgEcrit.getText().toString()," "));
+            bundle.putString("msg_lu",listeDeMessages.getOrDefault(msgLu.getText().toString()," "));
+            bundle.putString("msg_debut",listeDeMessages.getOrDefault(msgDebut.getText().toString()," "));
             findNavController(this).navigate(R.id.action_configLancerDiscussion_to_lanceDiscussion,bundle);
         });
         versScanneur.setOnClickListener(v-> {

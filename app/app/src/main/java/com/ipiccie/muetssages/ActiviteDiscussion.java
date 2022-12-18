@@ -2,15 +2,10 @@ package com.ipiccie.muetssages;
 
 import static android.content.ContentValues.TAG;
 
-import static androidx.navigation.fragment.FragmentKt.findNavController;
-
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -23,11 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,10 +32,6 @@ import com.ipiccie.muetssages.adaptateur.MessagerAdapte;
 import com.ipiccie.muetssages.client.Chat;
 import com.ipiccie.muetssages.client.Utilisateur;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +44,7 @@ public class ActiviteDiscussion extends AppCompatActivity {
     private List<Chat> listeDeChats;
     private RecyclerView recyclage;
     private HashMap<String, String> listeDeMessages;
+    private TextToSpeech textToSpeech;
 
     private String dB = "https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app";
 
@@ -74,17 +64,19 @@ public class ActiviteDiscussion extends AppCompatActivity {
         setContentView(R.layout.activity_activite_discussion);
 
         // This callback will only be called when MyFragment is at least Started.
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                this.remove();
+                Log.d(TAG, "handleOnBackPressed: OUI");
                 Intent intention = new Intent(getBaseContext(), MainActivity.class);
                 intention.putExtra("disc","go");
                 startActivity(intention);
+                this.remove();
+                //TODO: vérifier que c'est correct
             }
         };
-        getOnBackPressedDispatcher().addCallback(this, callback);
-
+        getOnBackPressedDispatcher().addCallback(callback);
+        Log.d(TAG, "onCreate:OKOK "+getOnBackPressedDispatcher().hasEnabledCallbacks());
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         EditText msg = findViewById(R.id.mon_message);
@@ -98,7 +90,7 @@ public class ActiviteDiscussion extends AppCompatActivity {
                     listeDeMessages = (HashMap<String, String>) snapshot.getValue();
                 }
                 listeMessages();
-            };
+            }
 
 
             @Override
@@ -106,9 +98,6 @@ public class ActiviteDiscussion extends AppCompatActivity {
 
             }
         });
-
-
-
 
         Log.d(TAG, "onCreate: "+listeDeMessages);
         fuser = FirebaseAuth.getInstance().getCurrentUser();
@@ -151,13 +140,24 @@ public class ActiviteDiscussion extends AppCompatActivity {
                 msg.setText("");
             });
         }
-        /*ActionBar ab = (this.getSupportActionBar());
+
+        final int flags = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        getWindow().getDecorView().setSystemUiVisibility(flags);
+
+        ActionBar ab = (this.getSupportActionBar());
         if(ab != null){
             ab.setDisplayHomeAsUpEnabled(true);
-        }*/
+        }
     }
 
+
+
     public void notif(String sujet){
+        //TODO:gérer notifs
         /*Notification notification = new Notification.Builder().setContentTitle("2 new messages with " + sender.toString())
                 .setContentText(sujet)
                 .setSmallIcon(R.drawable.ic_baseline_message_24)
@@ -166,10 +166,6 @@ public class ActiviteDiscussion extends AppCompatActivity {
                         .addMessage(messages[0].getText(), messages[0].getTime(), messages[0].getSender())
                         .addMessage(messages[1].getText(), messages[1].getTime(), messages[1].getSender()))
                 .build();*/
-    }
-
-    private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
     }
 
     public void envoyerMessage(String envoyeur, String idDiscussion, String message){
@@ -220,7 +216,7 @@ public class ActiviteDiscussion extends AppCompatActivity {
 
     public void popUp(String texte){
         AlertDialog.Builder constr = new AlertDialog.Builder(this);
-        constr.setTitle("Actions sur le message");
+        constr.setTitle("Actions sur le message"+texte);
         View vue = View.inflate(this, R.layout.pop_up_message,null);
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages");
@@ -233,10 +229,25 @@ public class ActiviteDiscussion extends AppCompatActivity {
             show.dismiss();
         });
         vue.findViewById(R.id.pop_lit_mes).setOnClickListener(v->{
-            TextToSpeech textToSpeech = new TextToSpeech(this, status -> {});
-            textToSpeech.setLanguage(Locale.FRANCE);
-            textToSpeech.setSpeechRate(1.3F);
-            textToSpeech.speak(texte, TextToSpeech.QUEUE_FLUSH,null);
+             textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+
+                // THIS RUNS THIRD!
+                @Override
+                public void onInit(int i) {
+                    if (i == TextToSpeech.SUCCESS) {
+
+                        textToSpeech.setLanguage(Locale.FRANCE);
+                        textToSpeech.setSpeechRate(1.3F);
+
+                        // NEW LOCATION
+                        //textToSpeech.speak("Hi you succesfully ran me.", TextToSpeech.QUEUE_FLUSH, null, null);
+                        textToSpeech.speak(texte, TextToSpeech.QUEUE_FLUSH, null, null);
+                    }
+
+                }
+            });
+
+            Log.d(TAG, "popUp: "+textToSpeech.isSpeaking());
             Toast.makeText(this,"Lecture en cours",Toast.LENGTH_SHORT).show();
             show.dismiss();
         });
@@ -252,5 +263,11 @@ public class ActiviteDiscussion extends AppCompatActivity {
             constr.setItems(listeMsg, (dialog, which) -> msg.setText(msg.getText().toString() + listeDeMessages.get(listeMsg[which])));
             constr.show();
             });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Log.d(TAG, "onBackPressed: OKOK");
     }
 }

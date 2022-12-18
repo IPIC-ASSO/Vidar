@@ -4,40 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Vidar</title>
-    <link rel="stylesheet" href="./authentification.css">
     <link rel="stylesheet" href="/nouvelle_conversation.css" />
 
   </head>
   <body>
     <div id="codeu">
         <form class="form" id="code">
-            <p class="fieldset">
-                <label class="image-replace code" for="destinataire">Code</label>
-                <input class="full-width has-padding has-border" id="destinataire-input" type="text" placeholder="code">
-            </p>
-            <p class="fieldset">
-                <input class="full-width" type="submit" value="Rejoindre la conversation">
-            </p>
-            
-            
+            <input class="full-width has-padding has-border" id="destinataire-input" type="text" placeholder="code">
+            <input class="full-width" type="submit" value="Rejoindre la conversation">  
         </form>
+
+        <span >OU</span>
 
         <form class="form" id="QR-code">
-            <label style="margin-left: 10px;">OU</label>
-            <p class="fieldset">
-                <input class="full-width" type="submit" id="btn-scan-qr" value="Scanner un QR-code">
-            </p>
-            
+            <input class="full-width" type="submit" id="btn-scan-qr" value="Scanner un QR-code">
         </form>
             
 
-        <canvas hidden="" id="qr-canvas"></canvas>
+        <img id="qr-canvas"/>
 
         <div id="qr-result" hidden="">
             <b>Data:</b> <span id="outputData"></span>
         </div>
     </div>
-   
+
+    <!-- scripts (SDK+ code) -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
     <script src="https://rawgit.com/sitepoint-editors/jsqrcode/master/src/qr_packed.js"></script>
     <script src="nouvelle_conversation.js"></script>
   </body>

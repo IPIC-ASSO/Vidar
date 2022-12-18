@@ -27,7 +27,7 @@ var firebaseConfig = {
               username:document.getElementById("pseudo")
             });
             sessionStorage.setItem("co",1);
-            window.location = "index2.html";
+            window.location = "menu_principal.html";
       })
       .catch((error) => {
           const errorCode = error.code;
@@ -46,7 +46,7 @@ var firebaseConfig = {
           // Signed in 
           const user = userCredential.user;
           sessionStorage.setItem("co",1);
-          window.location = "index2.html";
+          window.location = "menu_principal.html";
 
       })
       .catch((error) => {

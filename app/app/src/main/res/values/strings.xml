@@ -21,7 +21,7 @@
     <string name="btn_liste">MODIFIER</string>
     <string name="txt_indic_msg_lu">Message à lire</string>
     <string name="txt_indic_msg_debut_conv">Message au début de la conversation</string>
-    <string name="msg_defaut">message par defaut</string>
+    <string name="msg_defaut">[Aucun]</string>
     <string name="erreur">Une erreur est survenue</string>
     <string name="txt_titre_compte">Compte</string>
     <string name="txt_changer_pseudo">Changer de nom d\'utilisateur:</string>

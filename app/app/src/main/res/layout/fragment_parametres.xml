@@ -16,6 +16,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:text="@string/txt_titre_compte"
+        android:textColor="@color/black"
         android:textSize="16sp"
         app:drawableStartCompat="@drawable/ic_baseline_account_circle_24" />
 
@@ -60,6 +61,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:text="@string/txt_titre_affichage"
+        android:textColor="@color/black"
         android:textSize="16sp"
         app:drawableStartCompat="@drawable/ic_baseline_image_24" />
 
@@ -67,9 +69,10 @@
         android:id="@+id/switch_mode_sombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/switch_mode_combre"
         android:layout_marginStart="15dp"
         android:layout_marginTop="5dp"
+        android:checked="true"
+        android:text="@string/switch_mode_combre"
         android:textSize="16sp" />
 
     <Button

@@ -155,12 +155,11 @@ public class listeConversations extends Fragment {
                             Discussion dis = snapshot1.getValue(Discussion.class);
                             if (dis != null && dis.getUtilisateur1()!= null && dis.getUtilisateur2()!=null && utilisateur != null) {
                                 if(Objects.equals(dis.getUtilisateur1(), utilisateur.getId())){
-                                    contacts.add(dis.getUtilisateur1());
-                                    idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
-                                } else if (Objects.equals(dis.getUtilisateur2(), utilisateur.getId())){
                                     contacts.add(dis.getUtilisateur2());
-                                    idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
+                                } else if (Objects.equals(dis.getUtilisateur2(), utilisateur.getId())){
+                                    contacts.add(dis.getUtilisateur1());
                                 }
+                                idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
                                 Log.d(TAG, "onDataChange: "+dis.getUtilisateur1()+dis.getUtilisateur2());
                             }
                         }

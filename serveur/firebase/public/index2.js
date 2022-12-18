@@ -14,6 +14,7 @@ const db = firebase.database();
 var chemin = "";  //chemin vers la discussion
 var utilisateur;
 var pseudo;
+var contact;
 
 function inscrit(e){  //pour inscrire les nouveaux utilisateurs
   e.preventDefault();
@@ -87,6 +88,7 @@ function connecteAnonyme(){   //session temporaire
         });
       }
     });
+    $()
   })
   .catch((error) => {
     var errorCode = error.code;
@@ -97,7 +99,7 @@ function connecteAnonyme(){   //session temporaire
 
 firebase.auth().onAuthStateChanged((user) => {  //écoute le changement de statut de l'utilisateur
   if (user) {//co
-    alert("Vous êtes connectés! (L'eussiez-vous cru?)"+ user.uid);
+    //alert("Vous êtes connectés! (L'eussiez-vous cru?)"+ user.uid);
     utilisateur = user;
     initConv(destinataire);
   } else {//deco
@@ -121,6 +123,15 @@ function initConv(destinataire){  //créé une nouvelle conversation
 }
 
 function initFinale(){  //met en place les écouteurs et affiche les messages
+  const chemin2 = "/Users/"+destinataire+"/username"
+  db.ref(chemin2).get().then((snapshot) => {
+    contact = "Inconnu au bataillon";
+    if (snapshot.exists()) {
+      contact = snapshot.val()
+    }
+    $("#destinataire").text(contact);
+  })
+  
   const fetchChat = db.ref(chemin); 
 
   //récupère le pseudo de l'utilisateur
@@ -136,6 +147,7 @@ function initFinale(){  //met en place les écouteurs et affiche les messages
   });
 
   //écoute l'arrivée de nouveaux messages
+  document.getElementById("messages").innerHTML = null;
   fetchChat.on("child_added", function (snapshot) {
     const messages = snapshot.val();  //messages contient: l'envoyeur et le message
     const message = `<li class=${   //créer un nouvel élément <li> pour chaque message
@@ -183,6 +195,8 @@ if(destinataire==null){
 if (firebase.auth.currentUser==null && SessionCo == null){  //créé une session temporaire
   connecteAnonyme();  //session temporaire
   alert("session temporaire")
+}else{
+  $(".open-button").addClass(".invisible")
 }
 
 document.getElementById("message-form").addEventListener("submit", sendMessage);

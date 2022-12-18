@@ -1,14 +1,20 @@
 package com.ipiccie.muetssages;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -19,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -69,6 +76,7 @@ public class Accueil extends Fragment {
     private String mParam2;
     private FirebaseUser firebaseUser;
 
+
     public Accueil() {
         // Required empty public constructor
     }
@@ -98,6 +106,7 @@ public class Accueil extends Fragment {
         if(ab != null){
             ab.setDisplayHomeAsUpEnabled(false);
         }
+        Log.d(TAG, "onViewCreated: OKOK"+getActivity().getIntent().getStringExtra("disc"));
         if (Objects.equals(getActivity().getIntent().getStringExtra("disc"), "go")){
             getActivity().getIntent().putExtra("disc","pasgo");
             findNavController(this).navigate(R.id.action_accueil_to_listeConversations);
@@ -108,12 +117,17 @@ public class Accueil extends Fragment {
         view.findViewById(R.id.vers_aide).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_aide));
         view.findViewById(R.id.vers_options).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_parametres));
         //view.findViewById(R.id.vers_aide).setOnClickListener(v-> Toast.makeText(this.getContext(), "Pas encore implémenté", Toast.LENGTH_SHORT).show());
-        //view.findViewById(R.id.vers_options).setOnClickListener(v-> Toast.makeText(this.getContext(), "Pas encore implémenté", Toast.LENGTH_SHORT).show());
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser == null){
             findNavController(this).navigate(R.id.action_accueil_to_connexion);
         }
-
+        if(!((MainActivity)getActivity()).isNetworkAvailable()){
+            new MaterialAlertDialogBuilder(getContext())
+                    .setTitle("Une erreur est survenue")
+                    .setMessage("Impossible de joindre la base de données.\nVérifiez votre connexion internet.\nSans connexion à la base de données, les principales fonctionnalités seront indisponibles.")
+                    .setNeutralButton("OK",((dialogInterface, i) -> dialogInterface.dismiss()))
+                    .show();
+        }
     }
 
     @Override
@@ -123,7 +137,6 @@ public class Accueil extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override

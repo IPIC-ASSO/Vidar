@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -112,20 +113,26 @@ public class Parametres extends Fragment {
             else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         });
         view.findViewById(R.id.change_pseudo).setOnClickListener(v->{
-            EditText pseudo = new EditText(this.getContext());
-            pseudo.setPadding(10,10,10,10);
-            pseudo.setHint(getString(R.string.hint_pseudo));
-            pseudo.setText(utilisateur.getUsername());
-            new MaterialAlertDialogBuilder(this.getContext())
-                    .setView(pseudo)
-                    .setTitle(getString(R.string.btn_changer_btn))
-                    .setPositiveButton("Valider", (dialogInterface, i) -> {
-                        utilisateur.setUsername(pseudo.getText().toString());
-                        databaseReference.setValue(utilisateur);
-                        dialogInterface.dismiss();
-                    })
-                    .setNegativeButton("Annuler", (dialogInterface, i) -> dialogInterface.dismiss())
-                    .show();
+            if (utilisateur==null){
+                Toast.makeText(getContext(), "Une erreur est survenue, vérifiez votre connexion internet.", Toast.LENGTH_LONG).show();
+            }else{
+                EditText pseudo = new EditText(this.getContext());
+                pseudo.setPadding(10,10,10,10);
+                pseudo.setHint(getString(R.string.hint_pseudo));
+                pseudo.setText(utilisateur.getUsername());
+                new MaterialAlertDialogBuilder(this.getContext())
+                        .setView(pseudo)
+                        .setTitle(getString(R.string.btn_changer_btn))
+                        .setPositiveButton("Valider", (dialogInterface, i) -> {
+                            if(pseudo.getText().toString().length()>0){
+                                utilisateur.setUsername(pseudo.getText().toString());
+                                databaseReference.setValue(utilisateur);
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setNegativeButton("Annuler", (dialogInterface, i) -> dialogInterface.dismiss())
+                        .show();
+            }
         });
         view.findViewById(R.id.change_mdp).setOnClickListener(v ->{
                 EditText mdp = new EditText(this.getContext());
@@ -135,8 +142,10 @@ public class Parametres extends Fragment {
                         .setView(mdp)
                         .setTitle(getString(R.string.btn_changer_mdp))
                         .setPositiveButton("Valider", (dialogInterface, i) -> {
-                            firebaseUser.updatePassword(mdp.getText().toString());
-                            dialogInterface.dismiss();
+                            if(mdp.getText().toString().length()>0){
+                                firebaseUser.updatePassword(mdp.getText().toString());
+                                dialogInterface.dismiss();
+                            }
                         })
                         .setNegativeButton("Annuler", (dialogInterface, i) -> dialogInterface.dismiss())
                         .show();

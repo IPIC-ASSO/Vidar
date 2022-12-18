@@ -1,0 +1,313 @@
+body {
+    background-color: #f3f2f3;
+    margin: 0;
+    margin-top: 10px;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1{
+    text-align: center;
+}
+
+h2{
+    margin: 0px;
+}
+
+@media
+only screen and (-webkit-min-device-pixel-ratio : 1.5),
+only screen and (min-device-pixel-ratio : 1.5) {
+    
+}
+
+input{
+    background-color: rgb(180, 180, 180);
+    width:88%;
+    margin:10px;
+    padding: 10px;
+    min-height: 30px;
+    border: none;
+    border-bottom: 2px solid blue;
+    border-radius: 4px;
+    font-size: large;
+}
+
+input[type=text]:focus {
+    background-color: white;
+    font-size: large;
+}
+
+button {
+    border-radius: 4px;
+    margin:10px;
+    background-color: #04AA6D;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    width: 90%;
+    margin-bottom:10px;
+    opacity: 0.8;
+    box-sizing: border-box;
+    height: auto;
+    -webkit-transition: all 0.30s ease-in-out;
+        -moz-transition: all 0.30s ease-in-out;
+        -ms-transition: all 0.30s ease-in-out;
+        -o-transition: all 0.30s ease-in-out;
+}
+
+
+button:hover{
+    background-color: #006a43;
+}
+
+.rouge{
+    background-color: red;
+}
+
+.rouge:hover{
+    background-color: rgb(132, 0, 0);
+}
+
+.plus {
+    background-color: rgb(1, 137, 221);
+    position: fixed;
+    bottom: 50px;
+    left: 50px;
+    width: fit-content;
+}
+
+.plus:hover{
+    background-color: rgb(0, 90, 146);
+}
+
+.plusconv {
+    background-color: rgb(0, 23, 136);
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    width: auto;
+}
+
+.plusconv:hover{
+    background-color: rgb(0, 63, 223);
+}
+
+#deco{
+    width: fit-content;
+    border-radius: 3px;
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    padding: 12px 14px;
+    background-color: RoyalBlue;
+}
+
+#editeur{
+    display: flex;
+    flex-direction: column;
+    height: 97%;
+    margin-bottom: 10px;
+}
+
+.centre{
+    text-align: center;
+    display: block;
+    position: relative;
+    top:30%;
+}
+
+textarea{
+    width: 90%;
+    margin:10px;
+    height: 100%;
+    padding: 12px 15px;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px solid blue;
+    border-radius: 4px;
+    background-color: rgb(180, 180, 180);
+    resize: none;
+    font-size: larger;
+
+}
+
+textarea:focus{
+    background-color: white;
+}
+
+header {
+    top:0px;
+    text-align: center;
+    background-color: #e3e3e3;
+    position: fixed;
+    width: -moz-available;
+    padding: 2px;
+}
+
+.split{
+    height: 100%;
+    width: 49%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow-x: hidden;
+    margin: 10px;
+    
+}
+
+.liste_msg{
+    left: 0;
+    padding: 10px;
+    border-right: rgba(128, 128, 128, 0.595) 4px solid;
+}
+
+.msg{
+    right: 0;
+}
+
+.haut{
+    white-space: nowrap;
+    display: flex;
+    margin: auto;
+    margin-top: 5px;
+    padding: 5px;
+    background-color: rgb(226, 226, 226);
+}
+
+ul{
+    padding-left: 0%;
+}
+
+li {
+    background-color: grey;
+    list-style-type: none;
+    margin: auto;
+    margin-bottom: 8px;
+    text-align: center;
+    padding: 6px;
+    border-radius: 10px;
+    width: 50%;
+    -webkit-transition: all 0.30s ease-in-out;
+        -moz-transition: all 0.30s ease-in-out;
+        -ms-transition: all 0.30s ease-in-out;
+        -o-transition: all 0.30s ease-in-out;
+}
+
+#nouv_demo{
+    border-width: 3px;
+    border-color: rgb(104, 104, 104);
+    border-style: dashed;
+    background-color: rgb(182, 180, 180);
+}
+
+.tete{
+    background-color: rgb(208, 204, 204);
+    list-style-type: none;
+    margin: 5px;
+    text-align: center;
+    border-radius: 0px;
+    border: black solid 0px; 
+    padding: 6px;
+    width: 50%;
+    -webkit-transition: all 0.30s ease-in-out;
+        -moz-transition: all 0.30s ease-in-out;
+        -ms-transition: all 0.30s ease-in-out;
+        -o-transition: all 0.30s ease-in-out;
+}
+
+.tete:hover {
+    background-color: rgb(161, 161, 161);
+}
+
+#interface_conv{
+    height: 97%;
+}
+
+.selection{
+    border-width: 0px 0px 3px 0px;
+}
+
+li:hover{
+    display: block;
+    background-color: rgb(0, 132, 255);
+}
+
+.clique{
+    background-color: rgb(108, 182, 252);
+}
+
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid blue;
+    border-bottom: 16px solid blue;
+    width: 120px;
+    height: 120px;
+    margin: auto;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+  }
+  
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+#snackbar {
+    visibility: hidden; /* Hidden by default. Visible on click */
+    min-width: 250px; /* Set a default minimum width */
+    margin-left: -125px; /* Divide value of min-width by 2 */
+    background-color: #333; /* Black background color */
+    color: #fff; /* White text color */
+    text-align: center; /* Centered text */
+    border-radius: 2px; /* Rounded borders */
+    padding: 16px; /* Padding */
+    position: fixed; /* Sit on top of the screen */
+    z-index: 1; /* Add a z-index if needed */
+    left: 50%; /* Center the snackbar */
+    bottom: 30px; /* 30px from the bottom */
+    }
+    
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+    visibility: visible; /* Show the snackbar */
+    /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+    However, delay the fade out process for 2.5 seconds */
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+    
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+    
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+    
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+  
+#editeur.invisible{
+    display: none;
+}
+
+.invisible{
+    display: none;
+}

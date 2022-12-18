@@ -1,21 +1,21 @@
 
 c
-java:S1192h"HDefine a constant instead of duplicating this literal "Annuler" 3 times.(µÔ¢şÿÿÿÿ
+java:S1192i"HDefine a constant instead of duplicating this literal "Annuler" 3 times.(µÔ¢şÿÿÿÿ
 {
-java:S14503"`Remove the "databaseReference" field and declare it as a local variable in the relevant methods.(Ï¨Î·ùÿÿÿÿ
+java:S14504"`Remove the "databaseReference" field and declare it as a local variable in the relevant methods.(Ï¨Î·ùÿÿÿÿ
 l
-java:S14501"VRemove the "mParam1" field and declare it as a local variable in the relevant methods.(•Íï‘
+java:S14502"VRemove the "mParam1" field and declare it as a local variable in the relevant methods.(•Íï‘
 l
-java:S14502"VRemove the "mParam2" field and declare it as a local variable in the relevant methods.(¡ˆ€ 
+java:S14503"VRemove the "mParam2" field and declare it as a local variable in the relevant methods.(¡ˆ€ 
 M
-java:S1135+"2Complete the task associated to this TODO comment.(ÜûŠ—øÿÿÿÿ
+java:S1135,"2Complete the task associated to this TODO comment.(ÜûŠ—øÿÿÿÿ
 M
-java:S11350"2Complete the task associated to this TODO comment.(ğï¢öúÿÿÿÿ
+java:S11351"2Complete the task associated to this TODO comment.(ğï¢öúÿÿÿÿ
 M
-java:S1135B"2Complete the task associated to this TODO comment.(ßíŠÿÿÿÿÿ
+java:S1135C"2Complete the task associated to this TODO comment.(ßíŠÿÿÿÿÿ
 —
-java:S1186\"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ô°¤¦
+java:S1186]"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ô°¤¦
 A
-java:S10681"+Remove this unused "mParam1" private field.(•Íï‘
+java:S10682"+Remove this unused "mParam1" private field.(•Íï‘
 A
-java:S10682"+Remove this unused "mParam2" private field.(¡ˆ€ 
+java:S10683"+Remove this unused "mParam2" private field.(¡ˆ€ 
