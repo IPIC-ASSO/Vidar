@@ -17,11 +17,30 @@ span{
     margin: auto;
 }
 
-form {
+div {
     margin: 5px;
 }
 
-form input{
+div input{
+    border-radius: 4px;
+    margin:10px;
+    background-color: #2d89fb;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    width: 90%;
+    margin-bottom:5px;
+    opacity: 0.8;
+    box-sizing: border-box;
+    height: auto;
+    -webkit-transition: all 0.30s ease-in-out;
+        -moz-transition: all 0.30s ease-in-out;
+        -ms-transition: all 0.30s ease-in-out;
+        -o-transition: all 0.30s ease-in-out;
+}
+
+button{
     border-radius: 4px;
     margin:10px;
     background-color: #2d89fb;
@@ -91,3 +110,22 @@ background-color: white;
     padding-top: 0px;
     margin-bottom: 10px;
   }
+
+#reader{
+    width: fit-content;
+    margin: auto;
+}
+
+
+@media only screen and (max-width: 600px){
+    body{
+        margin-top: 50px;
+    }
+}
+
+.invisible{
+    visibility: hidden;
+    display: none;
+    transition:opacity 0.5s linear;
+    opacity: 0;
+}

@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id("androidx.navigation.safeargs")
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -11,15 +12,16 @@ android {
         applicationId "com.ipiccie.muetssages"
         minSdk 26
         targetSdk 33
-        versionCode 9
-        versionName "1.4 ALPHA"
+        versionCode 12
+        versionName "1.5.3 ALPHA"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -31,7 +33,10 @@ android {
 
 dependencies {
     String nav_version = "2.5.3"
-    implementation platform('com.google.firebase:firebase-bom:30.4.1')
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:31.1.1')
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.android.material:material:1.7.0'

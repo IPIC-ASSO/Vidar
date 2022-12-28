@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
+import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -67,29 +68,17 @@ public class Accueil extends Fragment {
         }
     }
 
-    // TODO: Rename parameter arguments, choose names that match
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-    private FirebaseUser firebaseUser;
 
 
     public Accueil() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Accueil.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static Accueil newInstance(String param1, String param2) {
         Accueil fragment = new Accueil();
         Bundle args = new Bundle();
@@ -117,7 +106,7 @@ public class Accueil extends Fragment {
         view.findViewById(R.id.vers_aide).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_aide));
         view.findViewById(R.id.vers_options).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_parametres));
         //view.findViewById(R.id.vers_aide).setOnClickListener(v-> Toast.makeText(this.getContext(), "Pas encore implémenté", Toast.LENGTH_SHORT).show());
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser == null){
             findNavController(this).navigate(R.id.action_accueil_to_connexion);
         }
@@ -133,10 +122,7 @@ public class Accueil extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override

@@ -43,7 +43,7 @@
   .main-nav a {
     display: block;
     height: 50px;
-      margin: 10px;
+      margin: 10px 0 10px 0;
       padding: 2px 5px;
       text-decoration: none;
       border-radius: 30px;

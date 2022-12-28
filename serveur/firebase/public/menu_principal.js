@@ -15,27 +15,29 @@ var utilisateur;
 var listemsg;
 var btnselect;
 
+function detectMob() {
+  return ( ( window.innerWidth <= 800 ) || ( window.innerHeight <= 600 ) );
+}
+
 firebase.auth().onAuthStateChanged((user) => {  //écoute le changement de statut de l'utilisateur
     if (user) {//co
-      //alert("Vous êtes connectés! (L'eussiez-vous cru?)"+ user.uid);
       utilisateur = user;
       initmsg();
       initconv();
     } else {//deco
-      alert("Adieu :.(");
     }
   });
 
 function initmsg(){
-    chemin = "/Users/"+utilisateur.uid+"/messages"
-    const fetchChat = db.ref(chemin); 
+    chemin2 = "/Users/"+utilisateur.uid+"/messages"
+    const fetchChat = db.ref(chemin2); 
     //écoute l'arrivée de nouveaux messages
-    fetchChat.on("child_added", function (snapshot) {
-        listemsg = snapshot;
-        const message = `<li class=msg_boite id="${listemsg.key}">${listemsg.key}</li>`;
-        
-        // ajout de la balise dans la page
-        document.getElementById("messages").innerHTML += message;
+    fetchChat.on("child_added", function(snapshot) {
+      listemsg = snapshot;
+      const message = `<li class=msg_boite id="${listemsg.key}">${listemsg.key}</li>`;
+      
+      // ajout de la balise dans la page
+      document.getElementById("messages").innerHTML += message;
     });
     fetchChat.on("child_removed",function(childSnapshot){
       document.getElementById("messages").innerHTML=null;
@@ -72,6 +74,25 @@ function initconv(){
   });
 }
 
+function switchfen (affiche) {
+  if (detectMob()){
+    if (affiche){
+      $("#m_b_msg").removeClass("invisible");
+      $("#lsmsg").addClass("invisible");
+      $("#retour").removeClass("invisible");
+    }else{
+
+      $("#m_b_msg").addClass("invisible");
+      $("#lsmsg").removeClass("invisible");
+      $("#retour").addClass("invisible");
+      if (btnselect!=null){
+        btnselect.remove('clique');
+      }
+      $("#nouv_demo").addClass("invisible")
+    }
+  }
+}
+
 
 //--------DEBUT----------\\
 
@@ -81,11 +102,17 @@ if (firebase.auth.currentUser==null && SessionCo == null){  //pb co
   //TODO: afficher chargement
 }
 
+if (detectMob()){
+  $("#m_b_msg").addClass("invisible");
+  switchfen(false);
+}
+
 jQuery(document).ready(function($){
   $("#messages").on("click", ".msg_boite", function(event){
     if (btnselect!=null){
       btnselect.remove('clique');
     }
+    switchfen(true);
     btnselect = this.classList;
     btnselect.add('clique');
     $("#nouv_demo").addClass("invisible")
@@ -94,7 +121,7 @@ jQuery(document).ready(function($){
     $("#corps").addClass("invisible");
     const tete = this.textContent
     $("#en_tete").val(tete);
-    db.ref(chemin+"/"+tete).get().then((snapshot) => {
+    db.ref("Users/"+utilisateur.uid+"/messages/"+tete).get().then((snapshot) => {
       if (snapshot.exists()) {
         $("#corps").val(snapshot.val());
       }
@@ -108,6 +135,7 @@ jQuery(document).ready(function($){
     if (btnselect!=null){
       btnselect.remove('clique');
     }
+    switchfen(true);
     btnselect = this.classList;
     btnselect.add('clique');
     var iframe = `<iframe src="/index2.html" width="100%" height="100%" frameBorder="0"></iframe>`;
@@ -117,6 +145,22 @@ jQuery(document).ready(function($){
     $("#interface_conv").append (iframe);
     $("#interface_conv").removeClass("invisible");
   });
+
+  $("#nouv_conv").click(function(event){
+    if (btnselect!=null){
+      btnselect.remove('clique');
+    }
+    switchfen(true);
+    btnselect = this.classList;
+    btnselect.add('clique');
+    var iframe = `<iframe src="/nouvelle_conversation.html" width="100%" height="100%" id="emb_nouv" frameBorder="0"></iframe>`;
+    $("#charge").removeClass("invisible");
+    $("#msg_defaut_conv").addClass("invisible");
+    $("#interface_conv").removeClass("invisible");
+    $("#interface_conv").empty();
+    $("#interface_conv").append (iframe);
+  })
+
 
   $("#btn_msg").on("click", function(event){
     if (btnselect!=null){
@@ -166,6 +210,7 @@ jQuery(document).ready(function($){
         if (btnselect!=null){
           btnselect.remove('clique');
         }
+        switchfen(false);
         setTimeout(function(){ notif.className = notif.className.replace("show", ""); }, 3000);
       });
     }
@@ -188,6 +233,7 @@ jQuery(document).ready(function($){
       if (btnselect!=null){
         btnselect.remove('clique');
       }
+      switchfen(false);
       setTimeout(function(){ notif.className = notif.className.replace("show", ""); }, 3000);
     })});
 
@@ -200,14 +246,15 @@ jQuery(document).ready(function($){
       if (btnselect!=null){
         btnselect.remove('clique');
       }
+      switchfen(true);
       
-    })
-    $("#nouv_conv").click(function(event){
-      sessionStorage.setItem("co",1);
-      window.location = "nouvelle_conversation.html";
     })
 
     $("#deco").click(function(event){
+      document.getElementById('conf_deco').style.display='block'
+    });
+
+    $("#vrai_deco").click(function(event){
       firebase.auth().signOut().then(() => {
         sessionStorage.setItem("co",0);
         window.location = "authentification.html";
@@ -217,4 +264,18 @@ jQuery(document).ready(function($){
         setTimeout(function(){ notif.className = notif.className.replace("show", ""); }, 3000);
       });
     })
+
+    $("#retour").click(function(event){
+      switchfen(false);
+    })
+    
+    // confirmation deco
+  var modal = document.getElementById('conf_deco');
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
 });

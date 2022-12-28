@@ -5,30 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Vidar</title>
     <link rel="stylesheet" href="/nouvelle_conversation.css" />
-
+    
   </head>
   <body>
     <div id="codeu">
-        <form class="form" id="code">
+        <div class="form" id="code">
             <input class="full-width has-padding has-border" id="destinataire-input" type="text" placeholder="code">
-            <input class="full-width" id="vers_dis" type="submit" value="Rejoindre la conversation">  
-        </form>
+            <button class="full-width" id="vers_dis">Rejoindre la conversation</button>  
+        </div>
 
         <span >OU</span>
 
-        <form class="form" id="QR-code">
-            <input class="full-width" type="submit" id="btn-scan-qr" value="Scanner un QR-code">
-        </form>
-            
-
-        <img id="qr-canvas"/>
-
-        <div id="qr-result" hidden="">
-            <b>Data:</b> <span id="outputData"></span>
+        <div class="form" id="QR-code">
+            <button class="full-width"id="btn-scan-qr">Scanner un QR-code</button> 
         </div>
+            
+        
+        <img id="qr-canvas"/>
     </div>
+    <div id="reader"  class="invisible"></div>
 
     <!-- scripts (SDK+ code) -->
+    <script src="html5-qrcode.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script> 
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>

@@ -1,9 +1,11 @@
 body {
+    visibility: visible;
     background-color: #f3f2f3;
-    margin: 0;
+    margin: 0px;
     margin-top: 10px;
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
+    opacity: 1;
 }
 
 h1{
@@ -83,7 +85,7 @@ button:hover{
 
 .plusconv {
     background-color: rgb(0, 23, 136);
-    position: absolute;
+    position: fixed;
     bottom: 50px;
     left: 50px;
     width: auto;
@@ -100,6 +102,16 @@ button:hover{
     right: 10px;
     top: 8px;
     padding: 12px 14px;
+    background-color: RoyalBlue;
+}
+
+#retour{
+    width: fit-content;
+    border-radius: 3px;
+    position: fixed;
+    left: 10px;
+    top: 8px;
+    padding: 12px 16px;
     background-color: RoyalBlue;
 }
 
@@ -152,9 +164,13 @@ header {
     z-index: 1;
     top: 0;
     overflow-x: hidden;
+    margin: 10px;   
+}
+.splitmobile{
+    height: 100%;
     margin: 10px;
-    
-    
+    margin-top: 40px;
+    position: fixed;
 }
 
 .liste_msg{
@@ -165,6 +181,56 @@ header {
 .msg{
     right: 0;
 }
+
+
+@media only screen and (max-width: 600px){
+    .split{
+        width: 100%;
+        transition: visibility 0s, opacity 0.5s linear;
+        margin: 10px 0 10px 0 ;
+    }
+    .liste_msg{
+        border: none;
+    }
+    #editeur{
+        margin-top: 50px;
+    }
+    .button{
+        margin: 0px;
+    }
+
+    form button{
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    textarea{
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #en_tete{
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #editeur{
+        height: 90%;
+    }
+
+    .plusconv{
+        left:unset;
+        bottom: 30px;
+    }
+    .plus{
+        left:unset;
+        bottom: 30px;
+    }
+    .liste_msg #deco {
+        top:unset;
+        bottom:30px;
+    }
+}
+
 
 .haut{
     white-space: nowrap;
@@ -221,7 +287,7 @@ li {
 }
 
 #interface_conv{
-    height: 97%;
+    height: 98%;
 }
 
 .selection{
@@ -308,6 +374,160 @@ li:hover{
     display: none;
 }
 
+.clearfix{
+    display: flex;
+}
+/* Float cancel and delete buttons and add an equal width */
+.cancelbtn, .decobtn {
+    float: left;
+    width: 50%;
+    margin: 0;
+  }
+  
+  /* Add a color to the cancel button */
+  .cancelbtn {
+    background-color: #ccc;
+    color: black;
+  }
+
+  .cancelbtn:hover{
+    background-color: gray;
+  }
+  
+  /* Add a color to the delete button */
+  .decobtn {
+    background-color: royalblue;
+  }
+  .decobtn:hover{
+    background-color: rgb(0, 32, 126);
+  }
+  
+  /* Add padding and center-align text to the container */
+  .container {
+    padding: 16px;
+    text-align: center;
+  }
+  
+  /* The Modal (background) */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: #474e5d;
+    padding-top: 50px;
+  }
+  
+  /* Modal Content/Box */
+  .modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+  }
+  
+  /* Style the horizontal ruler */
+  hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 25px;
+  }
+  
+  /* The Modal Close Button (x) */
+  .close {
+    position: absolute;
+    right: 35px;
+    top: 15px;
+    font-size: 40px;
+    font-weight: bold;
+    color: #f1f1f1;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #f44336;
+    cursor: pointer;
+  }
+  
+  /* Clear floats */
+  .clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  /* Change styles for cancel button and delete button on extra small screens */
+  @media screen and (max-width: 300px) {
+    .cancelbtn, .deletebtn {
+      width: 100%;
+    }
+  }
+
+  /* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+    
+    /* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color:  rgb(56, 56, 56);
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    
+      /* Position the tooltip text */
+      position: absolute;
+      z-index: 1;
+      bottom: auto;
+      top:5px;
+      right: 128%;
+    
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+#retour .tooltiptext{
+    left: 128%;
+}
+
+
+    
+/* Tooltip arrow */
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color:  transparent transparent transparent rgb(56, 56, 56);
+}
+
+#retour .tooltiptext::after{
+    left: unset;
+    right: 100%;
+    border-color: transparent rgb(56, 56,56)  transparent transparent;
+}
+    
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
 .invisible{
+    visibility: hidden;
     display: none;
+    transition:opacity 0.5s linear;
+    opacity: 0;
 }

@@ -19,9 +19,9 @@ import java.util.List;
 
 public class AdaptateurAdapte extends RecyclerView.Adapter<AdaptateurAdapte.ViewHolder> {
 
-    private Context context;
-    private List<Utilisateur> mUtilisateurs;
-    private List<String> idConversations;
+    private final Context context;
+    private final List<Utilisateur> mUtilisateurs;
+    private final List<String> idConversations;
 
 
     public AdaptateurAdapte(@NonNull Context context, List<Utilisateur>mUtilisateurs, List<String> idConversations) {
@@ -34,14 +34,14 @@ public class AdaptateurAdapte extends RecyclerView.Adapter<AdaptateurAdapte.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.profil_conv, parent,false);
-        return new AdaptateurAdapte.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Utilisateur utilisateur = mUtilisateurs.get(position);
         holder.nomUtilisateur.setText(utilisateur.getUsername());
-        if (utilisateur.getImageURL().equals("defaut")){
+        if (utilisateur!= null && utilisateur.getImageURL().equals("defaut")){
             holder.profileImage.setImageResource(R.drawable.ic_launcher_foreground);
         }
         holder.itemView.setOnClickListener(v->{
@@ -57,9 +57,9 @@ public class AdaptateurAdapte extends RecyclerView.Adapter<AdaptateurAdapte.View
         return mUtilisateurs.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView nomUtilisateur;
-        public ImageView profileImage;
+    public static class ViewHolder extends RecyclerView.ViewHolder{
+        private final TextView nomUtilisateur;
+        private final ImageView profileImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

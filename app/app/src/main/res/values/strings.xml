@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Vidar</string>
     <string name="defaut">[Erreur  >:| ]</string>
-    <string name="hello_blank_fragment">Imposteur!</string>
+    <string name="hello_blank_fragment">Rien pour le moment :.(</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
@@ -52,4 +52,30 @@
     <string name="btn_connexion">Connexion</string>
     <string name="check_souviens_moi">Se souvenir de moi</string>
     <string name="hint_mail">Adresse mail</string>
+    <string name="annuler">Annuler</string>
+    <string name="pop_titre_deco">Déconnexion</string>
+    <string name="pop_msg_deco">Voulez-vous vraiment vous déconnecter?</string>
+    <string name="hint_nouv_mdp">Nouveau mot de passe</string>
+    <string name="btn_se_co">Se connnecter</string>
+    <string name="txt_ou">OU</string>
+    <string name="btn_s_inscr">S\'inscrire</string>
+    <string name="txt_explic_co">Cette étape est nécessaire. Cela nous permettra d\'identifier les destinataires des discussions</string>
+    <string name="txt_err_mdp_court">Utilisez un mot de passe d\'au moins 6 caractères</string>
+    <string name="img_profil">image de profil de votre interlocuteur</string>
+    <string name="txt_pseudo_dest">Monsieur X</string>
+    <string name="img_btn_choix_msg">Choisir un messages enregistré</string>
+    <string name="hint_votre_msg">Votre message</string>
+    <string name="img_btn_envoyer">Envoyer le message</string>
+    <string name="btn_lire_txt">Lire le texte</string>
+    <string name="hint_intitule">Intitulé</string>
+    <string name="hint_msg">Message</string>
+    <string name="btn_enr">Enregistrer</string>
+    <string name="btn_supr">Supprimer</string>
+    <string name="txt_pas_de_conv">Vous n\'avez aucune conversation en cours pour le moment.</string>
+    <string name="img_nouv_msg">Bouton pour créer un nouveau message.</string>
+    <string name="txt_instruc_liste_msg">Pour lire et modifier les messages enregistrés appuyez dessus.\n Pour en créer un nouveau, utilisez le bouton vert</string>
+    <string name="scroll_dsc_liste_msg_enr">liste des messages enregistrés. Appuyez sur l\'un d\'eux pour le lire ou le modifier.</string>
+    <string name="txt_date">date: XX/XX/XXXX</string>
+    <string name="txt_objet">OBJET: demande...</string>
+    <string name="txt_corps">blablablabblablablanblablablablablbablablbalablablablablablablablablablabla</string>
 </resources>

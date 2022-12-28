@@ -6,27 +6,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowInsets;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentController;
-import androidx.fragment.app.FragmentManager;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,7 +29,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
@@ -55,23 +45,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final int flags = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        /*final int flags = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        getWindow().getDecorView().setSystemUiVisibility(flags);
+        getWindow().getDecorView().setSystemUiVisibility(flags);*/
+        WindowInsetsControllerCompat windowInsetsController =
+                WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        // Configure the behavior of the hidden system bars.
+        windowInsetsController.setSystemBarsBehavior(
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        );
+
 
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return false;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -90,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private ValueEventListener initConv = new ValueEventListener(){
+    private final ValueEventListener initConv = new ValueEventListener(){
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             if (!dataSnapshot.hasChildren()){   //nouvelle discussion

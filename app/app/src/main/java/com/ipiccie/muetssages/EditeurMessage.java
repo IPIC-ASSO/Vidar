@@ -28,32 +28,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Locale;
 import java.util.Objects;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditeurMessage#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class EditeurMessage extends Fragment {
 
     public EditeurMessage() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditeurMessage.
-     */
-
-    public static EditeurMessage newInstance(String param1, String param2) {
-        EditeurMessage fragment = new EditeurMessage();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -71,7 +52,7 @@ public class EditeurMessage extends Fragment {
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
-        String intitule = "une erreur est survenue";        //message par défaut, ne devrait jamais s'afficher...
+        String intitule;        //message par défaut, ne devrait jamais s'afficher...
         String corpsMessage;
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         EditText inti = view.findViewById(R.id.intitule);   //titre du message
@@ -79,7 +60,6 @@ public class EditeurMessage extends Fragment {
         if(ab != null){
             ab.setDisplayHomeAsUpEnabled(true);
         }
-        Log.d(TAG, "onViewCreated: "+getArguments().getString("intitulé"));
         if (getArguments() != null &&!Objects.equals(getArguments().getString("intitulé"), "inconnu au bataillon")) {
             intitule = getArguments().getString("intitulé");
             corpsMessage = getArguments().getString("message");
@@ -90,7 +70,7 @@ public class EditeurMessage extends Fragment {
             inti.setText(intitule);
             msg.setText(corpsMessage);
         }
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(Objects.requireNonNull(firebaseUser).getUid()).child("messages");
         view.findViewById(R.id.enregistre_msg).setOnClickListener(v->{
             if(!inti.getText().toString().equals("") && !msg.getText().toString().equals("")){
                 databaseReference.child(inti.getText().toString()).removeValue();
@@ -114,7 +94,7 @@ public class EditeurMessage extends Fragment {
         textToSpeech.setLanguage(Locale.FRANCE);
         textToSpeech.setSpeechRate(1.3F);
         view.findViewById(R.id.lecteur_messages_editeur).setOnClickListener(w-> {
-            textToSpeech.speak(msg.getText().toString(),TextToSpeech.QUEUE_FLUSH,null);
+            textToSpeech.speak(msg.getText().toString(),TextToSpeech.QUEUE_FLUSH,null,null);
             Toast.makeText(this.getContext(),"Lecture en cours",Toast.LENGTH_SHORT).show();
         });
 

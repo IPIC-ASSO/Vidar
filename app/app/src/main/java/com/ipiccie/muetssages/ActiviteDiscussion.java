@@ -18,6 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,23 +43,14 @@ import java.util.Locale;
 public class ActiviteDiscussion extends AppCompatActivity {
 
     private DatabaseReference reference;
-    private FirebaseUser fuser;
+    
     private List<Chat> listeDeChats;
     private RecyclerView recyclage;
     private HashMap<String, String> listeDeMessages;
     private TextToSpeech textToSpeech;
 
-    private String dB = "https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app";
+    private static final String db = "https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app";
 
-    /*@Override
-    public void onNewToken(@NonNull String token) {
-        Log.d(TAG, "Refreshed token: " + token);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // FCM registration token to your app server.
-        sendRegistrationToServer(token);
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,27 +74,30 @@ public class ActiviteDiscussion extends AppCompatActivity {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         EditText msg = findViewById(R.id.mon_message);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listeDeMessages = new HashMap<>();
-                Log.d(TAG, "onDataChange: "+snapshot.getValue());
-                if (snapshot.getValue()!= null){
-                    listeDeMessages = (HashMap<String, String>) snapshot.getValue();
+        DatabaseReference databaseReference;
+        if (firebaseUser != null) {
+            databaseReference = FirebaseDatabase.getInstance(db).getReference().child("Users").child(firebaseUser.getUid()).child("messages");
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    listeDeMessages = new HashMap<>();
+                    Log.d(TAG, "onDataChange: "+snapshot.getValue());
+                    if (snapshot.getValue()!= null){
+                        listeDeMessages = (HashMap<String, String>) snapshot.getValue();
+                    }
+                    listeMessages();
                 }
-                listeMessages();
-            }
 
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d(TAG, "onCancelled: "+error );
+                }
+            });
+        }
 
         Log.d(TAG, "onCreate: "+listeDeMessages);
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
         if (fuser == null){
             Toast.makeText(this,"Une erreur est survenue. Veuillez redémarer l'application",Toast.LENGTH_LONG).show();
         }else{
@@ -112,7 +109,7 @@ public class ActiviteDiscussion extends AppCompatActivity {
             String idUti = getIntent().getStringExtra("id");    // id interlocuteur
             String idDis = getIntent().getStringExtra("dis");    // id discussion
             Log.d(TAG, "onCreate: "+idDis);
-            reference = FirebaseDatabase.getInstance(dB).getReference().child("Users").child(idUti);
+            reference = FirebaseDatabase.getInstance(db).getReference().child("Users").child(idUti);
             reference.child("contact").setValue(" ");
             TextView nomUti = findViewById(R.id.utilisateur_conv_dis);
             ImageView imgUti = findViewById(R.id.image_profile_dis);
@@ -125,7 +122,7 @@ public class ActiviteDiscussion extends AppCompatActivity {
                     if (uti.getImageURL()!= null && uti.getImageURL().equals("defaut")){
                         imgUti.setImageResource(R.drawable.ic_launcher_foreground);
                     }
-                    postier(fuser.getUid(),idUti, idDis);
+                    postier(idDis);
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
@@ -141,12 +138,21 @@ public class ActiviteDiscussion extends AppCompatActivity {
             });
         }
 
-        final int flags = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        /*final int flags = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        getWindow().getDecorView().setSystemUiVisibility(flags);
+        getWindow().getDecorView().setSystemUiVisibility(flags);*/
+        WindowInsetsControllerCompat windowInsetsController =
+                WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        // Configure the behavior of the hidden system bars.
+        windowInsetsController.setSystemBarsBehavior(
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_SWIPE
+        );
+
 
         ActionBar ab = (this.getSupportActionBar());
         if(ab != null){
@@ -170,16 +176,16 @@ public class ActiviteDiscussion extends AppCompatActivity {
 
     public void envoyerMessage(String envoyeur, String idDiscussion, String message){
         Log.d(TAG, "envoyerMessage: "+"OKOKHOK");
-        DatabaseReference reference2 = FirebaseDatabase.getInstance(dB).getReference();
+        DatabaseReference reference2 = FirebaseDatabase.getInstance(db).getReference();
         HashMap<String, String> carteDeH = new HashMap<>();
         carteDeH.put("envoyeur",envoyeur);
         carteDeH.put("message",message);
         reference2.child("Chats").child(idDiscussion).child(String.valueOf(System.currentTimeMillis())).setValue(carteDeH);
     }
 
-    public void postier(String mId, String uId, String idDiscussion){
+    public void postier(String idDiscussion){
         listeDeChats = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance(dB).getReference().child("Chats").child(idDiscussion);
+        reference = FirebaseDatabase.getInstance(db).getReference().child("Chats").child(idDiscussion);
         reference.addValueEventListener(ecouteNouvMessages);
     }
 
@@ -203,29 +209,35 @@ public class ActiviteDiscussion extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                reference.removeEventListener(ecouteNouvMessages);
-                finish();
-                startActivity(new Intent(this, MainActivity.class));
-                return true;
-            default:
-                return false;
+        if (item.getItemId() == android.R.id.home) {
+            reference.removeEventListener(ecouteNouvMessages);
+            finish();
+            startActivity(new Intent(this, MainActivity.class));
+            return true;
         }
+        return false;
     }
 
     public void popUp(String texte){
         AlertDialog.Builder constr = new AlertDialog.Builder(this);
-        constr.setTitle("Actions sur le message"+texte);
+        constr.setTitle("Actions sur le message : "+texte);
         View vue = View.inflate(this, R.layout.pop_up_message,null);
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid()).child("messages");
+        DatabaseReference databaseReference = null;
+        if (firebaseUser != null) {
+            databaseReference = FirebaseDatabase.getInstance(db).getReference().child("Users").child(firebaseUser.getUid()).child("messages");
+        }
         constr.setView(vue);
         AlertDialog show = constr.show();
+        DatabaseReference finalDatabaseReference = databaseReference;
         vue.findViewById(R.id.pop_enr_mes).setOnClickListener(v->{
-            databaseReference.child(texte.substring(0,Math.min(20, texte.length()))).removeValue();
-            databaseReference.child(texte.substring(0,Math.min(20, texte.length()))).setValue(texte);
-            Toast.makeText(this, "Enregistré !", Toast.LENGTH_SHORT).show();
+            if (finalDatabaseReference != null) {
+                finalDatabaseReference.child(texte.substring(0,Math.min(20, texte.length()))).removeValue();
+                finalDatabaseReference.child(texte.substring(0,Math.min(20, texte.length()))).setValue(texte);
+                Toast.makeText(this, "Enregistré !", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "Enregistrement impossible", Toast.LENGTH_SHORT).show();
+            }
             show.dismiss();
         });
         vue.findViewById(R.id.pop_lit_mes).setOnClickListener(v->{
@@ -238,9 +250,6 @@ public class ActiviteDiscussion extends AppCompatActivity {
 
                         textToSpeech.setLanguage(Locale.FRANCE);
                         textToSpeech.setSpeechRate(1.3F);
-
-                        // NEW LOCATION
-                        //textToSpeech.speak("Hi you succesfully ran me.", TextToSpeech.QUEUE_FLUSH, null, null);
                         textToSpeech.speak(texte, TextToSpeech.QUEUE_FLUSH, null, null);
                     }
 

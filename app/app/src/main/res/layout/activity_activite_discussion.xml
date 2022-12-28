@@ -16,7 +16,7 @@
             android:id="@+id/image_profile_dis"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:contentDescription="image de profil de votre interlocuteur"
+            android:contentDescription="@string/img_profil"
             app:srcCompat="@drawable/ic_launcher_foreground" />
 
         <TextView
@@ -26,7 +26,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
             android:layout_toEndOf="@id/image_profile_dis"
-            android:text="Monsieur X"
+            android:text="@string/txt_pseudo_dest"
             android:textSize="16sp" />
 
     </RelativeLayout>
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            android:contentDescription="Choisir un messages enregistré"
+            android:contentDescription="@string/img_btn_choix_msg"
             android:minWidth="48dp"
             android:minHeight="48dp"
             app:srcCompat="@drawable/ic_baseline_text_snippet_24" />
@@ -61,7 +61,7 @@
             android:layout_height="55dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Votre message"
+            android:hint="@string/hint_votre_msg"
             android:inputType="textPersonName" />
 
         <ImageButton
@@ -69,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            android:contentDescription="Envoyer le message"
+            android:contentDescription="@string/img_btn_envoyer"
             android:minWidth="48dp"
             android:minHeight="48dp"
             app:srcCompat="@drawable/ic_baseline_send_24" />

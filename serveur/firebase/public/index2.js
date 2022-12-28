@@ -37,12 +37,6 @@ function inscrit(e){  //pour inscrire les nouveaux utilisateurs
     });
 }
 
-function connecte(e){ //connexion
-  e.preventDefault();
-  alert("en chantier (ça ne fonctionnera pas)")
-  const email = document.getElementById("e-mail");
-  const mdp = document.getElementById("mot-de-passe");
-}
 
 function renomme(ancUti, nouvUti){ //changement valeurs anonyme a identifié
   db.ref("Users/"+ancUti.uid).remove(); //supr ancien utilisateur
@@ -99,11 +93,9 @@ function connecteAnonyme(){   //session temporaire
 
 firebase.auth().onAuthStateChanged((user) => {  //écoute le changement de statut de l'utilisateur
   if (user) {//co
-    //alert("Vous êtes connectés! (L'eussiez-vous cru?)"+ user.uid);
     utilisateur = user;
     initConv(destinataire);
   } else {//deco
-    alert("Adieu :.(");
   }
 });
 
@@ -157,7 +149,7 @@ function initFinale(){  //met en place les écouteurs et affiche les messages
       pseudo = snapshot.val();  //récupère le pseudo de l'utilisateur
     } else {
       console.log("No data available");
-      alert("sombre inconnu!")
+      alert("Impossible de récupérer votre profil :(")
     }
   }).catch((error) => {
     console.error(error);
@@ -211,7 +203,6 @@ if(destinataire==null){
 
 if (firebase.auth.currentUser==null && SessionCo == null){  //créé une session temporaire
   connecteAnonyme();  //session temporaire
-  alert("session temporaire")
 }else{
   $(".open-button").addClass(".invisible")
 }
@@ -234,6 +225,10 @@ function fermeFormulaire() {
 
 $("#mes_msg").click(function(event){
   $("#liste_des_messages").toggleClass("invisible");
+})
+
+$("#maison").on('click',function(event){
+  window.location = "authentification.html";
 })
 
 $("#liste_des_messages").on("click", ".msg_boite_leger", function(event){

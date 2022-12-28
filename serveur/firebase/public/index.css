@@ -249,6 +249,14 @@ margin: 0; /* Important for vertical align on mobile phones */
 .form-container .btn:hover, .open-button:hover {
     opacity: 1;
 }
+
+@media only screen and (max-width: 600px){
+    #chat{
+        width: unset;
+    }
+}
+
+
 .invisible{
     display: none;
 }

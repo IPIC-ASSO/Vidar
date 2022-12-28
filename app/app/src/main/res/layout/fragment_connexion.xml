@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Se connnecter" />
+            android:text="@string/btn_se_co" />
 
         <View
             android:id="@+id/divider4"
@@ -47,7 +47,7 @@
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="OU"
+            android:text="@string/txt_ou"
             android:textAlignment="center" />
 
         <View
@@ -61,13 +61,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="S'Inscrire" />
+            android:text="@string/btn_s_inscr" />
 
         <TextView
             android:id="@+id/textView8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cette étape est nécessaire. Cela nous permettra d'identifier les destinataires des discussions"
+            android:text="@string/txt_explic_co"
             android:textAlignment="center" />
     </LinearLayout>
 
@@ -88,7 +88,8 @@
             android:layout_marginBottom="5dp"
             android:ems="10"
             android:hint="@string/hint_mail"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/motdepasse_connexion"
@@ -141,7 +142,7 @@
             android:ems="10"
             android:hint="@string/hint_mail"
 
-            android:inputType="textPersonName" />
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/nom_utilisateur"
@@ -160,8 +161,8 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:ems="10"
-            android:hint="Mot de passe"
-            android:inputType="textPersonName" />
+            android:hint="@string/hint_mdp"
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/btn_valider_inscription"
@@ -169,7 +170,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="s'inscrire" />
+            android:text="@string/btn_s_inscr" />
 
         <TextView
             android:id="@+id/textView9"
@@ -177,7 +178,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="Utilisez un mot de passe d'au moins 6 caractères" />
+            android:text="@string/txt_err_mdp_court" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
