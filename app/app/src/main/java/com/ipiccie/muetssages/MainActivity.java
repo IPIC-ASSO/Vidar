@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -59,9 +60,19 @@ public class MainActivity extends AppCompatActivity {
         windowInsetsController.setSystemBarsBehavior(
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         );
-
+        Intent intent = getIntent();
+        Uri data = intent.getData();
+        if (data!=null) lien(String.valueOf(data));
 
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Uri data = intent.getData();
+        if (data!=null) lien(String.valueOf(data));
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -77,13 +88,7 @@ public class MainActivity extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
         Log.d(TAG, "onActivityResult: "+resultCode);
         if (resultCode!= 0){
-            destinataire = result.getContents();
-            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-            Toast.makeText(this,"Mise à jour des données", Toast.LENGTH_LONG).show();
-            assert firebaseUser != null;
-            databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("ListeChats").child(firebaseUser.getUid()+result.getContents());
-            databaseReference.addValueEventListener(initConv);
-
+            lien (result.getContents());
         }
     }
 
@@ -114,6 +119,18 @@ public class MainActivity extends AppCompatActivity {
             Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
         }
     };
+
+    public void lien(String code){
+        destinataire = code;
+        destinataire = destinataire.replace("https://","");
+        destinataire = destinataire.replace("vidar-9e8ac.web.app/?dest=","");
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        Toast.makeText(this,"Mise à jour des données", Toast.LENGTH_LONG).show();
+        assert firebaseUser != null;
+        databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("ListeChats").child(firebaseUser.getUid()+destinataire);
+        databaseReference.addValueEventListener(initConv);
+    }
+
 
     /*@Override
     public void onBackPressed() {

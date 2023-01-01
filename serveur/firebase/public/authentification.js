@@ -13,6 +13,11 @@ var firebaseConfig = {
   const auth = firebase.auth();
   const db = firebase.database();
   
+function verif_dest(){
+    const searchParams = new URLSearchParams(window.location.search);
+    return (searchParams.get('dest'));
+  }
+
   function inscrit(e){
       //e.preventDefault();
       const email = document.getElementById("e-mail-inscription");
@@ -27,7 +32,11 @@ var firebaseConfig = {
               username:document.getElementById("pseudo")
             });
             sessionStorage.setItem("co",1);
-            window.location = "menu_principal.html";
+            if(destinataire!=null){
+                db.ref("/Users/"+destinataire+"/contact").set(user.uid);
+                window.location = "index2.html";
+            }
+            else window.location = "menu_principal.html";
       })
       .catch((error) => {
           const errorCode = error.code;
@@ -46,7 +55,12 @@ var firebaseConfig = {
           // Signed in 
           const user = userCredential.user;
           sessionStorage.setItem("co",1);
-          window.location = "menu_principal.html";
+          if(destinataire!=null){
+            db.ref("/Users/"+destinataire+"/contact").set(user.uid);
+            window.location = "index2.html";
+
+          }
+          else window.location = "menu_principal.html";
 
       })
       .catch((error) => {
@@ -65,6 +79,11 @@ var firebaseConfig = {
   }
 
 
+const destinataire = verif_dest();
+if (destinataire!=null){
+    sessionStorage.setItem("destinataire",destinataire);
+}
+
 jQuery(document).ready(function($){
 var $form_modal = $('.user-modal'),
     $form_login = $form_modal.find('#login'),
@@ -78,6 +97,7 @@ var $form_modal = $('.user-modal'),
     $back_to_login_link = $form_forgot_password.find('.form-bottom-message a'),
     $main_nav = $('.main-nav');
     $enr = $('.enr')
+    $sans_co = $('.continue')
 
 //open modal
 $enr.on('click', function(event){
@@ -94,6 +114,13 @@ $enr.on('click', function(event){
     ( $(event.target).is('.signup') ) ? signup_selected() : login_selected();
     }
 
+});
+
+$sans_co.on('click', function(event){
+    if(destinataire!=null){
+        window.location = "index2.html";
+    }
+    else window.location = "nouvelle_conversation.html";
 });
 
 //close modal

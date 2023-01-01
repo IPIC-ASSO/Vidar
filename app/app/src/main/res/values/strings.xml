@@ -36,7 +36,7 @@
     <string name="txt_mentions_legales">Ce QR-Code vous redirigera vers le site-web de IPIC-ASSO, pour vous permettre de discuter par message.\nAucune information ne sera collectée, aucun programme ne sera installé… \n Il s\'agit simplement d\'une interface de discussion</string>
     <string name="txt_defaut_msgèdessus_QR">TEXTE A AFFICHER \n\nblabla\n\nblabla\nbla\nbla\n\nBla</string>
     <string name="btn_lire_msg">Lire le message</string>
-    <string name="txt_infos_scan">\"Scannez le QR-code ou rendez vous sur http://ipic-asso.ddns.net, puis entrez le code: \"</string>
+    <string name="txt_infos_scan">Scannez le QR-code ou rendez vous sur http://ipic-asso.ddns.net, puis entrez le code: \"</string>
     <string name="verite_generale">Ipic vaincra!</string>
     <string name="btn_pop_enr_msg">Enregistrer le message</string>
     <string name="btn_pop_rep_msg">Répondre au message</string>

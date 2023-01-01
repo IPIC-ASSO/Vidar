@@ -80,6 +80,7 @@ function connecteAnonyme(){   //session temporaire
           imageURL:"defaut",
           username: "utilisateur "+timestamp
         });
+        db.ref("/Users/"+destinataire+"/contact").set(uti.uid);
       }
     });
     $("#maison").removeClass("invisible");
@@ -165,6 +166,9 @@ function initFinale(){  //met en place les écouteurs et affiche les messages
     /* <span>${messages.envoyeur}: </span> --> à ajouter pour avoir l'envoyeur*/ 
     // ajout de la balise dans la page
     document.getElementById("messages").innerHTML += message;
+    document
+    .getElementById("messages")
+    .scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
   }); 
 }
 
@@ -197,8 +201,10 @@ function sendMessage(e) {
 
 const SessionCo = sessionStorage.getItem("co")
 var destinataire = sessionStorage.getItem("destinataire");
-if(destinataire==null){
-  destinataire = prompt("Destinataire?"); //identifiant du destinataire (valeur que donne le QR-code). Le système avec un code n'est pas encore mis en place. Peut être sauté.
+if(destinataire==null || destinataire.length<10){
+  alert("Une erreur est survenue. Correspondant introuvable");
+  window.location = "authentification.html";
+  //destinataire = prompt("Destinataire?"); //identifiant du destinataire (valeur que donne le QR-code)
 }
 
 if (firebase.auth.currentUser==null && SessionCo == null){  //créé une session temporaire

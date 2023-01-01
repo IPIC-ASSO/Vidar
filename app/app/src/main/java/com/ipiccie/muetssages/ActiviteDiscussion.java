@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class ActiviteDiscussion extends AppCompatActivity {
 
@@ -109,8 +110,8 @@ public class ActiviteDiscussion extends AppCompatActivity {
             String idUti = getIntent().getStringExtra("id");    // id interlocuteur
             String idDis = getIntent().getStringExtra("dis");    // id discussion
             Log.d(TAG, "onCreate: "+idDis);
+            FirebaseDatabase.getInstance(db).getReference().child("Users").child(fuser.getUid()).child("contact").setValue(" ");
             reference = FirebaseDatabase.getInstance(db).getReference().child("Users").child(idUti);
-            reference.child("contact").setValue(" ");
             TextView nomUti = findViewById(R.id.utilisateur_conv_dis);
             ImageView imgUti = findViewById(R.id.image_profile_dis);
             reference.addValueEventListener(new ValueEventListener() {
@@ -129,7 +130,7 @@ public class ActiviteDiscussion extends AppCompatActivity {
                     //RàS
                 }
             });
-            if (getIntent().getStringExtra("message")!= null){
+            if (getIntent().getStringExtra("message")!= null || !Objects.equals(getIntent().getStringExtra("message"), " ")){
                 envoyerMessage(fuser.getUid(),idDis,getIntent().getStringExtra("message"));
             }
             findViewById(R.id.envoyer_message).setOnClickListener(v->{

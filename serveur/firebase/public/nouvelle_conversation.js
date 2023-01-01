@@ -12,6 +12,7 @@ firebase.initializeApp(firebaseConfig); //initialise le projet
 
 const db = firebase.database();
 var utilisateur;
+var drapeau =0;
 const SessionCo = sessionStorage.getItem("co")
 
 
@@ -43,6 +44,8 @@ firebase.auth().onAuthStateChanged((user) => {  //écoute le changement de statu
   if (user) {//co
     utilisateur = user;
     generateBarCode(utilisateur.uid);
+    drapeau=0;
+    ecouteScan(utilisateur.uid);
   } else {//deco
   }
 });
@@ -52,6 +55,8 @@ function onScanSuccess(decodedText, decodedResult) {
 }
 
 function envoieCode(code){
+  code = code.toString.replace("https://","");
+  code = code.replace("vidar-9e8ac.web.app/?dest=","");
   sessionStorage.setItem("destinataire",code);
   window.location = "index2.html";
 
@@ -60,8 +65,26 @@ function envoieCode(code){
 function generateBarCode(code) 
 {
     var nric = $('#text').val();
-    var url = 'https://api.qrserver.com/v1/create-qr-code/?data=' + code + '&amp;size=200x200';
+    var url = 'https://api.qrserver.com/v1/create-qr-code/?data=' +"https://vidar-9e8ac.web.app/?dest="+ code + '&amp;size=200x200';
     $('#qr-canvas').attr('src', url);
+}
+
+function ecouteScan (uid){
+  db.ref("/Users/"+uid+"/contact").on('value', (snapshot) => {
+    if (drapeau==0){
+      drapeau = 1;
+    }else{
+      if (snapshot.exists()) {
+        
+        cont = snapshot.val();
+      
+        db.ref("/Users/"+uid+"/contact").set(null);
+        sessionStorage.setItem("destinataire",cont);
+        window.location = "index2.html";
+      }
+    }
+
+  });
 }
 
 //DEBUT
@@ -84,5 +107,6 @@ $("#btn-scan-qr").on("click", function(event){
   $("#reader").removeClass("invisible");
   $("#codeu").addClass("invisible");
 });
+
 
 

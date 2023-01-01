@@ -70,7 +70,7 @@ public class LanceDiscussion extends Fragment {
         if (firebaseUser!=null){
             TextView instructions = view.findViewById(R.id.instruction_scan);
             instructions.setText(String.format("%s%s", getString(R.string.txt_infos_scan), firebaseUser.getUid()));
-            QRGEncoder qrgEncoder = new QRGEncoder(firebaseUser.getUid(), null, QRGContents.Type.TEXT,Math.min(height,width));
+            QRGEncoder qrgEncoder = new QRGEncoder("https://vidar-9e8ac.web.app/?dest="+firebaseUser.getUid(), null, QRGContents.Type.TEXT,Math.min(height,width));
             image.setImageBitmap(qrgEncoder.getBitmap());
             DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(firebaseUser.getUid());
             databaseReference.addValueEventListener(new ValueEventListener() {

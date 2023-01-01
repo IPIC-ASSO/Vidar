@@ -62,7 +62,7 @@ function initconv(){
           contact = snapshot.val()
         }
         const conv = `<li class=msg_boite id=${
-        utilisateur.uid === conver.utilisateur1 ? uti1 : uti2}>${contact}</li>`
+        utilisateur.uid === uti1 ? uti2 : uti1}>${contact}</li>`
         // ajout de la balise dans la page
         document.getElementById("conversations").innerHTML += conv;
       });
@@ -135,6 +135,8 @@ jQuery(document).ready(function($){
     if (btnselect!=null){
       btnselect.remove('clique');
     }
+    var btn = this;
+    sessionStorage.setItem("destinataire",$(btn).attr('id'));
     switchfen(true);
     btnselect = this.classList;
     btnselect.add('clique');
@@ -257,6 +259,7 @@ jQuery(document).ready(function($){
     $("#vrai_deco").click(function(event){
       firebase.auth().signOut().then(() => {
         sessionStorage.setItem("co",0);
+        sessionStorage.setItem("destinataire",0);
         window.location = "authentification.html";
       }).catch((error) => {
         var notif = document.getElementById("snackbar");
