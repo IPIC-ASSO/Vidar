@@ -1,0 +1,16 @@
+
+\
+java:S1192P"FDefine a constant instead of duplicating this literal "Users" 4 times.(‘™û–
+_
+java:S1192…"HDefine a constant instead of duplicating this literal "message" 4 times.(ì«Ëí
+{	java:S1155"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ƒ¼ëÏşÿÿÿÿ8ÔöæõÖ0
+t
+java:S37769"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(¨Œşÿÿÿÿ8ğöæõÖ0
+N
+java:S1135F"2Complete the task associated to this TODO comment.(«Œ‘{8ööæõÖ0
+Y	java:S125“"<This block of commented-out lines of code should be removed.(ÈÉÀ8‚÷æõÖ0
+^	java:S125¯"<This block of commented-out lines of code should be removed.(¶ß‘şÿÿÿÿ8„÷æõÖ0
+U
+java:S1135§"2Complete the task associated to this TODO comment.(©¤âÀıÿÿÿÿ8„÷æõÖ0
+m
+java:S1874—"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(œƒƒ©ùÿÿÿÿ8Ÿ÷æõÖ0

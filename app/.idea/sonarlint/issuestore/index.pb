@@ -33,3 +33,19 @@ h
 8app/src/main/java/com/ipiccie/muetssages/Parametres.java,7\4\74f4a85fe3770c82479e189f4498ef681acb382e
 p
 @app/src/main/java/com/ipiccie/muetssages/client/Utilisateur.java,c\e\ce998ad86aa9d0f000ea40c2d16e85716a15a557
+p
+@app/src/main/java/com/ipiccie/muetssages/listeConversations.java,3\9\39b52b5a8045b7dce172d505d8887bf3968ec5f4
+t
+Dapp/src/main/java/com/ipiccie/muetssages/ConfigLancerDiscussion.java,d\b\db675a275b4af473e612ff31e182ee7fe5a57d2a
+S
+#.idea/sonarlint/issuestore/index.pb,9\f\9fe84ebb15faf917b7def6236dba604453cc61e0
+@
+app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
+p
+@app/src/main/java/com/ipiccie/muetssages/ActiviteDiscussion.java,7\a\7a3fc1b6d163db8d4f29735e10f11b3e8beb6772
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+m
+=app/src/main/java/com/ipiccie/muetssages/LanceDiscussion.java,2\6\26653faf02e984d48399e82ee95bf71a093514de
+j
+:app/src/main/java/com/ipiccie/muetssages/MainActivity.java,e\8\e8f20acf74cd38d08452a8f948de773174a22747
