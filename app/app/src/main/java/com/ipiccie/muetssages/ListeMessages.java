@@ -3,6 +3,7 @@ package com.ipiccie.muetssages;
 import static android.content.ContentValues.TAG;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -113,7 +115,8 @@ public class ListeMessages extends Fragment {
         for (String intitule:listeDeMessages.keySet()){
             Button txt = new Button(new ContextThemeWrapper(this.getContext(),stylebouton), null, stylebouton);
             txt.setText(intitule);
-            txt.setBackgroundColor(Color.parseColor("#DDDDDD"));
+            txt.setTextColor(getResources().getColor(R.color.bleu_doux));
+            txt.setBackgroundResource(R.color.fond_msg);
             txt.setLayoutParams(params);
             liste.addView(txt);
             final String msg = listeDeMessages.get(intitule);

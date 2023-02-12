@@ -85,10 +85,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
-        Log.d(TAG, "onActivityResult: "+resultCode);
-        if (resultCode!= 0){
-            lien (result.getContents());
+        if (requestCode == 210012) {
+            Log.d(TAG, "onActivityResult: "+resultCode);
+            if (resultCode != RESULT_OK) {
+                Log.d(TAG, "Echec de la MàJ :0 " + resultCode);
+            }
+        }else{
+            IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
+            Log.d(TAG, "onActivityResult: "+resultCode);
+            if (resultCode!= 0){
+                lien (result.getContents());
+            }
         }
     }
 

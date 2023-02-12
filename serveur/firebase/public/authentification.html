@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="fr" >
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width">
-  <title>Vidar -connexion</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css'>
-    <link rel="stylesheet" href="./authentification.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Vidar -connexion</title>
+	<link rel="icon" type="image/png" href="path-to-your-favicon"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css'>
+	<link rel="stylesheet" href="./authentification.css">
 
 </head>
 <body>
@@ -35,14 +36,14 @@
 					<p class="fieldset">
 						<label class="image-replace email" for="e-mail">E-mail</label>
 						<input class="full-width has-padding has-border" id="e-mail" type="email" placeholder="E-mail">
-						<span class="error-message">Aucun compte lié à cette adresse e-mail</span>
+						<span class="error-message" id="err-mail">Aucun compte lié à cette adresse e-mail</span>
 					</p>
 
 					<p class="fieldset">
 						<label class="image-replace password" for="mot-de-passe">Mot de passe</label>
 						<input class="full-width has-padding has-border" id="mot-de-passe" type="password"  placeholder="Password">
 						<a href="#0" class="hide-password">Afficher</a>
-						<span class="error-message">Mot de passe incorrect, veuillez réessayer</span>
+						<span class="error-message" id="err-mdp">Mot de passe incorrect, veuillez réessayer</span>
 					</p>
 
 					<p class="fieldset">
@@ -64,25 +65,27 @@
 					<p class="fieldset">
 						<label class="image-replace email" for="e-mail-inscription">E-mail</label>
 						<input class="full-width has-padding has-border" id="e-mail-inscription" type="email" placeholder="E-mail">
-						<span class="error-message">Entrez une adresse e-mail valide!</span>
+						<span class="error-message" id="err-mail-ins">Adresse e-mail non valide ou déjà utilisée</span>
 					</p>
 
                     <p class="fieldset">
 						<label class="image-replace username" for="pseudo">Nom d'utilisateur</label>
 						<input class="full-width has-padding has-border" id="pseudo" type="text" placeholder="Nom d'utilisateur">
-						<span class="error-message">Votre nom d'utilisateur ne peut contenir que des caractères alphanumériques!</span>
+						<span class="error-message"  id="err-pseudo">Choisissez un nom d'utilisateur !</span>
 					</p>
 
 					<p class="fieldset">
 						<label class="image-replace password" for="mot-de-passe-inscription">Mot de passe</label>
 						<input class="full-width has-padding has-border" id="mot-de-passe-inscription" type="password"  placeholder="Mot de passe">
 						<a href="#0" class="hide-password">Afficher</a>
-						<span class="error-message">Votre mot de passe doit faire au moins 6 caractères!</span>
+						<span class="error-message" id="err-mdp-ins">Votre mot de passe doit faire au moins 6 caractères!</span>
 					</p>
 
 					<p class="fieldset">
 						<input type="checkbox" id="accept-terms">
-						<label for="accept-terms">J'accepte les  <a class="accept-terms" href="http://perdu.com/">Conditions Générales d'Utilisation</a></label>
+						<label for="accept-terms">J'accepte les  <a class="accept-terms"  target="_blank" href="/CGU.pdf">Conditions Générales d'Utilisation <i class="fa fa-external-link" aria-hidden="true"></i>
+						</span></a></label>
+						<span class="error-message" id="err-CGU">Il est nécessaire d'accepter les CGU</span>
 					</p>
 
 					<p class="fieldset">
@@ -100,7 +103,7 @@
 					<p class="fieldset">
 						<label class="image-replace email" for="reset-email">E-mail</label>
 						<input class="full-width has-padding has-border" id="reset-email" type="email" placeholder="E-mail">
-						<span class="error-message">An account with this email does not exist!</span>
+						<span class="error-message">Aucun compte associé à cette adresse e-mail!</span>
 					</p>
 
 					<p class="fieldset">

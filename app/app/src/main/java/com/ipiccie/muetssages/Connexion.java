@@ -2,6 +2,8 @@ package com.ipiccie.muetssages;
 
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
+import static com.google.firebase.crashlytics.internal.Logger.TAG;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,6 +26,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ipiccie.muetssages.client.Utilisateur;
 
+import java.util.Objects;
+
 public class Connexion extends Fragment {
 
     private FirebaseAuth auth;
@@ -39,8 +43,8 @@ public class Connexion extends Fragment {
         SharedPreferences prefs = requireContext().getSharedPreferences("classes", Context.MODE_PRIVATE);
         CheckBox souviens = view.findViewById(R.id.souvenir_moi);
 
-        EditText mailCo= view.findViewById(R.id.mail_connexion);
-        EditText mdpCo= view.findViewById(R.id.motdepasse_connexion);
+        com.google.android.material.textfield.TextInputEditText mailCo= view.findViewById(R.id.mail_connexion);
+        com.google.android.material.textfield.TextInputEditText mdpCo= view.findViewById(R.id.motdepasse_connexion);
 
         if (prefs.getBoolean("souvenir",false)){
             souviens.setChecked(true);
@@ -108,6 +112,7 @@ public class Connexion extends Fragment {
                  Toast.makeText(getContext(), "Bienvenue ", Toast.LENGTH_SHORT).show();
                  findNavController(this).navigate(R.id.action_connexion_to_accueil);
              }else{
+                 Log.d(TAG, "connexion: "+ Objects.requireNonNull(task.getException()).toString());
                  Toast.makeText(getContext(),"Impossible de vous identifier. Veuillez réessayer ", Toast.LENGTH_SHORT).show();
              }
         });

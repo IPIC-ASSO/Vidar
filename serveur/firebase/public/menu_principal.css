@@ -95,7 +95,7 @@ button:hover{
     background-color: rgb(0, 63, 223);
 }
 
-#deco{
+#menu, #menu2{
     width: fit-content;
     border-radius: 3px;
     position: fixed;
@@ -225,7 +225,7 @@ header {
         left:unset;
         bottom: 30px;
     }
-    .liste_msg #deco {
+    .liste_msg #menu,#menu2 {
         top:unset;
         bottom:30px;
     }
@@ -237,6 +237,7 @@ header {
     display: flex;
     margin: auto;
     margin-top: 5px;
+    margin-right: 5px;
     padding: 5px;
     background-color: rgb(226, 226, 226);
 }
@@ -276,10 +277,10 @@ li {
     border: black solid 0px; 
     padding: 6px;
     width: 50%;
-    -webkit-transition: all 0.30s ease-in-out;
-        -moz-transition: all 0.30s ease-in-out;
-        -ms-transition: all 0.30s ease-in-out;
-        -o-transition: all 0.30s ease-in-out;
+    -webkit-transition: all 0.20s ease;
+        -moz-transition: all 0.20s ease;
+        -ms-transition: all 0.20s ease;
+        -o-transition: all 0.20s ease;
 }
 
 .tete:hover {
@@ -412,13 +413,13 @@ li:hover{
   .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 3; /* Sit on top */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
-    background-color: #474e5d;
+    background-color: #474e5daa;
     padding-top: 50px;
   }
   
@@ -523,6 +524,67 @@ li:hover{
 .tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
+}
+
+
+ /* The side navigation menu */
+ .navCote {
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 2; /* Stay on top */
+    top: 0; /* Stay at the top */
+    right: 0;
+    background-color: #111; /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+  }
+  
+  /* The navigation menu links */
+  .navCote a {
+    padding: 8px 8px 8px 27px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .navCote a:hover {
+    color: #f1f1f1;
+  }
+  
+  /* Position and style du bouton "fermer" */
+  .navCote .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+  }
+  
+  /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+  #main {
+    transition: margin-left .5s;
+    padding: 20px;
+  }
+  
+  /* pitit écran */
+  @media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+  } 
+.noirceur {
+    display: none;
+    background: #000;
+    opacity: 0.5;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
 }
 
 .invisible{

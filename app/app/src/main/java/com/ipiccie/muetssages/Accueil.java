@@ -2,20 +2,21 @@ package com.ipiccie.muetssages;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
+import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
-import android.widget.Button;
+import android.widget.CheckBox;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -26,11 +27,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Objects;
 
@@ -40,6 +51,9 @@ import java.util.Objects;
  * create an instance of this fragment.
  */
 public class Accueil extends Fragment {
+
+    private AppUpdateManager appUpdateManager;
+    private boolean drapeau;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -53,7 +67,7 @@ public class Accueil extends Fragment {
     private void askNotificationPermission() {
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.POST_NOTIFICATIONS) ==
+            if (ContextCompat.checkSelfPermission(this.requireContext(), Manifest.permission.POST_NOTIFICATIONS) ==
                     PackageManager.PERMISSION_GRANTED) {
                 // FCM SDK (and your app) can post notifications.
             } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
@@ -91,13 +105,14 @@ public class Accueil extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ActionBar ab = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        ActionBar ab = ((AppCompatActivity) requireActivity()).getSupportActionBar();
         if(ab != null){
             ab.setDisplayHomeAsUpEnabled(false);
         }
-        Log.d(TAG, "onViewCreated: OKOK"+getActivity().getIntent().getStringExtra("disc"));
-        if (Objects.equals(getActivity().getIntent().getStringExtra("disc"), "go")){
-            getActivity().getIntent().putExtra("disc","pasgo");
+        Log.d(TAG, "onViewCreated: OKOK"+requireActivity().getIntent().getStringExtra("disc"));
+        if (Objects.equals(requireActivity().getIntent().getStringExtra("disc"), "go")){
+            requireActivity().getIntent().putExtra("disc","pasgo");
             findNavController(this).navigate(R.id.action_accueil_to_listeConversations);
         }
         view.findViewById(R.id.nouv_conv).setOnClickListener(v-> findNavController(this).navigate(R.id.action_accueil_to_configLancerDiscussion));
@@ -111,18 +126,110 @@ public class Accueil extends Fragment {
             findNavController(this).navigate(R.id.action_accueil_to_connexion);
         }
         if(!((MainActivity)getActivity()).isNetworkAvailable()){
-            new MaterialAlertDialogBuilder(getContext())
-                    .setTitle("Une erreur est survenue")
-                    .setMessage("Impossible de joindre la base de données.\nVérifiez votre connexion internet.\nSans connexion à la base de données, les principales fonctionnalités seront indisponibles.")
-                    .setNeutralButton("OK",((dialogInterface, i) -> dialogInterface.dismiss()))
-                    .show();
+            SharedPreferences pref = this.requireActivity().getSharedPreferences("prefs",Context.MODE_PRIVATE);
+            if (pref.getBoolean("plusv",true)){
+                CheckBox pluv= new CheckBox(this.requireContext());
+                pluv.setText("Ne plus afficher ce message");
+                pluv.setTypeface(null, Typeface.ITALIC);
+                pluv.setPadding(5,5,5,5);
+                pluv.setOnClickListener(v->pref.edit().putBoolean("pluv",false).apply());
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Connexion limitée")
+                        .setMessage("Il est actuellement impossible de joindre la base de donnée. L'application passe donc en mode hors-ligne, seul la consultation des messages est disponible")
+                        .setView(pluv)
+                        .setNeutralButton("OK",((dialogInterface, i) -> dialogInterface.dismiss()))
+                        .show();
+            }
         }
+        verifMaJ();
+    }
+
+    private void verifMaJ() {
+        appUpdateManager = AppUpdateManagerFactory.create(this.requireContext());
+
+        // Returns an intent object that you use to check for an update.
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+
+        // Checks that the platform will allow the specified type of update.
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (drapeau && appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                drapeau = false;
+                Log.d(TAG, "verifMaJ: "+appUpdateInfo.clientVersionStalenessDays());
+                if (appUpdateInfo.clientVersionStalenessDays() != null && (appUpdateInfo.clientVersionStalenessDays() >= 30 || appUpdateInfo.updatePriority() >= 3) && appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+                    //MàJ immédiate
+                    Log.d(TAG, "verifMaJ: PPP");
+                    try {
+                        appUpdateManager.startUpdateFlowForResult(
+                                // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                                appUpdateInfo,
+                                // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+                                IMMEDIATE,
+                                // The current activity making the update request.
+                                this.requireActivity(),
+                                // Include a request code to later monitor this update request.
+                                210012);
+                    } catch (IntentSender.SendIntentException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if(appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)){
+                    InstallStateUpdatedListener listener = state -> {
+                        // (Optional) Provide a download progress bar.
+                        if (state.installStatus() == InstallStatus.DOWNLOADING) {
+                            long bytesDownloaded = state.bytesDownloaded();
+                            long totalBytesToDownload = state.totalBytesToDownload();
+                            //TODO: Implement progress bar.
+                        }
+                        if (state.installStatus() == InstallStatus.DOWNLOADED) {
+                            // After the update is downloaded, show a notification
+                            // and request user confirmation to restart the app.
+                            popupSnackbarForCompleteUpdate();
+                        }
+                    };
+                    // Create a listener to track request state updates.
+                    // Before starting an update, register a listener for updates.
+                    appUpdateManager.registerListener(listener);
+                    try {
+                        appUpdateManager.startUpdateFlowForResult(
+                                appUpdateInfo,
+                                AppUpdateType.FLEXIBLE,
+                                this.requireActivity(),
+                                210012);
+                    } catch (IntentSender.SendIntentException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }else{
+                Log.d(TAG, "verifMaJ: NNNN");
+            }
+        });
+    }
+
+    private void popupSnackbarForCompleteUpdate() {
+        Snackbar snackbar =
+                Snackbar.make(this.requireView().findViewById(R.id.accueil),
+                        "Mise à jour télécharg&z.",
+                        Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("Redémarrer", view -> appUpdateManager.completeUpdate());
+        snackbar.show();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public void onResume() {
+        super.onResume();
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
+            appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                // If an in-app update is already running, resume the update.
+                try {
+                    appUpdateManager.startUpdateFlowForResult(appUpdateInfo, IMMEDIATE, this.requireActivity(), 210012);
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
+                }
+            }else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                    popupSnackbarForCompleteUpdate();
+                }
+            });
     }
 
     @Override
@@ -131,5 +238,11 @@ public class Accueil extends Fragment {
         // Inflate the layout for this fragment
 
         return inflater.inflate(R.layout.fragment_accueil, container, false);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        drapeau = true;
+        super.onAttach(context);
     }
 }

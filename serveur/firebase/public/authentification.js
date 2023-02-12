@@ -19,32 +19,59 @@ function verif_dest(){
   }
 
   function inscrit(e){
-      //e.preventDefault();
-      const email = document.getElementById("e-mail-inscription");
-      const mdp = document.getElementById("mot-de-passe-inscription");
-      firebase.auth().createUserWithEmailAndPassword(email.value, mdp.value)
-      .then((userCredential) => {
-          // Signed in 
-          const user = userCredential.user;
-          db.ref("Users/" + user.uid).set({
-              id:user.uid,
-              imageURL:defaut,
-              username:document.getElementById("pseudo")
-            });
-            sessionStorage.setItem("co",1);
-            if(destinataire!=null){
-                db.ref("/Users/"+destinataire+"/contact").set(user.uid);
-                window.location = "index2.html";
+    //e.preventDefault();
+    const email = document.getElementById("e-mail-inscription");
+    const mdp = document.getElementById("mot-de-passe-inscription");
+    const pseudo = document.getElementById("pseudo");
+    if(email.length<4){
+        $("#e-mail-inscription").addClass('has-error');   //message d'erreur
+        $("#err-mail-ins").addClass('is-visible');
+        setTimeout(function(){ $("#err-mail-ins").removeClass('is-visible'); }, 3000);
+    }
+    else if (pseudo.value.length<1){
+        $("#pseudo").addClass('has-error');   //message d'erreur
+        $("#err-pseudo").addClass('is-visible');
+        setTimeout(function(){ $("#err-pseudo").removeClass('is-visible'); }, 3000);
+    }
+    else if (mdp.value.length<6){
+        $("#mot-de-passe-inscription").addClass('has-error');   //message d'erreur
+        $("#err-mdp-ins").addClass('is-visible');
+        setTimeout(function(){ $("#err-mdp-ins").removeClass('is-visible'); }, 3000);
+    }
+    else if($("#accept-terms").is(":checked")){
+        firebase.auth().createUserWithEmailAndPassword(email.value, mdp.value)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            db.ref("Users/" + user.uid).set({
+                id:user.uid,
+                imageURL:defaut,
+                username: pseudo
+                });
+                sessionStorage.setItem("co",1);
+                if(destinataire!=null){
+                    db.ref("/Users/"+destinataire+"/contact").set(user.uid);
+                    window.location = "index2.html";
+                }
+                else window.location = "menu_principal.html";
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            if (errorCode == "auth/email-already-in-use" || errorCode =="auth/invalid-email"){
+                $("#e-mail-inscription").addClass('has-error');   //message d'erreur
+                $("#err-mail-ins").addClass('is-visible');
+                setTimeout(function(){ $("#err-mail-ins").removeClass('is-visible'); }, 3000);
+            }else{
+                alert("inscription impossible "+errorCode);
+                alert("inscription impossible "+error);
             }
-            else window.location = "menu_principal.html";
-      })
-      .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          alert("inscription impossible "+errorCode)
-          // ..
-      })
-  }
+        })
+    }else{
+        $("#err-CGU").addClass('is-visible');
+        setTimeout(function(){ $("#err-CGU").removeClass('is-visible'); }, 3000);
+    }
+}
   
   function connecte(e){
       //e.preventDefault();
@@ -66,7 +93,18 @@ function verif_dest(){
       .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          alert("connexion impossible "+errorCode)
+          if (errorCode == "auth/invalid-email" || errorCode=="auth/user-not-found"){
+            $("#e-mail").addClass('has-error');   //message d'erreur
+            $("#err-mail").addClass('is-visible');
+            setTimeout(function(){ $("#err-mail").removeClass('is-visible'); }, 3000);
+          }else if (errorCode=="auth/wrong-password"){
+            $("#mot-de-passe").addClass('has-error');   //message d'erreur
+            $("#err-msp").addClass('is-visible');
+            setTimeout(function(){ $("#err-msp").removeClass('is-visible'); }, 3000);
+          }
+          else{
+            alert("connexion impossible "+errorCode)
+          }
       });
   }
   

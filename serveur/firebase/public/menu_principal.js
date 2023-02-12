@@ -81,7 +81,6 @@ function switchfen (affiche) {
       $("#lsmsg").addClass("invisible");
       $("#retour").removeClass("invisible");
     }else{
-
       $("#m_b_msg").addClass("invisible");
       $("#lsmsg").removeClass("invisible");
       $("#retour").addClass("invisible");
@@ -91,6 +90,26 @@ function switchfen (affiche) {
       $("#nouv_demo").addClass("invisible")
     }
   }
+}
+
+/* Set the width of the side navigation to 250px */
+function openNav() {
+  document.getElementById("maNavDeCote").style.width = "250px";
+  document.getElementById("main").style.opacity = "50%";
+  var dimmer = $('.noirceur');
+  dimmer.show();
+}
+
+/* Set the width of the side navigation to 0 */
+function closeNav() {
+  document.getElementById("maNavDeCote").style.width = "0";
+  document.getElementById("main").style.opacity = "100%";
+  var dimmer = $('.noirceur');
+  dimmer.hide();
+} 
+
+function conf_deco(){
+  document.getElementById('conf_deco').style.display='block';
 }
 
 
@@ -194,13 +213,13 @@ jQuery(document).ready(function($){
     $("#editeur").addClass("invisible");
   })
   $("#enr").click(function(event){
-    $("#nouv_demo").addClass("invisible")
     const tete = $("#en_tete").val();
     const chem = "Users/"+utilisateur.uid+"/messages/"+tete;
     const corps = $("#corps").val();
+    var notif = document.getElementById("snackbar");
     if(corps!="" && tete!=""){
+      $("#nouv_demo").addClass("invisible")
       db.ref(chem).set(corps,(error)=>{
-        var notif = document.getElementById("snackbar");
         if(error){
           notif.textContent="Une erreur est survenue";
         }else{
@@ -215,6 +234,16 @@ jQuery(document).ready(function($){
         switchfen(false);
         setTimeout(function(){ notif.className = notif.className.replace("show", ""); }, 3000);
       });
+    }else if (corps ==""){
+      notif.textContent="Veuillez saisir un message";
+      notif.className = "show";
+      switchfen(false);
+      setTimeout(function(){ notif.className = notif.className.replace("show", ""); }, 3000);
+    }else if(tete ==""){
+      notif.textContent="Veuillez entrer un en-tête";
+      notif.className = "show";
+      switchfen(false);
+      setTimeout(function(){ notif.className = notif.className.replace("show", ""); }, 3000);
     }
   });
 
@@ -227,7 +256,7 @@ jQuery(document).ready(function($){
       if(error){
         notif.textContent="Une erreur est survenue";
       }else{
-        notif.textContent="Supprimé";
+        notif.textContent="Supprimé!";
       }
       notif.className = "show";
       $("#msg_defaut").removeClass("invisible");
@@ -251,6 +280,14 @@ jQuery(document).ready(function($){
       switchfen(true);
       
     })
+
+    $("#menu").click(function(event){
+      openNav();
+    });
+
+    $("#menu2").click(function(event){
+      openNav();
+    });
 
     $("#deco").click(function(event){
       document.getElementById('conf_deco').style.display='block'

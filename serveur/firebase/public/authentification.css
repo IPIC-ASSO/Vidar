@@ -167,7 +167,7 @@
       line-height: 70px;
     }
   }
-  
+
   .form {
     padding: 1.4em;
   }
@@ -242,6 +242,7 @@
   }
   .form input.has-error {
     border: 1px solid #d76666;
+    transition: opacity 1s linear 0s;
   }
   .form input[type=password] {
     /* space left for the HIDE button */
@@ -303,8 +304,8 @@
     pointer-events: none;
     visibility: hidden;
     opacity: 0;
-    -webkit-transition: opacity 0.2s 0, visibility 0 0.2s;
-    transition: opacity 0.2s 0, visibility 0 0.2s;
+    transition: visibility 1s linear 0s;
+    
   }
   .form .error-message::after {
     /* triangle */
@@ -321,8 +322,8 @@
   .form .error-message.is-visible {
     opacity: 1;
     visibility: visible;
-    -webkit-transition: opacity 0.2s 0, visibility 0 0;
-    transition: opacity 0.2s 0, visibility 0 0;
+    transition: opacity 1s ease-in-out 0s;
+    
   }
   @media only screen and (min-width: 600px) {
     .form {

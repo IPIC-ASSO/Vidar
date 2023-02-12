@@ -3,8 +3,11 @@ package com.ipiccie.muetssages;
 import static android.content.ContentValues.TAG;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,10 +23,13 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.w3c.dom.Text;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -34,6 +40,7 @@ public class EditeurMessage extends Fragment {
     public EditeurMessage() {
         // Required empty public constructor
     }
+    private TextToSpeech textToSpeech;
 
 
     @Override
@@ -74,7 +81,7 @@ public class EditeurMessage extends Fragment {
         view.findViewById(R.id.enregistre_msg).setOnClickListener(v->{
             if(!inti.getText().toString().equals("") && !msg.getText().toString().equals("")){
                 databaseReference.child(inti.getText().toString()).removeValue();
-                databaseReference.child(inti.getText().toString()).setValue(msg.getText().toString());
+                databaseReference.child(inti.getText().toString()).setValue(msg.getText().toString()).addOnSuccessListener(unused -> Toast.makeText(getContext(), "Enregistré !", Toast.LENGTH_SHORT).show());
                 callback.remove();
                 findNavController(this).navigate(R.id.action_editeurMessage_to_listeMessages);
             }else{
@@ -83,21 +90,32 @@ public class EditeurMessage extends Fragment {
         });
         view.findViewById(R.id.supr_msg).setOnClickListener(v->{
             if (!inti.getText().toString().equals("")){
-                databaseReference.child(inti.getText().toString()).removeValue();
+                databaseReference.child(inti.getText().toString()).removeValue().addOnSuccessListener(unused -> Toast.makeText(getContext(), "Supprimé !", Toast.LENGTH_SHORT).show());
                 Log.d(TAG, "onViewCreated: supr");
             }
             findNavController(this).navigate(R.id.action_editeurMessage_to_listeMessages);
         });
-        TextToSpeech textToSpeech = new TextToSpeech(this.getContext(), status -> {
+        textToSpeech = new TextToSpeech(this.requireContext(), status -> maVoix(textToSpeech),"com.google.android.tts");
 
-        });
-        textToSpeech.setLanguage(Locale.FRANCE);
-        textToSpeech.setSpeechRate(1.3F);
         view.findViewById(R.id.lecteur_messages_editeur).setOnClickListener(w-> {
             textToSpeech.speak(msg.getText().toString(),TextToSpeech.QUEUE_FLUSH,null,null);
             Toast.makeText(this.getContext(),"Lecture en cours",Toast.LENGTH_SHORT).show();
         });
 
+    }
+
+    public void maVoix(TextToSpeech tts){
+        SharedPreferences pref = this.requireActivity().getSharedPreferences("prefs",Context.MODE_PRIVATE);
+        String voii = pref.getString("voix","fr-FR-language");
+        Log.d(TAG, "maVoix: "+voii);
+        textToSpeech.setVoice(tts.getDefaultVoice());
+        for (Voice tmpVoice : tts.getVoices()) {
+            if (tmpVoice.getName().equals(voii)) {
+                textToSpeech.setVoice(tmpVoice);
+                Log.d(TAG, "maVoix: :))))))");
+            }
+        }
+        textToSpeech.setSpeechRate(1.3F);
     }
 
     @Override

@@ -5,11 +5,18 @@ import java.util.HashMap;
 public class Discussion {
     private String utilisateur1;
     private String utilisateur2;
+    private String supr;
     private HashMap<String,HashMap<String,String>> messages;
 
     public Discussion(String utilisateur1, String utilisateur2) {
         this.utilisateur1 = utilisateur1;
         this.utilisateur2 = utilisateur2;
+    }
+
+    public Discussion(String utilisateur1, String utilisateur2, String supr) {
+        this.utilisateur1 = utilisateur1;
+        this.utilisateur2 = utilisateur2;
+        this.supr = supr;
     }
 
     public Discussion(){
@@ -38,5 +45,11 @@ public class Discussion {
 
     public void setMessages(HashMap<String,HashMap<String,String>> messages) {
         this.messages = messages;
+    }
+    public String getSupr() {
+        return supr;
+    }
+    public void setSupr(String supr) {
+        this.supr = supr;
     }
 }

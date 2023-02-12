@@ -1,9 +1,13 @@
 package com.ipiccie.muetssages;
 
 import static android.content.ContentValues.TAG;
+
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +41,7 @@ import androidmads.library.qrgenearator.QRGEncoder;
 public class LanceDiscussion extends Fragment {
 
     private int drapeau = 0;
+    private TextToSpeech textToSpeech;
 
     public LanceDiscussion() {
         // Required empty public constructor
@@ -48,15 +53,13 @@ public class LanceDiscussion extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ActionBar ab = ((AppCompatActivity) requireActivity()).getSupportActionBar();
         ImageView image = view.findViewById(R.id.qr_code);
-        TextToSpeech textToSpeech = new TextToSpeech(this.getContext(), status -> {});
-        textToSpeech.setLanguage(Locale.FRANCE);
-        textToSpeech.setSpeechRate(1.3F);
+        textToSpeech = new TextToSpeech(this.requireContext(), status -> maVoix(textToSpeech),"com.google.android.tts");
         TextView msg = view.findViewById(R.id.message_haut_Qr);
         if (getArguments() != null) {
             msg.setText(getArguments().getString("msg_ecrit"," "));
         }
         view.findViewById(R.id.lire_texte).setOnClickListener(v->{
-            textToSpeech.speak(getArguments().getString("msg_lu"),TextToSpeech.QUEUE_FLUSH,null);
+            textToSpeech.speak(getArguments().getString("msg_lu"),TextToSpeech.QUEUE_FLUSH,null,null);
             Toast.makeText(this.getContext(),"Lecture en cours",Toast.LENGTH_SHORT).show();
         });
 
@@ -106,6 +109,19 @@ public class LanceDiscussion extends Fragment {
         }
     }
 
+    public void maVoix(TextToSpeech tts){
+        SharedPreferences pref = this.requireActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        String voii = pref.getString("voix","fr-FR-language");
+        Log.d(TAG, "maVoix: "+voii);
+        textToSpeech.setVoice(tts.getDefaultVoice());
+        for (Voice tmpVoice : tts.getVoices()) {
+            if (tmpVoice.getName().equals(voii)) {
+                textToSpeech.setVoice(tmpVoice);
+                Log.d(TAG, "maVoix: :))))))");
+            }
+        }
+        textToSpeech.setSpeechRate(1.3F);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

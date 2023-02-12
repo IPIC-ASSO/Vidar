@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Vidar</string>
     <string name="defaut">[Erreur  >:| ]</string>
+    <string name="version">version 1.7.1 BETA</string>
+    <string name="notes_version">-Possibilité de changer la voix\n-Scanneur disponible en mode portrait\n-Accès hors-ligne aux données\n-Suppression de conversation possible\n-Résolution de bugs mineurs \n-Amélioration de l\'interface\n[1.7.1]-Résolution de bugs mineurs (effacement des messages lors du changement de pseudo, et erreur non capturée lors de la fin d\'activité)</string>
     <string name="hello_blank_fragment">Rien pour le moment :.(</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -56,7 +58,7 @@
     <string name="pop_titre_deco">Déconnexion</string>
     <string name="pop_msg_deco">Voulez-vous vraiment vous déconnecter?</string>
     <string name="hint_nouv_mdp">Nouveau mot de passe</string>
-    <string name="btn_se_co">Se connnecter</string>
+    <string name="btn_se_co">Se connecter</string>
     <string name="txt_ou">OU</string>
     <string name="btn_s_inscr">S\'inscrire</string>
     <string name="txt_explic_co">Cette étape est nécessaire. Cela nous permettra d\'identifier les destinataires des discussions</string>
@@ -76,6 +78,13 @@
     <string name="txt_instruc_liste_msg">Pour lire et modifier les messages enregistrés appuyez dessus.\n Pour en créer un nouveau, utilisez le bouton vert</string>
     <string name="scroll_dsc_liste_msg_enr">liste des messages enregistrés. Appuyez sur l\'un d\'eux pour le lire ou le modifier.</string>
     <string name="txt_date">date: XX/XX/XXXX</string>
-    <string name="txt_objet">OBJET: demande...</string>
+    <string name="txt_objet">OBJET: demande…</string>
     <string name="txt_corps">blablablabblablablanblablablablablbablablbalablablablablablablablablablabla</string>
+    <string name="btn_notes_version">Notes de version</string>
+    <string name="btn_fermer">Fermer</string>
+    <string name="btn_pol_conf">politique de confidentialité</string>
+    <string name="toast_maj_mdp">Mot de passe mis à jour</string>
+    <string name="btn_choix_voix">Voix</string>
+    <string name="dsc_supr_conv">Supprimer définitivement la conversation</string>
+    <string name="txt_fin_conv">Votre correspondant a mis fin à cette conversation</string>
 </resources>

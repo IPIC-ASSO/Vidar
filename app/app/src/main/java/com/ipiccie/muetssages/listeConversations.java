@@ -37,8 +37,6 @@ public class listeConversations extends Fragment {
 
 
     private ValueEventListener grosEcouteur;
-
-
     private RecyclerView recyclerView;
     private List<Utilisateur> listeU;
     private Utilisateur utilisateur;
@@ -102,25 +100,30 @@ public class listeConversations extends Fragment {
                 utilisateur = snapshot.getValue(Utilisateur.class);
                 List<String> contacts = new ArrayList<>();
                 List<String> idConv = new ArrayList<>();
+                List<Boolean> listsup = new ArrayList<>();
                 databaseReference = FirebaseDatabase.getInstance(db).getReference().child("ListeChats");
                 grosEcouteur = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         contacts.clear();
                         idConv.clear();
+                        listsup.clear();
                         for (DataSnapshot snapshot1: snapshot.getChildren()){
                             Discussion dis = snapshot1.getValue(Discussion.class);
-                            if (dis != null && dis.getUtilisateur1()!= null && dis.getUtilisateur2()!=null && utilisateur != null) {
+                            if (dis != null && dis.getUtilisateur1()!= null && dis.getUtilisateur2()!=null && utilisateur != null && !Objects.equals(dis.getSupr(), utilisateur.getId())) {
                                 if(Objects.equals(dis.getUtilisateur1(), utilisateur.getId())){
                                     contacts.add(dis.getUtilisateur2());
                                     idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
-                                } else if (Objects.equals(dis.getUtilisateur2(), utilisateur.getId())){
+                                    listsup.add(dis.getSupr()!=null);
+                                }else if (Objects.equals(dis.getUtilisateur2(), utilisateur.getId())){
                                     contacts.add(dis.getUtilisateur1());
                                     idConv.add(dis.getUtilisateur2()+dis.getUtilisateur1());
+                                    listsup.add(dis.getSupr()!=null);
                                 }
                                 Log.d(TAG, "onDataChange3: "+dis.getUtilisateur1()+dis.getUtilisateur2());
                             }
                         }
+                        Log.d(TAG, "onDataChangelistesup: "+listsup);
                         databaseReference2 = FirebaseDatabase.getInstance(db).getReference().child("Users");
                         listeU.clear();
                         ValueEventListener ecoute = this;
@@ -131,7 +134,7 @@ public class listeConversations extends Fragment {
                                     Log.d(TAG, "onDataChange: "+snapshot.getValue());
                                     if (snapshot.getValue()!= null) listeU.add(snapshot.getValue(Utilisateur.class));
                                     databaseReference2.removeEventListener(this);
-                                    if(Objects.equals(contact, contacts.get(contacts.size()-1)))affiche(vue, idConv, ecoute);
+                                    if(Objects.equals(contact, contacts.get(contacts.size()-1)))affiche(vue, idConv, ecoute, listsup.toArray(new Boolean[0]));
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
@@ -155,10 +158,10 @@ public class listeConversations extends Fragment {
         });
     }
 
-    public void affiche(View vue, List<String> idConv, ValueEventListener v){
+    public void affiche(View vue, List<String> idConv, ValueEventListener v, Boolean[] listeSup){
         if(getContext()!= null){
-            if(listeU.size()>0)vue.findViewById(R.id.pas_de_conv).setVisibility(View.GONE);
-            AdaptateurAdapte adaptateurAdapte = new AdaptateurAdapte(requireContext(), listeU, idConv);
+            if(!listeU.isEmpty())vue.findViewById(R.id.pas_de_conv).setVisibility(View.GONE);
+            AdaptateurAdapte adaptateurAdapte = new AdaptateurAdapte(requireContext(), listeU, idConv, listeSup);
             recyclerView.setAdapter(adaptateurAdapte);
             databaseReference.removeEventListener(v);
         }

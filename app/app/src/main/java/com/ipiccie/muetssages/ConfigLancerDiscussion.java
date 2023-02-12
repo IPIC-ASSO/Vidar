@@ -62,6 +62,7 @@ public class ConfigLancerDiscussion extends Fragment {
             try {
                 IntentIntegrator intentIntegrator = new IntentIntegrator(this.getActivity());
                 intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+
                 intentIntegrator.initiateScan();
             } catch (Exception e) {
                 Log.e(TAG, "onViewCreated: ",e);

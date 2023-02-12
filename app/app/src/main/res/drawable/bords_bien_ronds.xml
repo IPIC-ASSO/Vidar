@@ -4,7 +4,7 @@
         android:width="1dp"
         android:color="@color/black" />
 
-    <solid android:color="#AAAAAA" />
+    <solid android:color="@color/fond_profil"/>
 
     <padding
         android:left="3dp"

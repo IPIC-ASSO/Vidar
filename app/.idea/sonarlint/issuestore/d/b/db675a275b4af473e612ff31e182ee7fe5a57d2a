@@ -1,3 +1,9 @@
 
-l
-java:S1874Y"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(èëÔíÿÿÿÿÿ8ÜñçòÔ0
+S
+java:S1874?"8Remove this use of "IntentIntegrator"; it is deprecated.(÷¨š§ıÿÿÿÿ
+S
+java:S1874?"8Remove this use of "IntentIntegrator"; it is deprecated.(÷¨š§ıÿÿÿÿ
+S
+java:S1874@"8Remove this use of "IntentIntegrator"; it is deprecated.(’í¶‰şÿÿÿÿ
+e
+java:S1874Z"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(èëÔíÿÿÿÿÿ
