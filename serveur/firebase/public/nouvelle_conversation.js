@@ -55,9 +55,10 @@ function onScanSuccess(decodedText, decodedResult) {
 }
 
 function envoieCode(code){
-  code = code.toString.replace("https://","");
-  code = code.replace("vidar-9e8ac.web.app/?dest=","");
-  sessionStorage.setItem("destinataire",code);
+  let code2 = code.replace("https://","");
+  let code3 = code2.replace("vidar-9e8ac.web.app/?dest=","");
+  sessionStorage.setItem("idconv",code3);
+  sessionStorage.setItem("creer_conv",true);
   window.location = "index2.html";
 
 }
@@ -75,11 +76,10 @@ function ecouteScan (uid){
       drapeau = 1;
     }else{
       if (snapshot.exists()) {
-        
         cont = snapshot.val();
-      
         db.ref("/Users/"+uid+"/contact").set(null);
-        sessionStorage.setItem("destinataire",cont);
+        sessionStorage.setItem("idconv",cont+uid);
+        sessionStorage.setItem("creer_conv",false);
         window.location = "index2.html";
       }
     }

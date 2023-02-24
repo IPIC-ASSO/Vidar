@@ -46,13 +46,13 @@ public class AdaptateurAdapte extends RecyclerView.Adapter<AdaptateurAdapte.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Utilisateur utilisateur = mUtilisateurs.get(position);
         holder.nomUtilisateur.setText(utilisateur.getUsername());
-        if (utilisateur!= null && utilisateur.getImageURL().equals("defaut")){
+        if (utilisateur.getImageURL()!= null && utilisateur.getImageURL().equals("defaut")){
             holder.profileImage.setImageResource(R.drawable.ic_baseline_account_circle_24);
         }
         if (Boolean.TRUE.equals(listesup[position])) holder.itemView.setBackground(AppCompatResources.getDrawable(context,R.drawable.bords_bien_communistes));
         holder.itemView.setOnClickListener(v->{
             Intent intention = new Intent(context,ActiviteDiscussion.class);
-            intention.putExtra("dis",idConversations.get(position));
+            if (position<idConversations.size()) intention.putExtra("dis",idConversations.get(position));
             intention.putExtra("id",utilisateur.getId());
             intention.putExtra("supr",listesup[position]);
             context.startActivity(intention);

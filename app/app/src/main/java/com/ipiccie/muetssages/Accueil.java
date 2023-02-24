@@ -110,7 +110,6 @@ public class Accueil extends Fragment {
         if(ab != null){
             ab.setDisplayHomeAsUpEnabled(false);
         }
-        Log.d(TAG, "onViewCreated: OKOK"+requireActivity().getIntent().getStringExtra("disc"));
         if (Objects.equals(requireActivity().getIntent().getStringExtra("disc"), "go")){
             requireActivity().getIntent().putExtra("disc","pasgo");
             findNavController(this).navigate(R.id.action_accueil_to_listeConversations);

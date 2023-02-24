@@ -106,6 +106,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_reinit_app"
+        android:visibility="gone"
         app:backgroundTint="@color/gris_fonce" />
 
     <Button
@@ -125,5 +126,15 @@
         android:text="@string/btn_pol_conf"
         android:textColor="@color/faux_noir"
         app:icon="@drawable/baseline_open_in_new_24"
+        app:iconTint="@color/faux_noir" />
+
+    <Button
+        android:id="@+id/contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/gaucher"
+        android:text="@string/btn_contact"
+        android:textColor="@color/faux_noir"
+        app:icon="@drawable/baseline_contact_mail_24"
         app:iconTint="@color/faux_noir" />
 </LinearLayout>

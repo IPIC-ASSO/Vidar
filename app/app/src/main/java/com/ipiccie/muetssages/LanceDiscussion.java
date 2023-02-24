@@ -84,7 +84,7 @@ public class LanceDiscussion extends Fragment {
                     }else{
                         Utilisateur uti = snapshot.getValue(Utilisateur.class);
                         if (uti != null) {
-                            Intent intention = new Intent(getContext(),ActiviteDiscussion.class);
+                            Intent intention = new Intent(requireContext(),ActiviteDiscussion.class);
                             Log.d(TAG, "onDataChange: "+snapshot.getValue());
                             intention.putExtra("id", uti.getContact());    //identifiant interlocuteur
                             intention.putExtra("dis", uti.getContact()+firebaseUser.getUid());   //identifiant discussion

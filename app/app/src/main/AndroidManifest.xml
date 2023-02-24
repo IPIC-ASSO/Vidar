@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".client.BaseDeFeu"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,8 +16,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MUeTssages"
-        android:name="com.ipiccie.muetssages.client.BaseDeFeu"
         tools:targetApi="31">
+        <activity
+            android:name=".NousContacter"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_baseline_message_24" />
@@ -26,43 +30,44 @@
 
         <activity
             android:name=".ActiviteDiscussion"
-            android:immersive="true"
-            android:exported="true">
+            android:exported="true"
+            android:immersive="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="https"
-                    android:host="vidar-9e8ac.web.app" />
+                    android:host="vidar-9e8ac.web.app"
+                    android:scheme="https" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="http"
-                    android:host="vidar-9e8ac.web.app" />
+                    android:host="vidar-9e8ac.web.app"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
-            android:immersive="true"
-            android:exported="true">
+            android:exported="true"
+            android:immersive="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
-            tools:replace="android:screenOrientation"
-            android:stateNotNeeded="true"/>
-
-
+            android:stateNotNeeded="true"
+            tools:replace="android:screenOrientation" />
     </application>
 
 </manifest>

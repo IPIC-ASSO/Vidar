@@ -2,7 +2,7 @@
     <string name="app_name">Vidar</string>
     <string name="defaut">[Erreur  >:| ]</string>
     <string name="version">version 1.7.1 BETA</string>
-    <string name="notes_version">-Possibilité de changer la voix\n-Scanneur disponible en mode portrait\n-Accès hors-ligne aux données\n-Suppression de conversation possible\n-Résolution de bugs mineurs \n-Amélioration de l\'interface\n[1.7.1]-Résolution de bugs mineurs (effacement des messages lors du changement de pseudo, et erreur non capturée lors de la fin d\'activité)</string>
+    <string name="notes_version">-Possibilité de changer la voix\n-Scanneur disponible en mode portrait\n-Accès hors-ligne aux données\n-Suppression de conversation possible\n-Résolution de bugs mineurs \n-Amélioration de l\'interface\n[1.7.1]-Résolution de bugs mineurs (effacement des messages lors du changement de pseudo, et erreur non capturée lors de la fin d\'activité)\n[1.7.1]-Ecran de contact</string>
     <string name="hello_blank_fragment">Rien pour le moment :.(</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -87,4 +87,11 @@
     <string name="btn_choix_voix">Voix</string>
     <string name="dsc_supr_conv">Supprimer définitivement la conversation</string>
     <string name="txt_fin_conv">Votre correspondant a mis fin à cette conversation</string>
+    <string name="btn_contact">Nous contacter</string>
+    <string name="valider">Valider</string>
+    <string name="txt_infos_contact">Cette application est développée par l\'association IPIC-ASSO.\nPour toute question, réclamation, ou suggestion d\'amélioration, nous sommes à votre écoute sur ipic.assistance@protonmail.com</string>
+    <string name="txt_vers_site">Visiter notre site web</string>
+    <string name="btn_env_msg">Envoyer un message</string>
+    <string name="dsc_logo">logo IPIC-ASSO</string>
+    <string name="txt_info_assos">Association IPIC-ASSO\n52 Rue Alix Laugier, \n84240 La Motte d\'Aigues\ntel : 07 69 51 71 05\nmail: ipic.assistance@protonmail.com\nConception d\'outils et de services dans une perspective innovante ou pour répondre à un besoin concret.</string>
 </resources>

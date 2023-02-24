@@ -12,6 +12,8 @@ firebase.initializeApp(firebaseConfig); //initialise le projet
 
 const db = firebase.database();
 var chemin = "";  //chemin vers la discussion
+var idconv;
+var destinataire;
 var utilisateur;
 var pseudo;
 var contact;
@@ -80,7 +82,6 @@ function connecteAnonyme(){   //session temporaire
           imageURL:"defaut",
           username: "utilisateur "+timestamp
         });
-        db.ref("/Users/"+destinataire+"/contact").set(uti.uid);
       }
     });
     $("#maison").removeClass("invisible");
@@ -95,6 +96,11 @@ function connecteAnonyme(){   //session temporaire
 firebase.auth().onAuthStateChanged((user) => {  //écoute le changement de statut de l'utilisateur
   if (user) {//co
     utilisateur = user;
+    destinataire = idconv.replace(utilisateur.uid,"")
+    if(destinataire==null || destinataire.length<10){
+      alert("Une erreur est survenue. Correspondant introuvable");
+      window.location = "authentification.html";
+    }
     initConv(destinataire);
   } else {//deco
   }
@@ -108,27 +114,44 @@ function charge_msg(){
       listemsg = snapshot;
       const message = `<li class=msg_boite_leger id="${listemsg.key}">${listemsg.key}</li>`;
       // ajout de la balise dans la page
+      document.getElementById("mes_msg").style.visibility="visible";
       document.getElementById("liste_des_messages").innerHTML += message;
   });
+  if (document.getElementById("liste_des_messages").innerHTML== ""){
+      document.getElementById("mes_msg").style.visibility="hidden";
+  }
   fetchChat.on("child_removed",function(childSnapshot){
     document.getElementById("liste_des_messages").innerHTML=null;
+    if (document.getElementById("liste_des_messages").innerHTML== ""){
+      document.getElementById("mes_msg").style.visibility="hidden";
+    }
     initmsg()
   });
 }
 
 function initConv(destinataire){  //créé une nouvelle conversation
-  const cheminBase = "ListeChats/" + utilisateur.uid + destinataire;
-  db.ref(cheminBase).get().then((snapshot) =>{
-    if (!snapshot.hasChildren()){ //initialise destinataire et envoyeur
-      db.ref(cheminBase).set({
-        utilisateur1:destinataire,
-        utilisateur2:utilisateur.uid,
-      });
-    }
-    db.ref("Users/"+destinataire+"/contact").set(utilisateur.uid);  //met à jour le dernier contact
-    chemin= "Chats/"+utilisateur.uid + destinataire+"/";  
+  const creer = sessionStorage.getItem("creer_conv");
+  sessionStorage.setItem("creer_conv",false);
+  if (creer == "true"){ //QR-code scanné, ou code lu
+    idconv = utilisateur.uid + destinataire;    //nouvel identifiant de la conversation
+    const cheminBase = "ListeChats/" + idconv;
+    db.ref(cheminBase).get().then((snapshot) =>{
+      if (!snapshot.hasChildren()){ //initialise destinataire et envoyeur
+        db.ref(cheminBase).set({
+          utilisateur1:destinataire,
+          utilisateur2:utilisateur.uid,
+        });
+      }
+      chemin= "Chats/"+idconv+"/";  
+      initFinale();
+    });
+
+    db.ref("/Users/"+destinataire+"/contact").set(utilisateur.uid);//met à jour le dernier contact
+  }else{
+    chemin= "Chats/"+idconv+"/";  
     initFinale();
-  });
+  }
+  
 }
 
 function initFinale(){  //met en place les écouteurs et affiche les messages
@@ -140,6 +163,13 @@ function initFinale(){  //met en place les écouteurs et affiche les messages
       contact = snapshot.val()
     }
     $("#destinataire").text(contact);
+    db.ref("/ListeChats/" + idconv).get().then((snapshot)=>{
+      const conver = snapshot.val();
+      if (conver!=null && conver.supr != null){
+        document.getElementById("conv_termine").classList.toggle("invisible");
+        document.getElementById("conv_termine").classList.toggle("termine");
+      }
+    })
   })
   
   const fetchChat = db.ref(chemin); 
@@ -170,6 +200,7 @@ function initFinale(){  //met en place les écouteurs et affiche les messages
     .getElementById("messages")
     .scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
   }); 
+  $("#charge").addClass("invisible");
 }
 
 function sendMessage(e) {
@@ -200,17 +231,13 @@ function sendMessage(e) {
 //--------DEBUT----------\\
 
 const SessionCo = sessionStorage.getItem("co")
-var destinataire = sessionStorage.getItem("destinataire");
-if(destinataire==null || destinataire.length<10){
-  alert("Une erreur est survenue. Correspondant introuvable");
-  window.location = "authentification.html";
-  //destinataire = prompt("Destinataire?"); //identifiant du destinataire (valeur que donne le QR-code)
-}
+idconv = sessionStorage.getItem("idconv");  //id de la conversation, ou destinataire si nouv conv
+
 
 if (firebase.auth.currentUser==null && SessionCo == null){  //créé une session temporaire
   connecteAnonyme();  //session temporaire
 }else{
-  $(".open-button").addClass(".invisible")
+//   $(".open-button").addClass(".invisible") inutile?
 }
 
 document.getElementById("message-form").addEventListener("submit", sendMessage);

@@ -43,17 +43,17 @@ function verif_dest(){
         .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
-            db.ref("Users/" + user.uid).set({
-                id:user.uid,
-                imageURL:defaut,
-                username: pseudo
+            db.ref("/Users/" + user.uid).set({
+                "id":user.uid,
+                "imageURL":"defaut",
+                "username": pseudo
                 });
-                sessionStorage.setItem("co",1);
-                if(destinataire!=null){
-                    db.ref("/Users/"+destinataire+"/contact").set(user.uid);
-                    window.location = "index2.html";
-                }
-                else window.location = "menu_principal.html";
+            sessionStorage.setItem("co",1);
+            if(destinataire!=null){
+                db.ref("/Users/"+destinataire+"/contact").set(user.uid);
+                window.location = "index2.html";
+            }
+            else window.location = "menu_principal.html";
         })
         .catch((error) => {
             const errorCode = error.code;
@@ -64,7 +64,6 @@ function verif_dest(){
                 setTimeout(function(){ $("#err-mail-ins").removeClass('is-visible'); }, 3000);
             }else{
                 alert("inscription impossible "+errorCode);
-                alert("inscription impossible "+error);
             }
         })
     }else{
@@ -134,8 +133,9 @@ var $form_modal = $('.user-modal'),
     $forgot_password_link = $form_login.find('.form-bottom-message a'),
     $back_to_login_link = $form_forgot_password.find('.form-bottom-message a'),
     $main_nav = $('.main-nav');
-    $enr = $('.enr')
-    $sans_co = $('.continue')
+    $enr = $('.enr');
+    $sans_co = $('.continue');
+    
 
 //open modal
 $enr.on('click', function(event){
@@ -237,6 +237,25 @@ $form_signup.find('input[type="submit"]').on('click', function(event){
     //$form_signup.find('input[type="email"]').toggleClass('has-error').next('span').toggleClass('is-visible');   //message d'erreur
 });
 
+$form_forgot_password.find('input[type="submit"]').on('click', function(event){
+    event.preventDefault();
+    const email = document.getElementById("reset-email");
+    
+    firebase.auth().sendPasswordResetEmail(email.value).then(() => {
+        login_selected();
+    })
+    .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (errorCode=="auth/invalid-email" || errorCode=="auth/argument-error"){
+           $("#reset-email").addClass('has-error');   //message d'erreur
+            $("#erreur-mail").addClass('is-visible');
+            setTimeout(function(){ $("#erreur-mail").removeClass('is-visible'); }, 3000);
+        }else{
+            alert("une erreur est survenue"+errorCode)
+        }        
+    });
+});
 
 });
   

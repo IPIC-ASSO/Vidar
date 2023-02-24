@@ -80,7 +80,7 @@ public class ActiviteDiscussion extends AppCompatActivity {
         String idDis = getIntent().getStringExtra("dis");    // id discussion
         boolean supr = getIntent().getBooleanExtra("supr",false);    // id discussion
 
-        if (fuser == null){
+        if (fuser == null || idUti==null || idDis == null){
             Toast.makeText(this,"Une erreur est survenue. Veuillez redémarrer l'application",Toast.LENGTH_LONG).show();
         }else{
             //affichage de tous les messages

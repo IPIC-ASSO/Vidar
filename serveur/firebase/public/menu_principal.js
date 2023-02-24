@@ -51,8 +51,9 @@ function initconv(){
   const fetchChat = db.ref(chemin); 
   //écoute l'arrivée de nouveaux messages
   fetchChat.on("child_added", function (snapshot) {
+  
     const conver = snapshot.val();
-    if (conver.utilisateur1== utilisateur.uid || conver.utilisateur2== utilisateur.uid){
+    if (conver.utilisateur1== utilisateur.uid || conver.utilisateur2== utilisateur.uid && conver.supr != utilisateur.uid){
       const uti1 = conver.utilisateur1
       const uti2 = conver.utilisateur2
       utilisateur.uid === conver.utilisateur1 ? chemin = "/Users/"+uti2+"/username" : chemin = "/Users/"+uti1+"/username"
@@ -61,10 +62,17 @@ function initconv(){
         if (snapshot.exists()) {
           contact = snapshot.val()
         }
-        const conv = `<li class=msg_boite id=${
-        utilisateur.uid === uti1 ? uti2 : uti1}>${contact}</li>`
+        var conv;
+        if(conver.supr == null){
+          conv = `<li class="msg_boite" id=${uti2+uti1}>${contact}</li>`
+        }else{
+          conv = `<li class="msg_boite supr" id=${uti2+uti1}>${contact}</li>`
+        }
+          
         // ajout de la balise dans la page
         document.getElementById("conversations").innerHTML += conv;
+        if(conver.supr !=null){
+        }
       });
     }
   });
@@ -155,7 +163,8 @@ jQuery(document).ready(function($){
       btnselect.remove('clique');
     }
     var btn = this;
-    sessionStorage.setItem("destinataire",$(btn).attr('id'));
+    sessionStorage.setItem("creer_conv",false);
+    sessionStorage.setItem("idconv",$(btn).attr('id'));
     switchfen(true);
     btnselect = this.classList;
     btnselect.add('clique');

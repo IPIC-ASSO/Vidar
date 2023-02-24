@@ -4,7 +4,6 @@ import static android.content.ContentValues.TAG;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -14,11 +13,9 @@ import android.speech.tts.TextToSpeech;
 import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Checkable;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -109,7 +106,7 @@ public class Parametres extends Fragment {
                 new MaterialAlertDialogBuilder(this.requireContext())
                         .setView(pseudo)
                         .setTitle(getString(R.string.btn_changer_btn))
-                        .setPositiveButton("Valider", (dialogInterface, i) -> {
+                        .setPositiveButton(getString(R.string.valider), (dialogInterface, i) -> {
                             if(pseudo.getText().toString().length()>0){
                                 utilisateur.setUsername(pseudo.getText().toString());
                                 databaseReference.child("username").setValue(pseudo.getText().toString()).addOnSuccessListener(unused -> Toast.makeText(requireContext(), String.format("Bonjour %s!",pseudo.getText().toString()), Toast.LENGTH_SHORT).show());
@@ -155,6 +152,8 @@ public class Parametres extends Fragment {
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         });
+        view.findViewById(R.id.contact).setOnClickListener(v-> startActivity(new Intent(this.requireContext(),NousContacter.class)));
+
         initVoix(view);
     }
 

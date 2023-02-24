@@ -1,0 +1,13 @@
+
+a
+java:S1192]"FDefine a constant instead of duplicating this literal "Users" 5 times.(´Ï×ñüÿÿÿÿ
+b
+java:S1192¨"FDefine a constant instead of duplicating this literal "Chats" 3 times.(¥§›£şÿÿÿÿ
+t	java:S115B"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ƒ¼ëÏşÿÿÿÿ
+m
+java:S3776F"RRefactor this method to reduce its Cognitive Complexity from 28 to the 15 allowed.(¨Œşÿÿÿÿ
+Y
+java:S1854¥"=Remove this useless assignment to local variable "!unknown!".(™ù¤”ùÿÿÿÿ
+W	java:S125É"<This block of commented-out lines of code should be removed.(¶ß‘şÿÿÿÿ
+f
+java:S1874Ó"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(œƒƒ©ùÿÿÿÿ
