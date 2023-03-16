@@ -158,23 +158,28 @@ public class ActiviteDiscussion extends AppCompatActivity {
                 .setMessage("Voulez vous vraiment supprimer cette conversation?\nCette action est irréversible")
                 .setNegativeButton("Annuler", (dialogInterface, i) -> dialogInterface.dismiss())
                 .setPositiveButton("Supprimer", (dialogInterface, i) -> {
-                    DatabaseReference databaseReference3 = FirebaseDatabase.getInstance().getReference().child("ListeChats").child(idDis);
-                    databaseReference3.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Discussion discussion = snapshot.getValue(Discussion.class);
-                            if (discussion!= null && discussion.getSupr()!=null) {
-                                databaseReference3.setValue(null);
-                                databaseReference3.getRoot().child("Chats").child(idDis).setValue(null);
+                    if (idDis != null) {
+                        final DatabaseReference databaseReference3 = FirebaseDatabase.getInstance().getReference().child("ListeChats").child(idDis);
+                        databaseReference3.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                Discussion discussion = snapshot.getValue(Discussion.class);
+                                if (discussion != null && discussion.getSupr() != null) {
+                                    databaseReference3.setValue(null);
+                                    databaseReference3.getRoot().child("Chats").child(idDis).setValue(null);
+                                } else
+                                    databaseReference3.child("supr").setValue(Objects.requireNonNull(fuser).getUid());
+                                onBackPressed();
                             }
-                            else databaseReference3.child("supr").setValue(Objects.requireNonNull(fuser).getUid());
-                            onBackPressed();
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            //RàS
-                        }
-                    });
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                //RàS
+                            }
+                        });
+                    }else{
+                        Toast.makeText(this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .show());
 

@@ -51,8 +51,8 @@ h
 8app/src/main/java/com/ipiccie/muetssages/Parametres.java,7\4\74f4a85fe3770c82479e189f4498ef681acb382e
 k
 ;app/src/main/java/com/ipiccie/muetssages/NousContacter.java,1\3\13959f2bd54e5ca93dc47f27388858b2dbdfae13
-p
-@app/src/main/java/com/ipiccie/muetssages/listeConversations.java,3\9\39b52b5a8045b7dce172d505d8887bf3968ec5f4
+e
+5app/src/main/java/com/ipiccie/muetssages/Accueil.java,e\4\e42a6255c5485b22f8ea730d22270513f57217e3
 j
 :app/src/main/java/com/ipiccie/muetssages/MainActivity.java,e\8\e8f20acf74cd38d08452a8f948de773174a22747
 @
@@ -60,8 +60,8 @@ j
 m
 =app/src/main/java/com/ipiccie/muetssages/LanceDiscussion.java,2\6\26653faf02e984d48399e82ee95bf71a093514de
 p
-@app/src/main/java/com/ipiccie/muetssages/ActiviteDiscussion.java,7\a\7a3fc1b6d163db8d4f29735e10f11b3e8beb6772
-e
-5app/src/main/java/com/ipiccie/muetssages/Accueil.java,e\4\e42a6255c5485b22f8ea730d22270513f57217e3
+@app/src/main/java/com/ipiccie/muetssages/listeConversations.java,3\9\39b52b5a8045b7dce172d505d8887bf3968ec5f4
 y
 Iapp/src/main/java/com/ipiccie/muetssages/adaptateur/AdaptateurAdapte.java,5\e\5ea32f7ae753ef692ae9995dd8d3c6b28ff33233
+p
+@app/src/main/java/com/ipiccie/muetssages/ActiviteDiscussion.java,7\a\7a3fc1b6d163db8d4f29735e10f11b3e8beb6772

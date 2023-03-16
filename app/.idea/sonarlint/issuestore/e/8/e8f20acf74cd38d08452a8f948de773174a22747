@@ -6,8 +6,4 @@ java:S1874*"<Remove this use of "getActiveNetworkInfo"; it is deprecated.(‡æÍ%
 N
 java:S1874+"3Remove this use of "isConnected"; it is deprecated.(ûæ¤ñÿÿÿÿÿ
 Q	java:S1256"<This block of commented-out lines of code should be removed.(ÈÉÀ
-_
-java:S1874V"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(¹Î¾
-N
-java:S1874^"8Remove this use of "IntentIntegrator"; it is deprecated.(èÕ²Ñ
 W	java:S125"<This block of commented-out lines of code should be removed.(œƒƒ©ùÿÿÿÿ

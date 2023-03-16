@@ -88,10 +88,14 @@ function switchfen (affiche) {
       $("#m_b_msg").removeClass("invisible");
       $("#lsmsg").addClass("invisible");
       $("#retour").removeClass("invisible");
+      $("#menu2").css("bottom","unset");
+      $("#menu2").css("top","8px");
     }else{
       $("#m_b_msg").addClass("invisible");
       $("#lsmsg").removeClass("invisible");
       $("#retour").addClass("invisible");
+      $("#menu2").css("bottom","30px");
+      $("#menu2").css("top","unset");
       if (btnselect!=null){
         btnselect.remove('clique');
       }

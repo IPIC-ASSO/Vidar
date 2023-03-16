@@ -1,6 +1,6 @@
 
-C
-java:S5411<"(Use a primitive boolean expression here.(‚ÚïÃøÿÿÿÿ
+s
+java:S14508"VRemove the "drapeau" field and declare it as a local variable in the relevant methods.(€£ú8™÷øéê0
 v
 java:S3923<"[Remove this conditional structure or edit its code blocks so that they're not all the same.(‚ÚïÃøÿÿÿÿ
 G
@@ -11,13 +11,7 @@ V	java:S125l"<This block of commented-out lines of code should be removed.(ù™Á
 V	java:S125z"<This block of commented-out lines of code should be removed.(´í®àùÿÿÿÿ
 n
 java:S3776’"RRefactor this method to reduce its Cognitive Complexity from 29 to the 15 allowed.(×ãö†ÿÿÿÿÿ
-K
-java:S1481²"4Remove this unused "bytesDownloaded" local variable.(ÿêŒ¼
-U
-java:S1481³"9Remove this unused "totalBytesToDownload" local variable.(ýÀøøùÿÿÿÿ
 N
 java:S1135´"2Complete the task associated to this TODO comment.(’ßô˜úÿÿÿÿ
-‰
-java:S3252Ó"mUse static access with "com.google.android.material.snackbar.BaseTransientBottomBar" for "LENGTH_INDEFINITE".(•¹È•þÿÿÿÿ
 Y
 java:S1144C">Remove this unused private "askNotificationPermission" method.(¿þ¹¬øÿÿÿÿ

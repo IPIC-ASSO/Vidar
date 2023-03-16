@@ -299,6 +299,9 @@ li:hover{
     display: block;
     background-color: rgb(0, 132, 255);
 }
+li:hover supr{
+    background-color: darkred;
+}
 
 .clique{
     background-color: rgb(108, 182, 252);
