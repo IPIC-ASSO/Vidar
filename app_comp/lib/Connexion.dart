@@ -34,12 +34,12 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Authentification",),
+        title: const Text("Authentification",),
         bottom: TabBar(
           controller: controleTable,
           tabs: [
-            Tab(icon: Icon(Icons.login), child:Text("Connexion",textAlign: TextAlign.center,)),
-            Tab(icon: Icon(Icons.nature_people_outlined), child:Text("Inscription",textAlign: TextAlign.center,)),
+            const Tab(icon: Icon(Icons.login), child:Text("Connexion",textAlign: TextAlign.center,)),
+            const Tab(icon: Icon(Icons.nature_people_outlined), child:Text("Inscription",textAlign: TextAlign.center,)),
           ]
         )
       ),
@@ -196,12 +196,16 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
   }
 
   Future<void> resetPassword({required String email}) async {
-    await auth
-        .sendPasswordResetEmail(email: email)
-        .then((value) => Usine.montreBiscotte(context, 'Envoyé!',this, true))
-        .catchError(
-            (e) => Usine.montreBiscotte(context, 'Une erreur est survenue',this));
-
+    try{
+      await auth
+          .sendPasswordResetEmail(email: email)
+          .then((value) => Usine.montreBiscotte(context, 'Envoyé!', this, true));
+    }on FirebaseAuthException catch (e) {
+      print(e.code);
+      Usine.montreBiscotte(context, 'Une erreur est survenue. \nL\'accès à la Base données a échoué ', this);
+    }catch(e){
+      Usine.montreBiscotte(context, 'Une erreur est survenue', this);
+    }
     return;
   }
 

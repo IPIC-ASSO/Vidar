@@ -1,6 +1,6 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:vidar/patrons/Utilisateur.dart';
 import 'package:vidar/patrons/convDeListe.dart';
 
 class laPoste {
@@ -28,7 +28,7 @@ class laPoste {
         if (doc.id.contains(idUti) && doc.data().runtimeType is Discussion){
           final dis = doc.data() as Discussion;
           if(dis.supr!=null && dis.supr!=idUti){
-            dis.pseudo = await prendPseudo(dis.utilisateur1==idUti?dis.utilisateur2??"":dis.utilisateur1??"");
+            dis.pseudo = await prendPseudo(dis.utilisateur1==idUti?dis.utilisateur2:dis.utilisateur1);
             conv.add(dis);
           }
         }
@@ -39,5 +39,24 @@ class laPoste {
   prendPseudo(String id) async {
     final x = await firebaseFirestore.collection("Utilisateurs").doc(id).get();
     return x.data()!["pseudo"]??"Inconnu au bataillon";
+  }
+
+  Future<String>suprConv(String idConv, String idMoi, String? dejaSupr) async {
+    try{
+      if (dejaSupr!=null) {
+        await firebaseFirestore.collection("ListeChats").doc(idConv).delete();
+        await firebaseFirestore.collection("Chats").doc(idConv).delete();
+      } else {
+        await firebaseFirestore
+            .collection("ListeChats")
+            .doc(idConv)
+            .update({"supr": idMoi});
+      }
+      return "0";
+    }on FirebaseException catch(e){
+      return(e.code);
+    }catch(e){
+      return(e.toString());
+    }
   }
 }
