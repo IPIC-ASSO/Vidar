@@ -1,9 +1,0 @@
-
-H
-java:S1874*"3Remove this use of "NetworkInfo"; it is deprecated.(‡æÍ%
-Q
-java:S1874*"<Remove this use of "getActiveNetworkInfo"; it is deprecated.(‡æÍ%
-N
-java:S1874+"3Remove this use of "isConnected"; it is deprecated.(ûæ¤ñÿÿÿÿÿ
-Q	java:S1256"<This block of commented-out lines of code should be removed.(ÈÉÀ
-W	java:S125"<This block of commented-out lines of code should be removed.(œƒƒ©ùÿÿÿÿ

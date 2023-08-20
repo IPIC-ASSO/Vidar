@@ -3,8 +3,6 @@ g
 7app/src/main/java/com/ipiccie/muetssages/tutoriel3.java,1\b\1bf1b07199f230bce07b5113f9cf13a2feba4848
 g
 7app/src/main/java/com/ipiccie/muetssages/tutoriel1.java,5\e\5ec10546556142b592c7397297f8eec9e52baf13
-p
-@app/src/main/java/com/ipiccie/muetssages/client/Utilisateur.java,c\e\ce998ad86aa9d0f000ea40c2d16e85716a15a557
 F
 app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
 S
@@ -15,8 +13,6 @@ P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 v
 Fapp/src/main/java/com/ipiccie/muetssages/notifications/APIService.java,c\9\c95fb1310d94bffc96439db334ec468270632255
-n
->app/src/main/java/com/ipiccie/muetssages/client/BaseDeFeu.java,5\5\55bb50db30ce216f4e09a9c1faab52bf3582de91
 i
 9app/src/main/java/com/ipiccie/muetssages/client/Chat.java,1\1\112401bf639c5057997d0020bf4be94a895cc1a8
 r
@@ -25,8 +21,6 @@ t
 Dapp/src/main/java/com/ipiccie/muetssages/ConfigLancerDiscussion.java,d\b\db675a275b4af473e612ff31e182ee7fe5a57d2a
 g
 7app/src/main/java/com/ipiccie/muetssages/Connexion.java,7\8\78d6b9e7e4748ca40abacc1e6db3ef3d67a13fb2
-o
-?app/src/main/java/com/ipiccie/muetssages/client/Discussion.java,e\6\e63d154f776c284cca0eaf9cc03ee2af7ebb6b87
 s
 Capp/src/main/java/com/ipiccie/muetssages/notifications/donnees.java,0\0\00039d82d0642960eaaaba295ddef59344e064a3
 l
@@ -51,17 +45,7 @@ h
 8app/src/main/java/com/ipiccie/muetssages/Parametres.java,7\4\74f4a85fe3770c82479e189f4498ef681acb382e
 k
 ;app/src/main/java/com/ipiccie/muetssages/NousContacter.java,1\3\13959f2bd54e5ca93dc47f27388858b2dbdfae13
-e
-5app/src/main/java/com/ipiccie/muetssages/Accueil.java,e\4\e42a6255c5485b22f8ea730d22270513f57217e3
-j
-:app/src/main/java/com/ipiccie/muetssages/MainActivity.java,e\8\e8f20acf74cd38d08452a8f948de773174a22747
-@
-app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
-m
-=app/src/main/java/com/ipiccie/muetssages/LanceDiscussion.java,2\6\26653faf02e984d48399e82ee95bf71a093514de
-p
-@app/src/main/java/com/ipiccie/muetssages/listeConversations.java,3\9\39b52b5a8045b7dce172d505d8887bf3968ec5f4
 y
 Iapp/src/main/java/com/ipiccie/muetssages/adaptateur/AdaptateurAdapte.java,5\e\5ea32f7ae753ef692ae9995dd8d3c6b28ff33233
-p
-@app/src/main/java/com/ipiccie/muetssages/ActiviteDiscussion.java,7\a\7a3fc1b6d163db8d4f29735e10f11b3e8beb6772
+@
+app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164

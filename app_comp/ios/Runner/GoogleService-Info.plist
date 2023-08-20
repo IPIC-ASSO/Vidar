@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>276571176774-1kv4nit0gkflo62rsv7bt3lltvj7edjd.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.276571176774-1kv4nit0gkflo62rsv7bt3lltvj7edjd</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCyicdJt6YghaRJ_nM7pAShzmNoqPw_MUs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>276571176774</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.appComp</string>
+	<key>PROJECT_ID</key>
+	<string>vidar-9e8ac</string>
+	<key>STORAGE_BUCKET</key>
+	<string>vidar-9e8ac.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:276571176774:ios:1546e7fbe261f22b97af47</string>
+	<key>DATABASE_URL</key>
+	<string>https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app</string>
+</dict>
+</plist>
