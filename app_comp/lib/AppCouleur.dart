@@ -8,6 +8,7 @@ class AppCouleur {
   static const Color principal = Color(0xE656C8FF);
   static const Color gaucher = Color(0xCC7E7E7E);
   static const Color banni = Color(0xFFFF1D1D);
+  static const Color tete = Color(0xFFFF5D5D);
   static const Color modification = Color(0xFF009F08);
   static const Color eco = Color(0xFF00D90A);
   static const Color orangeWeb = Color(0xFFf59400);

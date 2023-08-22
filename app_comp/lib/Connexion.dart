@@ -234,14 +234,18 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
             ),
           ),
           actions: <Widget>[
-            OutlinedButton(onPressed: (){Navigator.of(context).pop();}, child: const Text('Annuler'),),
-            OutlinedButton(
+            TextButton(
               child: const Text('Envoyer'),
               onPressed: () async{
-                await resetPassword(email: mailControl.text);
-                Navigator.of(context).pop();
+                if(mailControl.text.isNotEmpty) {
+                  await resetPassword(email: mailControl.text);
+                  Navigator.of(context).pop();
+                }else {
+                  Usine.montreBiscotte(context, "Oups, il nous faut une adresse e-mail", this);
+                }
               },
             ),
+            MaterialButton(onPressed: (){Navigator.of(context).pop();}, child: const Text('Annuler'),),
           ],
         );
       },
@@ -250,10 +254,10 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
 
   void connecte() {
     if (auth.currentUser!=null){
-      //TODO:
-      //Navigator.of(context).push(_sortieAutoroute());
-    }else {
+      //Pouf il est connecté ! :=)
+    }else if(mail_co.text.isNotEmpty && mdp_co.text.isNotEmpty) {
       try {
+        auth.signInWithEmailAndPassword(email: mail_co.text, password: mdp_co.text);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Connexion...'),
         ));
@@ -266,18 +270,20 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
       } catch (e) {
         Usine.montreBiscotte(context, "Une erreur est survenue", this);
       }
+    }else{
+      Usine.montreBiscotte(context, "Oups, vous n'avez pas rempli tous les champs !", this);
     }
   }
 
   nouvUti() async{
-    try {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Connexion...'),
-      ));
-      FirebaseFirestore db = FirebaseFirestore.instance;
+    if(mail_ins.text.isNotEmpty && pseudo.text.isNotEmpty && mdp_ins.text.isNotEmpty){
+      try {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Connexion...'),
+        ));
+        FirebaseFirestore db = FirebaseFirestore.instance;
 
-        final credit = await auth
-            .createUserWithEmailAndPassword(
+        final credit = await auth.createUserWithEmailAndPassword(
           email: mail_ins.text.replaceAll(' ', ''),
           password: mdp_ins.text,
         );
@@ -286,21 +292,29 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
             "pseudo": pseudo.text
             //TODO:messages ?
           };
-          db.collection("Utilisateurs").doc(credit.user?.uid??DateTime.now().millisecondsSinceEpoch.toString()).set(user).then((value) =>
-              print('Utilisateur enregistré')).onError((error, stackTrace) => print(error));
+          db
+              .collection("Utilisateurs")
+              .doc(credit.user?.uid ??
+                  DateTime.now().millisecondsSinceEpoch.toString())
+              .set(user)
+              .then((value) => print('Utilisateur enregistré'))
+              .onError((error, stackTrace) => print(error));
         }
-
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        Usine.montreBiscotte(context, "Mot de passe trop faible", this);
-      } else if (e.code == 'email-already-in-use') {
-        Usine.montreBiscotte(context, "Adresse mail déjà utilisée par un utilisateur", this);
-      }else{
-        Usine.montreBiscotte(context, "Inscription impossible", this);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          Usine.montreBiscotte(context, "Mot de passe trop faible", this);
+        } else if (e.code == 'email-already-in-use') {
+          Usine.montreBiscotte(
+              context, "Adresse mail déjà utilisée par un utilisateur", this);
+        } else {
+          Usine.montreBiscotte(context, "Inscription impossible", this);
+          print(e);
+        }
+      } catch (e) {
         print(e);
       }
-    } catch (e) {
-      print(e);
+    }else{
+      Usine.montreBiscotte(context, "Oups! Vous n'avez pas rempli tous les champs", this);
     }
   }
 }

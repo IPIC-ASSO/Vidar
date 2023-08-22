@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'dart:typed_data';
 
-import 'AppCouleur.dart';
-import 'usineDeBiscottesGrillees.dart';
+import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+
 
 class NouvConv extends StatefulWidget {
 
@@ -16,10 +15,12 @@ class NouvConv extends StatefulWidget {
 class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
 
   late TabController controleTable;
+  MobileScannerController controleCam = MobileScannerController();
 
   @override
   void initState() {
     super.initState();
+    print("a");
     controleTable = TabController(length: 2, vsync: this);
   }
 
@@ -29,6 +30,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
       appBar: AppBar(
           title: const Text("Démarrer une conversation",),
           bottom: TabBar(
+              isScrollable: true,
               controller: controleTable,
               tabs: [
                 const Tab(icon: Icon(Icons.app_registration),
@@ -38,9 +40,29 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
               ]
           )
       ),
-      body: Column(children: [
-
-      ]),
+        body:
+          TabBarView(
+            controller: controleTable,
+            children: [
+              Padding(padding: EdgeInsets.all(5),),
+              Container(child:MobileScanner(
+                fit: BoxFit.contain,
+                controller: controleCam,
+                onDetect: (capture) {
+                  final List<Barcode> barcodes = capture.barcodes;
+                  final Uint8List? image = capture.image;
+                  for (final barcode in barcodes) {
+                    debugPrint('Barcode found! ${barcode.rawValue}');
+                    print("OOOOOOUUI");
+                    controleTable.animateTo(0);
+                  }
+                },
+              )),
+          ]),
+      floatingActionButton: controleTable.index == 1 ? FloatingActionButton(
+        onPressed: () => {controleCam.switchCamera()},
+        child: Icon(Icons.cameraswitch),
+      ) : null,
     );
   }
 }

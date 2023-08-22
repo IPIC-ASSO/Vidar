@@ -4,8 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:vidar/AppCouleur.dart';
 import 'package:vidar/Connexion.dart';
 import 'package:vidar/Postier.dart';
+import 'package:vidar/nouvelleConversation.dart';
 import 'package:vidar/patrons/convDeListe.dart';
 import 'package:vidar/usineDeBiscottesGrillees.dart';
 
@@ -31,8 +33,13 @@ class _ConversationsState extends State<Conversations> with SingleTickerProvider
     return Scaffold(
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(15),
+          Container(
+            decoration: BoxDecoration(
+                border:  Border(
+                  bottom: BorderSide(width: 3.0, color: AppCouleur.tete),
+                ),
+            ),
+            padding: EdgeInsets.fromLTRB(15,25,15,10),
             child: Text("Liste des conversations en cours", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18), textAlign: TextAlign.center,)
           ),
           FutureBuilder(
@@ -54,8 +61,9 @@ class _ConversationsState extends State<Conversations> with SingleTickerProvider
                     )
                   );
                 }else{
-                  return Center(
-                    child: Text("Aucune conversation enregistrée\nCommencez en une avec le petit bouton vert"),
+                  return Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Text("Aucune conversation enregistrée\nCommencez en une avec le petit bouton bleu clair", textAlign: TextAlign.center,),
                   );
                 }
               }
@@ -63,12 +71,12 @@ class _ConversationsState extends State<Conversations> with SingleTickerProvider
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () =>{
-          PageRouteBuilder(
-            pageBuilder: (_, __, ___) => Connexion(),//TODO
+        onPressed: ()=>{
+          Navigator.of(context).push(PageRouteBuilder(
+            pageBuilder: (_, __, ___) => NouvConv(),//TODO
             transitionDuration: const Duration(milliseconds: 500),
             transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
-          )
+          ))
         },
         label: const Text('Nouvelle Conversation'),
         icon:  Icon(Icons.add),

@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:side_navigation/side_navigation.dart';
 import 'package:vidar/Connexion.dart';
+import 'package:vidar/Conversations.dart';
 
 
 import 'firebase_options.dart';
@@ -12,6 +14,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
       //TODO: crashlitics;
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   runApp(const MyApp());
 }
 
@@ -26,6 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0x2B4689FF)),
         useMaterial3: true,
+          canvasColor: Color(0xFF4BC08F),
       ),
       home: const MyHomePage(),
     );
@@ -64,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
 
   List<Widget> pages = const [
     Center(
-      child: Text('Conversations'),
+      child: Conversations(),
     ),
     Center(
       child: Text('Messages'),
@@ -89,12 +93,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
           ),
           bottomNavigationBar: BottomNavigationBar( //TODO: disparait lors du scroll
             selectedFontSize: 18,
-            selectedItemColor: Colors.blueAccent,
+            selectedItemColor: Colors.blue[800],
             selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
             mouseCursor: SystemMouseCursors.grab,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                  backgroundColor: Color(0xFF8DC5FF),
                   icon: Icon(Icons.chat),
                   label: 'Conversations',
                   tooltip: 'Liste des conversations'
@@ -128,7 +131,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
         return Scaffold(
           body: Row(
             children: [
-
               /// Pretty similar to the BottomNavigationBar!
               SideNavigationBar(
                 selectedIndex: indiceChoisi,
