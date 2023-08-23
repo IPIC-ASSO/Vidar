@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'MesConstantes.dart';
+
 class Discussion{
 
   String utilisateur1="erreur";
@@ -31,5 +33,35 @@ class Discussion{
       if(supr!=null)"supr": supr,
     };
   }
+}
 
+class Message {
+
+  String envoyeur;
+  String corps;
+  String temps;
+
+  Message(
+      {required this.envoyeur,
+        required this.temps,
+        required this.corps});
+
+  Map<String, dynamic> toJson() {
+    return {
+      MesConstantes.envoyeur: envoyeur,
+      MesConstantes.temps: temps,
+      MesConstantes.message: corps,
+    };
+  }
+
+  factory Message.fromDocument(Map<String,String> doc) {
+    String envoyeur = doc[MesConstantes.envoyeur]??"inconnu au bataillon";
+    String temps = doc[MesConstantes.temps]??"1676633613878";
+    String corps = doc[MesConstantes.message]??"Impossible de charger le message";
+
+    return Message(
+        envoyeur: envoyeur,
+        temps:temps,
+        corps:corps,);
+  }
 }

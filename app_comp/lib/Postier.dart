@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:vidar/patrons/MesConstantes.dart';
 import 'package:vidar/patrons/convDeListe.dart';
 
 class laPoste {
@@ -57,6 +58,50 @@ class laPoste {
       return(e.code);
     }catch(e){
       return(e.toString());
+    }
+  }
+
+  Stream<DocumentSnapshot> prendLesChatsDuQuartier(String conv) {
+    return firebaseFirestore
+        .collection(MesConstantes.cheminMessages)
+        .doc(conv)
+        .snapshots();
+  }
+
+  Future<int> envoie(String corps, String idConv, String idEnvoyeur) async {
+    try{
+      await firebaseFirestore.collection(MesConstantes.cheminMessages).doc(idConv).update(
+        {
+          DateTime.now().millisecondsSinceEpoch.toString():
+              {
+                MesConstantes.message:corps,
+                MesConstantes.envoyeur:idEnvoyeur
+              }
+        }
+      );
+      return 0;
+    }catch(e){
+      return 1;
+    }
+  }
+
+  Future<int> supprime(String temps,String idConv) async {
+    try{
+      await firebaseFirestore.doc("${MesConstantes.cheminMessages}/$idConv").update({temps: null});
+      return 0;
+    }catch(e){
+      return 1;
+    }
+  }
+
+  modifie(String idConv, Map<String,String> nouvMessage) async {
+    final nouvMessage2 = Map.from(nouvMessage);
+    nouvMessage2.remove(MesConstantes.temps);
+    try {
+      await firebaseFirestore.doc("${MesConstantes.cheminMessages}/$idConv").update({nouvMessage[MesConstantes.temps]??"1676633613878": nouvMessage2});
+      return 0;
+    } catch (e) {
+      return 1;
     }
   }
 }

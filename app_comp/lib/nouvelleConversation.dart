@@ -1,13 +1,20 @@
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:vidar/patrons/MesConstantes.dart';
+
+import 'Postier.dart';
+import 'usineDeBiscottesGrillees.dart';
 
 
 class NouvConv extends StatefulWidget {
 
-  const NouvConv({super.key});
+  final String idUti;
+
+  const NouvConv({super.key, required this.idUti});
 
   @override
   State<NouvConv> createState() => _NouvConvState();
@@ -16,11 +23,13 @@ class NouvConv extends StatefulWidget {
 class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
 
   late TabController controleTable;
+  late laPoste monPostier;
+  FirebaseFirestore db = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
-    print("a");
+    monPostier = laPoste(firebaseFirestore: db);
     controleTable = TabController(length: 2, vsync: this);
   }
 
@@ -44,10 +53,10 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
           TabBarView(
             controller: controleTable,
             children: [
-              Padding(padding: EdgeInsets.all(5),),
-              Container(child:ElevatedButton(
+              const Padding(padding: EdgeInsets.all(5),),
+              Center(child:ElevatedButton(
               onPressed: () => scanQR(),
-                child: Text('Start QR scan'))),
+                child: const Text('Lancer le scan', style: TextStyle(fontSize: 17),))),
               ]),
     );
   }
@@ -57,19 +66,29 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          '#ff6666', 'Cancel', true, ScanMode.QR);
+          '#6666ff', 'Retour',false, ScanMode.QR);
       print(barcodeScanRes);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
 
     setState(() {
       //_scanBarcode = barcodeScanRes;
     });
+  }
+
+  analyselien(String codex) async {
+    String idConv;
+    String destinataire = codex.replaceAll("https://", "");
+    destinataire = codex.replaceAll("vidar-9e8ac.web.app/?dest=", "");
+    final QuerySnapshot<Map<String, dynamic>> listeConv = await db.collection(MesConstantes.cheminListeMessages).get();
+    if(listeConv.docs.any((element) => element.id.contains(widget.idUti) && element.id.contains(destinataire))){
+      idConv = listeConv.docs.firstWhere((element) => element.id.contains(widget.idUti) && element.id.contains(destinataire)).id;
+    }else{
+      idConv = destinataire + widget.idUti;
+
+    }
+    laPoste(firebaseFirestore: db);
   }
 }
