@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:vidar/interfaceDiscussion.dart';
 import 'package:vidar/patrons/MesConstantes.dart';
 
 import 'Postier.dart';
@@ -25,6 +26,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
   late TabController controleTable;
   late laPoste monPostier;
   FirebaseFirestore db = FirebaseFirestore.instance;
+  bool charge = false;
 
   @override
   void initState() {
@@ -54,28 +56,40 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
             controller: controleTable,
             children: [
               const Padding(padding: EdgeInsets.all(5),),
-              Center(child:ElevatedButton(
-              onPressed: () => scanQR(),
-                child: const Text('Lancer le scan', style: TextStyle(fontSize: 17),))),
+              Center(child:
+                  charge?
+                CircularProgressIndicator():
+                ElevatedButton(
+                onPressed: () => scanQR(),
+                  child: const Text('Lancer le scan', style: TextStyle(fontSize: 17),))
+                ),
               ]),
     );
   }
 
   Future<void> scanQR() async {
-    String barcodeScanRes;
+    String barcodeScanRes ="";
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#6666ff', 'Retour',false, ScanMode.QR);
       print(barcodeScanRes);
     } on PlatformException {
-      barcodeScanRes = 'Failed to get platform version.';
+      Usine.montreBiscotte(context, 'Failed to get platform version.', this);
     }
     if (!mounted) return;
 
     setState(() {
-      //_scanBarcode = barcodeScanRes;
+      charge = true;
     });
+    try{
+      if(barcodeScanRes.isNotEmpty)analyselien(barcodeScanRes);
+      else{
+        Usine.montreBiscotte(context, 'QR-code non valide', this);
+      }
+    }catch(e){
+      Usine.montreBiscotte(context, 'Une erreur est survenue', this);
+    }
   }
 
   analyselien(String codex) async {
@@ -87,8 +101,25 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
       idConv = listeConv.docs.firstWhere((element) => element.id.contains(widget.idUti) && element.id.contains(destinataire)).id;
     }else{
       idConv = destinataire + widget.idUti;
-
+      await db.collection(MesConstantes.cheminListeMessages).doc(idConv).set(
+        {
+          "utilisateur1": destinataire,
+          "utilisateur2": widget.idUti,
+        }
+      );
     }
-    laPoste(firebaseFirestore: db);
+    await db.collection(MesConstantes.cheminUtilisateur).doc(destinataire).update(
+        {"contact":widget.idUti}
+    );
+    final doc = await db.collection(MesConstantes.cheminUtilisateur).doc(destinataire).get();
+    String pseudo = "inconnu au bataillon";
+    if(doc.data()!= null && doc.data()![MesConstantes.nomUti]!= null)pseudo = doc.data()![MesConstantes.nomUti];
+    Navigator.push(context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => InterfaceDiscussion(idUti: widget.idUti, idConv: idConv, pseudoDest: pseudo),
+        transitionDuration: const Duration(milliseconds: 500),
+        transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+      ),
+    );
   }
 }

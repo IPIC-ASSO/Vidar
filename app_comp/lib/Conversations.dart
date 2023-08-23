@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:vidar/AppCouleur.dart';
 import 'package:vidar/Connexion.dart';
 import 'package:vidar/Postier.dart';
+import 'package:vidar/interfaceDiscussion.dart';
 import 'package:vidar/nouvelleConversation.dart';
 import 'package:vidar/patrons/convDeListe.dart';
 import 'package:vidar/usineDeBiscottesGrillees.dart';
@@ -73,7 +74,7 @@ class _ConversationsState extends State<Conversations> with SingleTickerProvider
       floatingActionButton: FloatingActionButton.extended(
         onPressed: ()=>{
           Navigator.of(context).push(PageRouteBuilder(
-            pageBuilder: (_, __, ___) => NouvConv(),//TODO
+            pageBuilder: (_, __, ___) => NouvConv(idUti: user?.uid??"erreur",),//TODO
             transitionDuration: const Duration(milliseconds: 500),
             transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
           ))
@@ -90,14 +91,14 @@ class _ConversationsState extends State<Conversations> with SingleTickerProvider
     return Padding(
       padding: EdgeInsets.all(10),
         child:(GestureDetector(
-          onTap: ()=>{
+          onTap: (){
             Navigator.push(context,
               PageRouteBuilder(
-                pageBuilder: (_, __, ___) => Connexion(),//TODO
+                pageBuilder: (_, __, ___) => InterfaceDiscussion(idUti: user!.uid, idConv: dis.utilisateur1+dis.utilisateur2, pseudoDest: dis.pseudo),
                 transitionDuration: const Duration(milliseconds: 500),
                 transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
               ),
-            )
+            );
           },
           child:Container(
           color: dis.supr!=null?Colors.red:Colors.grey,

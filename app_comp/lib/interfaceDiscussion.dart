@@ -10,19 +10,19 @@ import 'package:vidar/patrons/OutilsUtiles.dart';
 import 'package:vidar/patrons/convDeListe.dart';
 import 'package:vidar/usineDeBiscottesGrillees.dart';
 
-class Conversations extends StatefulWidget {
+class InterfaceDiscussion extends StatefulWidget {
 
   final String idUti;
   final String idConv;
   final String pseudoDest;
 
-  const Conversations({super.key, required this.idUti, required this.idConv, required this.pseudoDest});
+  const InterfaceDiscussion({super.key, required this.idUti, required this.idConv, required this.pseudoDest});
 
   @override
-  State<Conversations> createState() => _ConversationsState();
+  State<InterfaceDiscussion> createState() => _InterfaceDiscussionState();
 }
 
-class _ConversationsState extends State<Conversations> with SingleTickerProviderStateMixin {
+class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTickerProviderStateMixin {
 
   final user = FirebaseAuth.instance.currentUser;
   FirebaseFirestore db = FirebaseFirestore.instance;
@@ -46,6 +46,12 @@ class _ConversationsState extends State<Conversations> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.pseudoDest),
+        actions: [
+          IconButton(onPressed: ()=>{confSupr()}, icon: Icon(Icons.delete_forever))
+        ],
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -71,7 +77,7 @@ class _ConversationsState extends State<Conversations> with SingleTickerProvider
                 listeMessages = ((Map.fromEntries(listeIntermediaire.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key))).map((key, value) { value["temps"] = key;return(MapEntry(key,value));}).values.toList())).sublist(0,_limite);
                 if (listeMessages.isNotEmpty) {
                   return GestureDetector(
-                      //onDoubleTap: ()=>annuleModif(),
+                      onDoubleTap: ()=>annuleModif(),
                       child:ListView.builder(
                           itemCount: listeMessages.length,
                           reverse: true,
@@ -355,4 +361,26 @@ class _ConversationsState extends State<Conversations> with SingleTickerProvider
   
   //TODO:
   prendMessageEnr() {}
+
+  confSupr() {
+    showDialog(
+        context: context,
+        builder: (context)=>AlertDialog(
+          title: Text("Supprimer la conversation"),
+          content: Text("Voulez vous supprimez cette conversation?\nCette action est irréversible."),
+          actions: [
+            TextButton(onPressed: () async {
+              Navigator.of(context).pop();
+              Discussion dis= await monPostier.prendLAconv(widget.idConv);
+              monPostier.suprConv(dis.utilisateur1+dis.pseudo,user?.uid??"erreur",dis.supr).then((value){
+                if(value=="0")Usine.montreBiscotte(context, "Supprimé !", this, true);
+                else{
+                  Usine.montreBiscotte(context, "Une erreur est survenue: $value", this);
+                }
+              });
+            }, child: const Text("Valider", style: TextStyle(fontWeight: FontWeight.bold),),),
+            MaterialButton(onPressed: ()=>{Navigator.of(context).pop()}, child: const Text("Annuler"),)
+          ],
+        ));
+  }
 }

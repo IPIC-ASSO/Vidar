@@ -37,6 +37,11 @@ class laPoste {
     return conv;
   }
 
+  Future<Discussion> prendLAconv(String idConv) async {
+    final Discussion Dis =  (await firebaseFirestore.collection("ListeChats").doc(idConv).withConverter(fromFirestore: Discussion.fromFirestore, toFirestore: (Discussion discussion,_)=>Discussion().toFirestore()).get()).data() as Discussion;
+    return Dis;
+  }
+
   prendPseudo(String id) async {
     final x = await firebaseFirestore.collection("Utilisateurs").doc(id).get();
     return x.data()!["pseudo"]??"Inconnu au bataillon";
