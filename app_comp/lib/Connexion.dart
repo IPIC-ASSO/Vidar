@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -266,6 +268,9 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
           Usine.montreBiscotte(context, "Utilisateur introuvable", this);
         } else if (e.code == 'wrong-password') {
           Usine.montreBiscotte(context, "Mot de passe incorrect", this);
+        }else{
+          Usine.montreBiscotte(context, "impossible de contacter la base données", this);
+          log(e.code);
         }
       } catch (e) {
         Usine.montreBiscotte(context, "Une erreur est survenue", this);

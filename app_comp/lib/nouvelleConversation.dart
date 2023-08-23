@@ -1,7 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 
 class NouvConv extends StatefulWidget {
@@ -15,7 +16,6 @@ class NouvConv extends StatefulWidget {
 class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
 
   late TabController controleTable;
-  MobileScannerController controleCam = MobileScannerController();
 
   @override
   void initState() {
@@ -45,24 +45,31 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
             controller: controleTable,
             children: [
               Padding(padding: EdgeInsets.all(5),),
-              Container(child:MobileScanner(
-                fit: BoxFit.contain,
-                controller: controleCam,
-                onDetect: (capture) {
-                  final List<Barcode> barcodes = capture.barcodes;
-                  final Uint8List? image = capture.image;
-                  for (final barcode in barcodes) {
-                    debugPrint('Barcode found! ${barcode.rawValue}');
-                    print("OOOOOOUUI");
-                    controleTable.animateTo(0);
-                  }
-                },
-              )),
-          ]),
-      floatingActionButton: controleTable.index == 1 ? FloatingActionButton(
-        onPressed: () => {controleCam.switchCamera()},
-        child: Icon(Icons.cameraswitch),
-      ) : null,
+              Container(child:ElevatedButton(
+              onPressed: () => scanQR(),
+                child: Text('Start QR scan'))),
+              ]),
     );
+  }
+
+  Future<void> scanQR() async {
+    String barcodeScanRes;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', 'Cancel', true, ScanMode.QR);
+      print(barcodeScanRes);
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      //_scanBarcode = barcodeScanRes;
+    });
   }
 }
