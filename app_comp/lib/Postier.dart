@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vidar/patrons/MesConstantes.dart';
+import 'package:vidar/patrons/Utilisateur.dart';
 import 'package:vidar/patrons/convDeListe.dart';
 
 class laPoste {
@@ -103,10 +104,24 @@ class laPoste {
     final nouvMessage2 = Map.from(nouvMessage);
     nouvMessage2.remove(MesConstantes.temps);
     try {
-      await firebaseFirestore.doc("${MesConstantes.cheminMessages}/$idConv").update({nouvMessage[MesConstantes.temps]??"1676633613878": nouvMessage2});
+      await firebaseFirestore.collection(MesConstantes.cheminMessages).doc(idConv).update({nouvMessage[MesConstantes.temps]??"1676633613878": nouvMessage2});
       return 0;
     } catch (e) {
       return 1;
     }
+  }
+
+  prendMessagesParDefaut() async{
+    final DocumentSnapshot documentsParDefaut = await firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeMessagesPreEnr).get();
+    return((documentsParDefaut.data()??{}) as Map<String,String>);
+  }
+
+  prendMessagesPersonnels(String idUti) async {
+    Map<String,String> messages = {};
+    final Stream<DocumentSnapshot<Utilisateur>> uti  = await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).withConverter(fromFirestore: Utilisateur.fromFirestore, toFirestore: (Utilisateur utilisateur,_)=>Utilisateur().toFirestore()).snapshots();
+    if(uti..data()!=null){
+      messages.addAll(uti.data()!.messages??{});
+    }
+    return messages;
   }
 }

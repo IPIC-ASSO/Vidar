@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:vidar/patrons/MesConstantes.dart';
 
 class Utilisateur{
   String? id;
   String? pseudo;
   List<String>? contacts;
-  List<String>? messages;
+  Map<String, String>? messages;
 
-  Utilisateur(this.id, this.pseudo);
+
+
+  Utilisateur();
 
 
   Utilisateur.complet({this.id, this.pseudo, this.contacts, this.messages});
@@ -18,16 +21,16 @@ class Utilisateur{
     final data = snapshot.data();
     return Utilisateur.complet(
       id: snapshot.id,
-      pseudo: data?['pseudo'],
-      contacts: data?['contacts'] is Iterable ? List.from(data?['contacts']) : [],
-      messages: data?['messages'] is Iterable ? List.from(data?['messages']) : [],
+      pseudo: data?[MesConstantes.nomUti],
+      contacts: data?[MesConstantes.contact] is Iterable ? List.from(data?[MesConstantes.contact]) : [],
+      messages: data?[MesConstantes.messagesEnregistres] is Map ? Map.from(data?[MesConstantes.messagesEnregistres]) : {},
     );
   }
   Map<String, dynamic> toFirestore() {
     return {
-      if (pseudo != null) "pseudo": pseudo,
-      if (contacts != null) "contacts": contacts,
-      if (messages != null) "messages": messages,
+      if (pseudo != null) MesConstantes.nomUti: pseudo,
+      if (contacts != null) MesConstantes.contact: contacts,
+      if (messages != null) MesConstantes.messagesEnregistres: messages,
     };
   }
 }

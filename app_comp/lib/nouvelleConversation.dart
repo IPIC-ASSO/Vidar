@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -55,10 +53,17 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
           TabBarView(
             controller: controleTable,
             children: [
-              const Padding(padding: EdgeInsets.all(5),),
+              Column(children: [
+                Padding(padding: EdgeInsets.all(15),child:Text("Afficher un message au dessus du QR-code:")),
+                Padding(padding: EdgeInsets.all(15),child:ElevatedButton(onPressed:(){},child:Text("[AUCUN]"))),
+                Padding(padding: EdgeInsets.all(15),child:Text("Lire un message avec l'application:")),
+                Padding(padding: EdgeInsets.all(15),child:ElevatedButton(onPressed:(){},child:Text("[AUCUN]"))),
+                Padding(padding: EdgeInsets.all(15),child:Text("Message au début de la conversation:")),
+                Padding(padding: EdgeInsets.all(15),child:ElevatedButton(onPressed:(){},child:Text("[AUCUN]"))),
+              ],),
               Center(child:
                   charge?
-                CircularProgressIndicator():
+                const CircularProgressIndicator():
                 ElevatedButton(
                 onPressed: () => scanQR(),
                   child: const Text('Lancer le scan', style: TextStyle(fontSize: 17),))
