@@ -65,3 +65,13 @@ class Message {
         corps:corps,);
   }
 }
+
+class MessageDefaut{
+  String titre;
+  String corps;
+
+  MessageDefaut({required this.titre, required this.corps});
+
+
+
+}

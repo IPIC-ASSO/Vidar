@@ -41,6 +41,11 @@ dependencies:
   flutter_tts: ^3.7.0
   flutter_barcode_scanner: ^2.0.0
   intl: ^0.18.1
+  url_launcher: ^6.1.9
+  qr_flutter: ^4.1.0
+  shared_preferences: ^2.2.0
+  universal_html: ^2.2.3
+
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +69,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/images/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

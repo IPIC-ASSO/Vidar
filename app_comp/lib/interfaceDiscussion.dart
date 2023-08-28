@@ -1,10 +1,13 @@
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:vidar/AppCouleur.dart';
 import 'package:vidar/Postier.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:vidar/main.dart';
 import 'package:vidar/patrons/MesConstantes.dart';
 import 'package:vidar/patrons/OutilsUtiles.dart';
 import 'package:vidar/patrons/convDeListe.dart';
@@ -15,42 +18,72 @@ class InterfaceDiscussion extends StatefulWidget {
   final String idUti;
   final String idConv;
   final String pseudoDest;
+  final String message;
+  final bool supr;
 
-  const InterfaceDiscussion({super.key, required this.idUti, required this.idConv, required this.pseudoDest});
+  const InterfaceDiscussion({super.key, required this.idUti, required this.idConv, required this.pseudoDest, this.message="", this.supr=false});
 
   @override
   State<InterfaceDiscussion> createState() => _InterfaceDiscussionState();
 }
 
-class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTickerProviderStateMixin {
+class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerProviderStateMixin {
 
   final user = FirebaseAuth.instance.currentUser;
   FirebaseFirestore db = FirebaseFirestore.instance;
   late laPoste monPostier;
-
+  late FlutterTts monTTS = FlutterTts();
   List<Map<String,String>> listeMessages = [];
   final TextEditingController redaction = TextEditingController();
+  final TextEditingController titre = TextEditingController();
   final ScrollController controleSkrol = ScrollController();
   int _limite = 20;
   final int _ajoutLimite = 20;
   bool modif = false;
+  bool marque = false;
   int indiceMessageModif=0;
+  int indiceMessageTouche = 0;
+  Map<String,String> listeMessagesEnr = {};
 
   @override
   void initState() {
     super.initState();
+    setState(() {
+      OutilsOutils.ConfigureTTS().then((value) => monTTS=value);
+    });
     monPostier = laPoste(firebaseFirestore: db);
     initializeDateFormatting('fr_FR');
+    if(widget.message.isNotEmpty)versLaPoste(widget.message);
+    prendMessages();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        Navigator.of(context).push(PageRouteBuilder(
+          pageBuilder: (_, __, ___) => const MyHomePage(),
+          transitionDuration: const Duration(milliseconds: 500),
+          transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+        ));
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.pseudoDest),
+        title: Text(modif?"Modification":widget.pseudoDest),
+        backgroundColor: modif?AppCouleur.principal:null,
+        automaticallyImplyLeading: false,
+        elevation: 5,
         actions: [
-          IconButton(onPressed: ()=>{confSupr()}, icon: Icon(Icons.delete_forever))
+          IconButton(onPressed: ()=>{confSupr()}, icon: const Icon(Icons.delete_forever))
         ],
+        leading: IconButton(onPressed: ()=>{
+          Navigator.of(context).push(PageRouteBuilder(
+            pageBuilder: (_, __, ___) => const MyHomePage(),
+            transitionDuration: const Duration(milliseconds: 500),
+            transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+          ))
+        }, icon: const Icon(Icons.home)),
       ),
       body: SafeArea(
         child: Padding(
@@ -58,6 +91,8 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
           child: Column(
             children: [
               ConstruitListeMessage(),
+              widget.supr?
+              const Padding(padding: EdgeInsets.all(15),child:Text("Conversation supprimée par votre interlocuteur", style: TextStyle(fontSize:16,fontStyle: FontStyle.italic,color: AppCouleur.banni),),):
               ConstruitRedacteur(),
             ],
           ),
@@ -70,11 +105,23 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
     return Flexible(
         child: StreamBuilder<DocumentSnapshot>(
             stream: monPostier.prendLesChatsDuQuartier(widget.idConv),
-            builder: (BuildContext context,
-                AsyncSnapshot<DocumentSnapshot> snapshot) {
-              if (snapshot.hasData) {
-                final listeIntermediaire = (snapshot.data)! as Map<String, Map<String,String>>;
-                listeMessages = ((Map.fromEntries(listeIntermediaire.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key))).map((key, value) { value["temps"] = key;return(MapEntry(key,value));}).values.toList())).sublist(0,_limite);
+            builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+              if (snapshot.hasData && (snapshot.data)!.data()!= null) {
+                final listeIntermediaire = (snapshot.data)!.data() as Map<String, dynamic>;
+                final DocumentSnapshot listeInt1 = (snapshot.data)!;
+                final Map<String,Map<String,String>> listeInt2= {};
+                listeIntermediaire.forEach((key, value) {
+                  listeInt2[key] = {
+                    MesConstantes.envoyeur:listeInt1[key][MesConstantes.envoyeur],
+                    MesConstantes.message:listeInt1[key][MesConstantes.message]
+                  };
+                });
+                listeMessages = (
+                    Map.fromEntries(listeInt2.entries.toList()
+                      ..sort((e1, e2) => e2.key.compareTo(e1.key)))
+                        .map((key, value) {value["temps"] = key;return(MapEntry(key,value));})
+                        .values.toList())
+                    .sublist(0,min(_limite,listeInt2.keys.length));
                 if (listeMessages.isNotEmpty) {
                   return GestureDetector(
                       onDoubleTap: ()=>annuleModif(),
@@ -86,10 +133,14 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
                               construitChat(index, listeMessages[index])));
                 } else {
                   return const Center(
-                    child: Text('Pas de messages...'),
+                    child: Text('Aucun message n\'a encore été envoyé'),
                   );
                 }
-              } else {
+              }else if(snapshot.hasData){
+                return const Center(
+                  child: Text('Pas de messages...'),
+                );
+              }else{
                 return const Center(
                   child: CircularProgressIndicator(
                     color: AppCouleur.charge,
@@ -118,10 +169,9 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
                 ),
                 child: modif?
                 IconButton(onPressed: ()=>suprMessage(indiceMessageModif),
-                    icon: const Icon(Icons.delete_forever, size: 28,)):
+                    icon: const Icon(Icons.delete_forever, size: 28,color: Colors.black,)):
                 IconButton(
-                  onPressed:()=>{
-                    prendMessageEnr()},
+                  onPressed:()=>{montreMessagesEnr()},
                   icon: const Icon(
                     Icons.text_snippet_outlined,
                     size: 28,
@@ -142,7 +192,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
                             hintText: 'Votre message'
                         ),
                         onSubmitted: (value) {
-                          //versLaPoste(redaction.text, MessageType.texte);
+                          versLaPoste(redaction.text);
                         },
                       ))),
               Container(
@@ -150,7 +200,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
                 height: 52,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    color: AppCouleur.principal
+                    color: modif?AppCouleur.eco:AppCouleur.principal
                 ),
                 child: modif?
                 IconButton(
@@ -198,12 +248,14 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                onLongPress: ()=>modifMessage(index),
                 onDoubleTap: ()=>modifMessage(index),
                 child:messagePoissonRouge(
                     corps: chaton.corps,
-                    color: AppCouleur.droitier,//(modif && indiceMessageModif==index)?AppCouleur.modification:AppCouleur.droitier,
+                    color: (modif && indiceMessageModif==index)?AppCouleur.modification:AppCouleur.droitier,
                     textColor: AppCouleur.white,
+                    expansion: (modif && indiceMessageModif==index),
+                    monTTS: monTTS,
+                    enreMesss: montreEnregistreMessage,
                     margin: const EdgeInsets.fromLTRB(0,1,3,1),
                     bords:BorderRadius.only(
                       bottomLeft:  unMessagePoste(index)?const Radius.circular(10.0):const Radius.circular(0),
@@ -236,16 +288,21 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            messagePoissonRouge(
+            GestureDetector(
+            onDoubleTap: ()=>marqueMessage(index),
+            child:messagePoissonRouge(
               color: AppCouleur.gaucher,
               textColor: AppCouleur.white,
               corps: chaton.corps,
+              expansion: (marque && indiceMessageTouche==index),
+              monTTS: monTTS,
+              enreMesss: montreEnregistreMessage,
               bords:BorderRadius.only(
                 bottomLeft:  unMessageRecu(index)?const Radius.circular(10.0):const Radius.circular(0),
                 bottomRight: unMessageRecu(index)?const Radius.circular(10.0):const Radius.circular(0),
                 topRight:unAncienMessageRecu(index)?const Radius.circular(10.0):const Radius.circular(0),),
               margin: const EdgeInsets.fromLTRB(3,1,0,1),
-            ),
+            ),),
             unMessageRecu(index) ? Container(
               margin: const EdgeInsets.only(left: 50, top: 6, bottom: 8),
               child: Text(
@@ -305,9 +362,18 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
   modifMessage(int index){
     setState(() {
       modif = true;
+      marque = false;
+      indiceMessageModif = index;
     });
-    indiceMessageModif = index;
     redaction.text = Message.fromDocument(listeMessages[index]).corps;
+  }
+
+  marqueMessage(int index){
+    setState(() {
+      marque = true;
+      modif = false;
+      indiceMessageTouche = index;
+    });
   }
 
   suprMessage(int index) async {
@@ -319,7 +385,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
     if(resultat==0) {
       Usine.montreBiscotte(context, "Supprimé!", this,true);
     } else {
-      Usine.montreBiscotte(context, "Une erreur est survenue!", this,true);
+      Usine.montreBiscotte(context, "Une erreur est survenue!", this);
     }
   }
 
@@ -327,13 +393,14 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
     setState(() {
       modif = false;
     });
-    redaction.clear();
     listeMessages[index][MesConstantes.message] = redaction.text;
+    redaction.clear();
+
     final resultat = await monPostier.modifie( widget.idConv, listeMessages[index]);
     if(resultat==0) {
       Usine.montreBiscotte(context, "Modifié!", this,true);
     } else {
-      Usine.montreBiscotte(context, "Une erreur est survenue!", this,true);
+      Usine.montreBiscotte(context, "Une erreur est survenue!", this);
     }
   }
 
@@ -341,6 +408,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
     if(modif){
       setState(() {
         modif = false;
+        marque = false;
       });
       redaction.clear();
     }
@@ -349,31 +417,45 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
   void versLaPoste(String corps) async {
     if (corps.trim().isNotEmpty) {
       redaction.clear();
-      int resultat = await monPostier.envoie(
-          corps, widget.idConv, widget.idUti);
-      if (resultat == 1) Usine.montreBiscotte(context, "Une erreur est survenue!", this, true);
-      controleSkrol.animateTo(0,
-          duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+      int resultat = await monPostier.envoie(corps, widget.idConv, widget.idUti);
+      if (resultat == 1) Usine.montreBiscotte(context, "Une erreur est survenue!", this);
+      if(listeMessages.isNotEmpty)controleSkrol.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+
     } else {
       Usine.montreBiscotte(context, "Oups, votre message est vide!", this);
     }
   }
-  
-  //TODO:
-  prendMessageEnr() {}
+
+  Future<void> prendMessages() async {
+    final mesEnre = await monPostier.prendMessagesPersoStatiques(widget.idUti);
+    if(mesEnre.data()!=null && mesEnre.data()!.messages!= null){
+      listeMessagesEnr.addAll(mesEnre.data()!.messages!);
+    }
+    final DocumentSnapshot<Map<String, dynamic>> lesEnre = await monPostier.prendMessagesParDefaut();
+    if(lesEnre.data()!=null && lesEnre.data()!= null){
+      final x = Map<String,String>.from(lesEnre.data()!);
+      listeMessagesEnr.addAll(x);
+    }
+  }
 
   confSupr() {
     showDialog(
         context: context,
-        builder: (context)=>AlertDialog(
-          title: Text("Supprimer la conversation"),
-          content: Text("Voulez vous supprimez cette conversation?\nCette action est irréversible."),
+        builder: (BuildContext Lecontext)=>AlertDialog(
+          title: const Text("Supprimer la conversation"),
+          content: const Text("Voulez vous supprimez cette conversation?\nCette action est irréversible."),
           actions: [
             TextButton(onPressed: () async {
-              Navigator.of(context).pop();
+              Navigator.of(Lecontext).pop();
               Discussion dis= await monPostier.prendLAconv(widget.idConv);
-              monPostier.suprConv(dis.utilisateur1+dis.pseudo,user?.uid??"erreur",dis.supr).then((value){
-                if(value=="0")Usine.montreBiscotte(context, "Supprimé !", this, true);
+              monPostier.suprConv(dis.utilisateur1+dis.utilisateur2,user?.uid??"erreur",dis.supr).then((value){
+                if(value=="0") {
+                  Navigator.of(context).push(PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => const MyHomePage(),
+                    transitionDuration: const Duration(milliseconds: 500),
+                    transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+                  ));
+                }
                 else{
                   Usine.montreBiscotte(context, "Une erreur est survenue: $value", this);
                 }
@@ -382,5 +464,88 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with SingleTi
             MaterialButton(onPressed: ()=>{Navigator.of(context).pop()}, child: const Text("Annuler"),)
           ],
         ));
+  }
+
+  montreMessagesEnr() {
+    showDialog(context: context, builder: (context)=>AlertDialog(
+      title: const Text("Charger un message"),
+      content: listeMessagesForme(),
+      actions: [
+        MaterialButton(onPressed: ()=>{Navigator.of(context).pop()},child: const Text("Annuler"),)
+      ],
+    ),
+    );
+  }
+
+  Widget listeMessagesForme() {
+    return Container(width: 1000,
+        child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: listeMessagesEnr.keys.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ListTile(
+                title: Text(listeMessagesEnr.keys.toList()[index]),
+                onTap: () {
+                  redaction.text += listeMessagesEnr.values.toList()[index];
+                  Navigator.of(context).pop();
+                },
+                trailing: IconButton(
+                  icon: const Icon(Icons.volume_up),
+                  onPressed: ()=>{monTTS.speak(listeMessagesEnr.values.toList()[index])},
+                ),
+              );
+            }
+        )
+    );
+  }
+
+  montreEnregistreMessage(corps){
+    showDialog(context: context, builder: (contex)=>AlertDialog(
+      title: Text("Enregistrer le message"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text("Indiquez l'intitulé du message à enregistrer"),
+          TextField(
+            textInputAction:TextInputAction.done,
+            keyboardType: TextInputType.text,
+            textCapitalization: TextCapitalization.sentences,
+            controller: titre,
+            decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Intitulé'
+            ),
+            onSubmitted: (value) {
+              nvMessage(corps);
+            },
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: ()=>{nvMessage(corps)},child: const Text("Enregistrer"),),
+        MaterialButton(onPressed: ()=>{Navigator.of(context).pop()},child: const Text("Annuler"),)
+      ],
+    ));
+  }
+
+  Future<void> nvMessage(String corps) async {
+    if (titre.text.isNotEmpty && corps.isNotEmpty) {
+      final resultat = await monPostier.EnregistreMessage(
+          widget.idUti, "", titre.text, corps);
+      if (resultat == 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Enregistré !'),
+              backgroundColor: AppCouleur.secondaire,
+              behavior: SnackBarBehavior.floating,
+            )
+        );
+        Navigator.of(context).pop();
+      } else {
+        Usine.montreBiscotte(context, "Une erreur est survenue!", this);
+      }
+    }else{
+      Usine.montreBiscotte(context, "Oups, un intitulé est nécessaire!", this);
+    }
   }
 }

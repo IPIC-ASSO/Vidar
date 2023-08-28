@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:vidar/patrons/MesConstantes.dart';
 
 import 'AppCouleur.dart';
 import 'usineDeBiscottesGrillees.dart';
@@ -36,6 +37,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("Authentification",),
         bottom: TabBar(
           controller: controleTable,
@@ -58,81 +60,94 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
                     fontSize: 30),
                 textAlign: TextAlign.center,
               )),
-        Expanded(child: TabBarView(
-          controller: controleTable,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: ListView(
-                children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    child: TextField(
-                      controller: mail_co,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'email',
-                        hintText: "adresse email",
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: TextField(
-                      obscureText: mdpVisible,
-                      controller: mdp_co,
-                      onSubmitted: (value) => connecte(),
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        labelText: 'Mot de passe',
-                        hintText: "Mot de passe",
-                        suffixIcon: IconButton(onPressed: (){setState(() {
-                          mdpVisible = !mdpVisible;
-                        });}, icon: Icon(mdpVisible? Icons.visibility: Icons.visibility_off)),
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      _showMyDialog();
-                    },
-                    child: const Text('Mot de passe oublié'),
-                  ),
-                  Container(
-                      height: 70,
-                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                      child: ElevatedButton(
-                        child: const Text('Se connecter',style: TextStyle(fontSize: 18),),
-                        onPressed: () {
-                          connecte();
-                        },
-                      )
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Text('Pas encore inscrit?'),
-                      TextButton(
-                        child: const Text(
-                          'S\'inscrire',
-                          style: TextStyle(fontSize: 14),
+          Expanded( child: TabBarView(
+            controller: controleTable,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      child: TextField(
+                        controller: mail_co,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'email',
+                          hintText: "adresse email",
                         ),
-                        onPressed: () {
-                          controleTable.animateTo(1);
-                        },
-                      )
-                    ],
-                  ),
-                ],
-              )),
-          Padding(
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: TextField(
+                        obscureText: mdpVisible,
+                        controller: mdp_co,
+                        onSubmitted: (value) => connecte(),
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          labelText: 'Mot de passe',
+                          hintText: "Mot de passe",
+                          suffixIcon: IconButton(onPressed: (){setState(() {
+                            mdpVisible = !mdpVisible;
+                          });}, icon: Icon(mdpVisible? Icons.visibility: Icons.visibility_off)),
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        _showMyDialog();
+                      },
+                      child: const Text('Mot de passe oublié'),
+                    ),
+                    Container(
+                        height: 70,
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.all(5),
+                            backgroundColor: AppCouleur.principal,
+                            foregroundColor : AppCouleur.white,
+                            minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)
+                            ),
+                          ),
+                          child: const Text('Se connecter',style: TextStyle(fontSize: 18),),
+                          onPressed: () {
+                            connecte();
+                          },
+                        )
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Text('Pas encore inscrit?'),
+                        TextButton(
+                          child: const Text(
+                            'S\'inscrire',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          onPressed: () {
+                            controleTable.animateTo(1);
+                          },
+                        )
+                      ],
+                    ),
+                  ],
+                )),
+              Padding(
               padding: const EdgeInsets.all(10),
               child: ListView(
+                shrinkWrap: true,
                 children: <Widget>[
                   Container(
                     padding: const EdgeInsets.all(10),
                     child: TextField(
                       controller: mail_ins,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Email',
@@ -167,6 +182,15 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
                       height: 70,
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.all(5),
+                          backgroundColor: AppCouleur.principal,
+                          foregroundColor : AppCouleur.white,
+                          minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0)
+                          ),
+                        ),
                         child: const Text(
                           "S'inscrire", style: TextStyle(fontSize: 18),),
                         onPressed: () {
@@ -192,8 +216,25 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
                 ],
               )
             )
-        ],
-      ),),
+            ],
+          ),
+        )/*,Expanded(flex:0,child:
+            Padding(
+              padding: EdgeInsets.all(15),
+              child: ElevatedButton(
+                style:ElevatedButton.styleFrom(
+                  backgroundColor: AppCouleur.tertiaire,
+                  foregroundColor : AppCouleur.white,
+                  fixedSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)
+                  ),
+                ),
+                onPressed: (){},
+                child: Text("Continuer sans se connecter"),
+              ),
+            )
+        ),*/
     ]));
   }
 
@@ -254,12 +295,12 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
     );
   }
 
-  void connecte() {
+  Future<void> connecte() async {
     if (auth.currentUser!=null){
       //Pouf il est connecté ! :=)
     }else if(mail_co.text.isNotEmpty && mdp_co.text.isNotEmpty) {
       try {
-        auth.signInWithEmailAndPassword(email: mail_co.text, password: mdp_co.text);
+        await auth.signInWithEmailAndPassword(email: mail_co.text, password: mdp_co.text);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Connexion...'),
         ));
@@ -267,12 +308,16 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
         if (e.code == 'user-not-found') {
           Usine.montreBiscotte(context, "Utilisateur introuvable", this);
         } else if (e.code == 'wrong-password') {
+          print("truc");
           Usine.montreBiscotte(context, "Mot de passe incorrect", this);
+        }else if(e.code == 'too-many-requests'){
+          Usine.montreBiscotte(context, "L'accès à ce compte a été temporairement bloqué en raison de nombreuses tentatives de connexion. Veuillez réessayer plus tard", this);
         }else{
           Usine.montreBiscotte(context, "impossible de contacter la base données", this);
           log(e.code);
         }
       } catch (e) {
+        print(e);
         Usine.montreBiscotte(context, "Une erreur est survenue", this);
       }
     }else{
@@ -283,27 +328,24 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
   nouvUti() async{
     if(mail_ins.text.isNotEmpty && pseudo.text.isNotEmpty && mdp_ins.text.isNotEmpty){
       try {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Connexion...'),
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Connexion...'),));
         FirebaseFirestore db = FirebaseFirestore.instance;
-
-        final credit = await auth.createUserWithEmailAndPassword(
-          email: mail_ins.text.replaceAll(' ', ''),
-          password: mdp_ins.text,
-        );
+        final credit = await auth.createUserWithEmailAndPassword(email: mail_ins.text.replaceAll(' ', ''), password: mdp_ins.text,);
         if (credit.user != null) {
+          final int nb = ((((await db.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).get()).data())??{} as Map<String,dynamic>)[MesConstantes.nb]??0)as int;
           final user = <String, dynamic>{
-            "pseudo": pseudo.text
-            //TODO:messages ?
+            MesConstantes.nomUti: pseudo.text,
+            MesConstantes.nb: nb+1,
           };
-          db
-              .collection("Utilisateurs")
-              .doc(credit.user?.uid ??
+          await db.collection("Utilisateurs").doc(credit.user?.uid ??
                   DateTime.now().millisecondsSinceEpoch.toString())
               .set(user)
               .then((value) => print('Utilisateur enregistré'))
               .onError((error, stackTrace) => print(error));
+          await db.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).update({MesConstantes.code: FieldValue.arrayUnion([credit.user!.uid.toString()])}).onError((error, stackTrace) => print(error));
+          await db.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).update({MesConstantes.nbCode: FieldValue.increment(1)}).onError((error, stackTrace) => print(error));
+        }else{
+          Usine.montreBiscotte(context, "jeton invalide", this);
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
@@ -311,12 +353,15 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
         } else if (e.code == 'email-already-in-use') {
           Usine.montreBiscotte(
               context, "Adresse mail déjà utilisée par un utilisateur", this);
+        } else if (e.code == 'invalid-email') {
+          Usine.montreBiscotte(context, "Adresse mail non valide", this);
         } else {
           Usine.montreBiscotte(context, "Inscription impossible", this);
           print(e);
         }
       } catch (e) {
         print(e);
+        Usine.montreBiscotte(context, "Une erreur est survenue", this);
       }
     }else{
       Usine.montreBiscotte(context, "Oups! Vous n'avez pas rempli tous les champs", this);

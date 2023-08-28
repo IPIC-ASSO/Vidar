@@ -1,11 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:side_navigation/side_navigation.dart';
+import 'package:vidar/AppCouleur.dart';
 import 'package:vidar/Connexion.dart';
 import 'package:vidar/Conversations.dart';
-
+import 'package:vidar/accueil.dart';
+import 'package:vidar/listeMessages.dart';
+import 'package:vidar/nouvelleConversation.dart';
+import 'package:vidar/parametres.dart';
+import 'package:universal_html/html.dart' as html;
 
 import 'firebase_options.dart';
 import 'usineDeBiscottesGrillees.dart';
@@ -13,23 +20,25 @@ import 'usineDeBiscottesGrillees.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
+  if(kIsWeb)await FirebaseFirestore.instance.enablePersistence(const PersistenceSettings(synchronizeTabs: true));
       //TODO: crashlitics;
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-  runApp(const MyApp());
+  runApp(const MonIpic());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+class MonIpic extends StatelessWidget {
+  const MonIpic({super.key});
+  
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Vidar',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0x2B4689FF)),
+        scaffoldBackgroundColor: AppCouleur.blanc,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0x2B4689FF)),
         useMaterial3: true,
-          canvasColor: Color(0xFF4BC08F),
       ),
       home: const MyHomePage(),
     );
@@ -38,7 +47,9 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
 
-  const MyHomePage({super.key});
+  final bool sessionConnecte;
+
+  const MyHomePage({super.key, this.sessionConnecte = false});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -52,32 +63,46 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
   void initState(){
     super.initState();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        setState(() {
-          connecte= false;
-        });
-      } else {
-        setState(() {
-          connecte = true;
-        });
-        Usine.montreBiscotte(context, "Bienvenue!", this,true);
-      }
+        if (user == null) {
+         setState(() {
+            connecte = false;
+          });
+        } else {
+            setState(() {
+              connecte = true;
+            });
+            Usine.montreBiscotte(context, "Bienvenue!", this, true);
+          }
     });
+    print(widget.sessionConnecte);
+    print("conncte: $connecte");
+    if(kIsWeb){
+      if(Uri.base.queryParameters["dest"]!=null && FirebaseAuth.instance.currentUser!=null){
+        traiteCode(Uri.base.queryParameters["dest"]!,FirebaseAuth.instance.currentUser!.uid,FirebaseFirestore.instance,context);
+        html.window.history.pushState(null, 'iren', '#/iren');
+      }else if(!connecte && !widget.sessionConnecte){
+        Future.delayed(Duration.zero).then((value) =>
+            Navigator.of(context).push(PageRouteBuilder(
+              pageBuilder: (_, __, ___) => const Accueil(),
+              transitionDuration: const Duration(milliseconds: 500),
+              transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+            )));
+        }
+      }
+    }
 
-  }
-
-  List<Widget> pages = const [
-    Center(
+  List<Widget> pages = [
+    const Center(
       child: Conversations(),
     ),
     Center(
-      child: Text('Messages'),
+      child: ListeMessages(idUti: (FirebaseAuth.instance.currentUser?.uid??"erreur"))
     ),
-    Center(
-      child: Text('Paramètres'),
+    const Center(
+      child: Text('Aide (toi et puis voila)'),
     ),
-    Center(
-      child: Text('Aide'),
+    const Center(
+      child: Parametres(),
     ),
   ];
   int indiceChoisi = 0;
@@ -93,8 +118,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
           ),
           bottomNavigationBar: BottomNavigationBar( //TODO: disparait lors du scroll
             selectedFontSize: 18,
+            unselectedItemColor: Colors.black,
             selectedItemColor: Colors.blue[800],
-            selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
             mouseCursor: SystemMouseCursors.grab,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
@@ -161,14 +187,16 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
 
               /// Make it take the rest of the available width
               Expanded(
+                flex: 1,
                 child: pages.elementAt(indiceChoisi),
               )
             ],
           ),
         );
       }
-    }else{
-      return Connexion();
+    }
+    else{
+      return const Connexion();
     }
 
   }
