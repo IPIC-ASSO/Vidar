@@ -1,0 +1,8 @@
+
+k	java:S117/"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Œøâ¢úÿÿÿÿ
+W
+java:S1854+"ARemove this useless assignment to local variable "notifications".(Õ®Õ
+H
+java:S1481+"2Remove this unused "notifications" local variable.(Õ®Õ
+I
+java:S18740".Remove this use of "<init>"; it is deprecated.(±çŒıÿÿÿÿ

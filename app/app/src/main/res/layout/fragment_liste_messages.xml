@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ListeMessages">
 
-    <!-- TODO: Update blank fragment layout -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/nouveau_message"
         android:layout_width="wrap_content"
@@ -16,23 +15,23 @@
         android:src="@drawable/ic_baseline_post_add_24"
         android:backgroundTint="#00FF00"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="Bouton pour créer un nouveau message." />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/img_nouv_msg" />
 
     <TextView
         android:id="@+id/instruc_liste_msg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:gravity="center"
-        android:text="Pour lire et modifier les messages enregistrés appuyez dessus.\n Pour en créer un nouveau, utilisez le bouton vert" />
+        android:text="@string/txt_instruc_liste_msg" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
-        android:contentDescription="liste des messages enregistrés. Appuyez sur l'un d'eux pour le lire ou le modifier.">
+        android:contentDescription="@string/scroll_dsc_liste_msg_enr">
 
         <LinearLayout
             android:id="@+id/liste_messages"

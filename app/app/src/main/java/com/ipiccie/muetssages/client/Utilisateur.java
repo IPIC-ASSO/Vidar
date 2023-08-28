@@ -1,22 +1,31 @@
 package com.ipiccie.muetssages.client;
 
 
+import static android.content.ContentValues.TAG;
 
 import android.util.Log;
 
-import java.util.List;
 
 public class Utilisateur {
     private String id;
     private String username;
     private String imageURL;
-    private List<String> contacts;
+    private String contact;
+    private String messages;
 
-    public Utilisateur(String id, String imageURL,  String username, List<String> contacts){
+    public Utilisateur(String id, String imageURL,  String username, String contact){
         this.id = id;
         this.username = username;
         this.imageURL = imageURL;
-        this.contacts = contacts;
+        this.contact = contact;
+    }
+
+    public Utilisateur(String id, String imageURL,  String username, String contact, String messages){
+        this.id = id;
+        this.username = username;
+        this.imageURL = imageURL;
+        this.contact = contact;
+        this.messages = messages;
     }
 
     public Utilisateur(){
@@ -46,11 +55,12 @@ public class Utilisateur {
         this.imageURL = imageURL;
     }
 
-    public List<String> getContacts() {
-        return contacts;
+    public String getContact() {
+        Log.d(TAG,"Utilisateur: "+contact);
+        return contact;
     }
 
-    public void setContacts(List<String> contacts) {
-        this.contacts = contacts;
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 }

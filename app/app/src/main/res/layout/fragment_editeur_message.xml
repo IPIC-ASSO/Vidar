@@ -12,7 +12,7 @@
         android:id="@+id/lecteur_messages_editeur"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lire le texte"
+        android:text="@string/btn_lire_txt"
         app:icon="@drawable/ic_baseline_volume_up_24" />
 
     <EditText
@@ -20,8 +20,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="@string/hint_intitule"
         android:inputType="textPersonName"
-        android:hint="Intitulé" />
+        android:maxLength="30" />
 
     <EditText
         android:id="@+id/texte_message"
@@ -30,7 +31,7 @@
         android:layout_weight="1"
         android:ems="10"
         android:gravity="top"
-        android:hint="Message"
+        android:hint="@string/hint_msg"
         android:inputType="textMultiLine|textPersonName|textImeMultiLine" />
 
     <Button
@@ -38,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="#4CAF50"
-        android:text="Enregistrer"
+        android:text="@string/btn_enr"
         app:icon="@drawable/ic_baseline_save_24" />
 
     <Button
@@ -46,6 +47,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@android:color/holo_red_dark"
-        android:text="Supprimer"
+        android:text="@string/btn_supr"
         app:icon="@drawable/ic_baseline_delete_forever_24" />
 </LinearLayout>

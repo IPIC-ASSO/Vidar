@@ -5,6 +5,16 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="bleu_doux">#00AEFF</color>
+    <color name="principal">#5485FF</color>
+    <color name="gris">#FFDDDDDD</color>
+    <color name="fond_msg">#FFDDDDDD</color>
+    <color name="gris_fonce">#FF777777</color>
     <color name="black">#FF000000</color>
+    <color name="faux_noir">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="droitier">#E600A7F4</color>
+    <color name="gaucher">#CCB8B8B8</color>
+    <color name="banni">#AAFF0000</color>
+    <color name="fond_profil">#FFEEEEEE</color>
 </resources>

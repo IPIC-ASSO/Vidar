@@ -1,0 +1,173 @@
+
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+import 'package:vidar/patrons/MesConstantes.dart';
+import 'package:vidar/patrons/Utilisateur.dart';
+import 'package:vidar/patrons/convDeListe.dart';
+
+class laPoste {
+
+  final FirebaseFirestore firebaseFirestore;
+
+
+  laPoste({
+    required this.firebaseFirestore,
+  });
+
+  configure() async {
+    if (kIsWeb) {
+      await firebaseFirestore.enablePersistence(
+          const PersistenceSettings(synchronizeTabs: true));
+    } else {
+      firebaseFirestore.settings = const Settings(persistenceEnabled: true);
+    }
+  }
+
+  Stream<QuerySnapshot<Discussion>> prendConv(String idUti) {
+    return firebaseFirestore.collection(MesConstantes.cheminListeMessages).withConverter(fromFirestore: Discussion.fromFirestore, toFirestore: (Discussion discussion,_)=>Discussion().toFirestore()).where("utilisateur1",isNotEqualTo: "").snapshots();
+  }
+
+  Future<Discussion> prendLAconv(String idConv) async {
+    final Discussion Dis =  (await firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(idConv).withConverter(fromFirestore: Discussion.fromFirestore, toFirestore: (Discussion discussion,_)=>Discussion().toFirestore()).get()).data() as Discussion;
+    return Dis;
+  }
+
+  Future<String> prendPseudo(String id) async {
+    final x = await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(id).withConverter(fromFirestore: Utilisateur.fromFirestore, toFirestore: (Utilisateur utilisateur,_)=>Utilisateur().toFirestore()).get();
+    if(x.data()==null) return "Inconnu au bataillon";
+    return (x.data()!.pseudo)??"Inconnu au bataillon";
+  }
+
+  Future<String> suprConv(String idConv, String idMoi, String? dejaSupr) async {
+    try{
+      if (dejaSupr!=null) {
+        await firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(idConv).delete();
+        await firebaseFirestore.collection(MesConstantes.cheminMessages).doc(idConv).delete();
+      } else {
+        await firebaseFirestore
+            .collection(MesConstantes.cheminListeMessages)
+            .doc(idConv)
+            .update({"supr": idMoi});
+      }
+      return "0";
+    }on FirebaseException catch(e){
+      return(e.code);
+    }catch(e){
+      return(e.toString());
+    }
+  }
+
+  Stream<DocumentSnapshot> prendLesChatsDuQuartier(String conv) {
+    return firebaseFirestore
+        .collection(MesConstantes.cheminMessages)
+        .doc(conv)
+        .snapshots();
+  }
+
+  Future<int> envoie(String corps, String idConv, String idEnvoyeur) async {
+    try {
+      await firebaseFirestore.collection(MesConstantes.cheminMessages).doc(
+          idConv).update(
+          {
+            DateTime
+                .now()
+                .millisecondsSinceEpoch
+                .toString():
+            {
+              MesConstantes.message: corps,
+              MesConstantes.envoyeur: idEnvoyeur
+            }
+          }
+      );
+      return 0;
+    }on FirebaseException catch(e){
+      if(e.code=="not-found"){
+        await firebaseFirestore.collection(MesConstantes.cheminMessages).doc(idConv).set(
+            {
+              DateTime.now().millisecondsSinceEpoch.toString():
+              {
+                MesConstantes.message: corps,
+                MesConstantes.envoyeur: idEnvoyeur
+              }
+            }
+        );
+        return 0;
+      }else{
+        log("b${e.code}");
+        return 1;
+      }
+    }catch(e){
+      print("a $e");
+      return 1;
+    }
+  }
+
+  Future<int> supprime(String temps,String idConv) async {
+    try{
+      await firebaseFirestore.doc("${MesConstantes.cheminMessages}/$idConv").update({temps: FieldValue.delete()});
+      return 0;
+    }catch(e){
+      print(e);
+      return 1;
+    }
+  }
+
+  modifie(String idConv, Map<String,String> nouvMessage) async {
+    final nouvMessage2 = Map.from(nouvMessage);
+    nouvMessage2.remove(MesConstantes.temps);
+    print(nouvMessage2);
+    try {
+      await firebaseFirestore.collection(MesConstantes.cheminMessages).doc(idConv).update({nouvMessage[MesConstantes.temps]??"1676633613878": nouvMessage2});
+      return 0;
+    } catch (e) {
+      print(e);
+      return 1;
+    }
+  }
+
+  Future<DocumentSnapshot<Map<String,dynamic>>> prendMessagesParDefaut() async{
+    return firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeMessagesPreEnr).get();
+  }
+
+  Stream<DocumentSnapshot<Utilisateur>> prendMessagesPersonnels(String idUti) {
+    return  firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).withConverter(fromFirestore: Utilisateur.fromFirestore, toFirestore: (Utilisateur utilisateur,_)=>Utilisateur().toFirestore()).snapshots();
+  }
+
+  Future<DocumentSnapshot<Utilisateur>> prendMessagesPersoStatiques(String idUti){
+    return  firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).withConverter(fromFirestore: Utilisateur.fromFirestore, toFirestore: (Utilisateur utilisateur,_)=>Utilisateur().toFirestore()).get();
+  }
+
+  Future<int> supprimeMessage(String idUt, String titre) async {
+    try{
+      DocumentSnapshot<Utilisateur> uti = await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).withConverter(fromFirestore: Utilisateur.fromFirestore, toFirestore: (Utilisateur utilisateur, _) => Utilisateur().toFirestore()).get();
+      Map<String,String> messages = uti.data()!.messages??{};
+      if(messages.containsKey(titre))messages.remove(titre);
+      await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).update({MesConstantes.messagesEnregistres:messages});
+      return 0;
+    }catch(e){
+      print(e);
+      return 1;
+    }
+  }
+
+  Future<int> EnregistreMessage(String idUt, String titre,String nouvtitre, String corps) async{
+    try{
+      DocumentSnapshot<Utilisateur> uti = await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).withConverter(fromFirestore: Utilisateur.fromFirestore, toFirestore: (Utilisateur utilisateur, _) => Utilisateur().toFirestore()).get();
+      Map<String,String> messages = uti.data()!.messages??{};
+      if(messages.containsKey(titre))messages.remove(titre);
+      messages[nouvtitre] = corps;
+      await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).update({MesConstantes.messagesEnregistres:messages});
+      return 0;
+    }catch(e){
+      return 1;
+    }
+  }
+
+  changePseudo(String uid, String text) async {
+    await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(uid).update(
+        {MesConstantes.nomUti:text});
+  }
+}

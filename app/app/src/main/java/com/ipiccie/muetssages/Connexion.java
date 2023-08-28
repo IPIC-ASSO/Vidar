@@ -1,46 +1,34 @@
 package com.ipiccie.muetssages;
 
-import static androidx.fragment.app.FragmentManager.TAG;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
+import static com.google.firebase.crashlytics.internal.Logger.TAG;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ipiccie.muetssages.client.Utilisateur;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Objects;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Connexion#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Connexion extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private FirebaseAuth auth;
     private DatabaseReference reference;
@@ -49,36 +37,21 @@ public class Connexion extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Connexion.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Connexion newInstance(String param1, String param2) {
-        Connexion fragment = new Connexion();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        SharedPreferences prefs = requireContext().getSharedPreferences("classes", Context.MODE_PRIVATE);
+        CheckBox souviens = view.findViewById(R.id.souvenir_moi);
+
+        com.google.android.material.textfield.TextInputEditText mailCo= view.findViewById(R.id.mail_connexion);
+        com.google.android.material.textfield.TextInputEditText mdpCo= view.findViewById(R.id.motdepasse_connexion);
+
+        if (prefs.getBoolean("souvenir",false)){
+            souviens.setChecked(true);
+            mailCo.setText(prefs.getString("mail",""));
+            mdpCo.setText(prefs.getString("mdp",""));
+        }
+        souviens.setOnCheckedChangeListener((compoundButton, b) -> prefs.edit().putBoolean("souvenir",b).apply());
         auth = FirebaseAuth.getInstance();
         view.findViewById(R.id.connexion).setOnClickListener(v->{
             view.findViewById(R.id.bloc_1).setVisibility(View.GONE);
@@ -89,9 +62,14 @@ public class Connexion extends Fragment {
             view.findViewById(R.id.bloc_3).setVisibility(View.VISIBLE);
         });
         view.findViewById(R.id.btn_valider_connection).setOnClickListener(v->{
-            EditText mail = view.findViewById(R.id.mail_connexion);
-            EditText motDePasse = view.findViewById(R.id.motdepasse_connexion);
-            if(!mail.getText().toString().equals("")&&!motDePasse.getText().toString().equals("")) connexion(mail.getText().toString(),motDePasse.getText().toString());
+
+            if(!mailCo.getText().toString().equals("")&&!mdpCo.getText().toString().equals("")) {
+                if (souviens.isChecked()){
+                    prefs.edit().putString("mail",mailCo.getText().toString()).apply();
+                    prefs.edit().putString("mdp",mdpCo.getText().toString()).apply();
+                }
+                connexion(mailCo.getText().toString(),mdpCo.getText().toString());
+            }
             else{
                 Toast.makeText(getContext(),"Veuillez remplir tous les champs",Toast.LENGTH_SHORT).show();
             }
@@ -106,6 +84,26 @@ public class Connexion extends Fragment {
             }
         });
 
+        view.findViewById(R.id.mdp_oublie).setOnClickListener(v->{
+            EditText mail = new EditText(this.getContext());
+            mail.setHint("adresse e-mail");
+            new MaterialAlertDialogBuilder(this.requireContext())
+                    .setTitle("Mot de passe oublié")
+                    .setView(mail)
+                    .setMessage("Saisissez votre adresse e-mail pour recevoir un lien de réinitialisation.\nPensez à vérifier vos spam.")
+                    .setNegativeButton("annuler",((dialogInterface, i) -> dialogInterface.dismiss()))
+                    .setPositiveButton("Valider",((dialogInterface, i) -> {
+                        if (!mail.getText().toString().equals("")) {
+                            FirebaseAuth.getInstance().sendPasswordResetEmail(mail.getText().toString());
+                            dialogInterface.dismiss();
+                            Toast.makeText(this.getContext(), "Un lien de récupération vous a été envoyé", Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(this.getContext(), "Veuillez saisir votre adresse e-mail", Toast.LENGTH_SHORT).show();
+                        }
+                    }))
+                    .show();
+        });
+
     }
 
     private void connexion( String email, String motDePasse){
@@ -114,6 +112,7 @@ public class Connexion extends Fragment {
                  Toast.makeText(getContext(), "Bienvenue ", Toast.LENGTH_SHORT).show();
                  findNavController(this).navigate(R.id.action_connexion_to_accueil);
              }else{
+                 Log.d(TAG, "connexion: "+ Objects.requireNonNull(task.getException()).toString());
                  Toast.makeText(getContext(),"Impossible de vous identifier. Veuillez réessayer ", Toast.LENGTH_SHORT).show();
              }
         });
@@ -127,16 +126,16 @@ public class Connexion extends Fragment {
                 assert firebaseUser!=null;
                 String idUtilisateur = firebaseUser.getUid();
                 reference = FirebaseDatabase.getInstance("https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child(idUtilisateur);
-                Utilisateur uti = new Utilisateur(idUtilisateur,"defaut",nomUtilisateur,new ArrayList<>());
+                Utilisateur uti = new Utilisateur(idUtilisateur,"defaut",nomUtilisateur,"");
                 reference.setValue(uti).addOnCompleteListener(task1 -> {
                     if (task1.isSuccessful()|| task1.isComplete()) {
                         ca.onStop();
                         findNavController(ca).navigate(R.id.action_connexion_to_accueil);
                     }
-                });
+                }).addOnFailureListener(e -> Log.d(getTag(), "onFailure: "+e));
                 Toast.makeText(getContext(), "Bienvenue "+nomUtilisateur, Toast.LENGTH_SHORT).show();
             }else{
-                Toast.makeText(getContext(), "Enregistrement impossible avec cet email ou ce mot de passe"+task.getResult()+" "+task.getException(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Enregistrement impossible avec cet email ou ce mot de passe"+" "+task.getException(), Toast.LENGTH_SHORT).show();
             }
         });
 

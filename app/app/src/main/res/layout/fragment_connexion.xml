@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Se connnecter" />
+            android:text="@string/btn_se_co" />
 
         <View
             android:id="@+id/divider4"
@@ -48,7 +48,7 @@
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="OU"
+            android:text="@string/txt_ou"
             android:textAlignment="center" />
 
         <View
@@ -62,13 +62,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="S'INscrire" />
+            android:text="@string/btn_s_inscr" />
 
         <TextView
             android:id="@+id/textView8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cette étape est nécessaire. Cela nous permettra d'identifier les destinataires des discussions" />
+            android:text="@string/txt_explic_co"
+            android:textAlignment="center" />
     </LinearLayout>
 
     <LinearLayout
@@ -78,34 +79,56 @@
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
 
-        <EditText
-            android:id="@+id/mail_connexion"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:ems="10"
-            android:hint="Adresse mail"
-            android:minHeight="48dp" />
+            android:hint="@string/hint_mail">
 
-        <EditText
-            android:id="@+id/motdepasse_connexion"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/mail_connexion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:ems="10"
-            android:hint="Mot de passe"
-            android:inputType="textPassword"
-            android:minHeight="48dp" />
+            android:hint="@string/hint_mdp"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/motdepasse_connexion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <CheckBox
+            android:id="@+id/souvenir_moi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/check_souviens_moi"
+            android:textStyle="italic" />
 
         <Button
             android:id="@+id/btn_valider_connection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Connexion" />
+            android:text="@string/btn_connexion" />
+
+        <Button
+            android:id="@+id/mdp_oublie"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/btn_mdp_oublie" />
     </LinearLayout>
 
     <LinearLayout
@@ -115,8 +138,7 @@
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/mail_inscription"
@@ -125,19 +147,18 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:ems="10"
-            android:hint="Adresse mail"
+            android:hint="@string/hint_mail"
 
-            android:inputType="textPersonName" />
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/nom_utilisateur"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:ems="10"
-            android:hint="Nom d'utilisateur"
+            android:hint="@string/hint_pseudo"
             android:inputType="textPersonName" />
 
         <EditText
@@ -147,8 +168,8 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:ems="10"
-            android:hint="Mot de passe"
-            android:inputType="textPersonName" />
+            android:hint="@string/hint_mdp"
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/btn_valider_inscription"
@@ -156,7 +177,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="s'inscrire" />
+            android:text="@string/btn_s_inscr" />
 
         <TextView
             android:id="@+id/textView9"
@@ -164,7 +185,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="Utilisez un mot de passe d'au moins 6 caractères" />
+            android:text="@string/txt_err_mdp_court" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,27 @@
+{
+  "rules": {   
+    "Users":{
+      ".write":"auth.uid!==null ",
+      "$Users_id": {    
+        ".read": "auth.uid !== null",
+        "messages":{
+          ".write":"auth.uid===$Users_id",
+          ".validate": true
+        },
+        "$other": { 
+    			".write": "auth.uid !== null",
+        }
+      }
+    },
+    "Chats": {
+      "$Chats_id":{
+        ".read":"$Chats_id.contains(auth.uid)",
+        ".write":"$Chats_id.contains(auth.uid)"
+      }
+    },
+    "ListeChats":{
+      ".read": "auth.uid !== null",
+    	".write": "auth.uid !== null",
+    }
+  }
+}

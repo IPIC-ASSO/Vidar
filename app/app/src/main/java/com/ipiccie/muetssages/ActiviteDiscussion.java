@@ -2,26 +2,36 @@ package com.ipiccie.muetssages;
 
 import static android.content.ContentValues.TAG;
 
+import static androidx.navigation.fragment.FragmentKt.findNavController;
+
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.helper.widget.MotionEffect;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.play.core.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,61 +39,59 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.ipiccie.muetssages.adaptateur.MessagerAdapte;
 import com.ipiccie.muetssages.client.Chat;
+import com.ipiccie.muetssages.client.Discussion;
 import com.ipiccie.muetssages.client.Utilisateur;
+import com.ipiccie.muetssages.notifications.APIService;
+import com.ipiccie.muetssages.notifications.Client;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class ActiviteDiscussion extends AppCompatActivity {
 
-    private Socket clientSocket;
-    private BufferedReader entre;
-    private PrintWriter sort;
     private DatabaseReference reference;
-    private FirebaseUser fuser;
-    private MessagerAdapte messagerAdapte;
     private List<Chat> listeDeChats;
     private RecyclerView recyclage;
+    private HashMap<String, String> listeDeMessages;
+    private TextToSpeech textToSpeech;
+    APIService apiService;
 
-    private String dB = "https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app";
+    private static final String db = "https://vidar-9e8ac-default-rtdb.europe-west1.firebasedatabase.app";
 
-    /*@Override
-    public void onNewToken(@NonNull String token) {
-        Log.d(TAG, "Refreshed token: " + token);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // FCM registration token to your app server.
-        sendRegistrationToServer(token);
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activite_discussion);
-        SharedPreferences prefs =this.getBaseContext().getSharedPreferences("classes", Context.MODE_PRIVATE);//liste des intitulés et message associé
+
+
         EditText msg = findViewById(R.id.mon_message);
-        String[] listeMsg =prefs.getAll().keySet().toArray(new String[0]);
-        findViewById(R.id.liste_messages_enr).setOnClickListener(w->new MaterialAlertDialogBuilder(this).setTitle("Message à afficher").setItems(listeMsg, (dialog, which) -> msg.setText(msg.getText().toString()+prefs.getString(listeMsg[which],"oups"))).show());
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
-        if (fuser == null){
-            Toast.makeText(this,"Une erreur est survenue. Veuillez redémarer l'application",Toast.LENGTH_LONG).show();
+        DatabaseReference databaseReference;
+
+        FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
+        String idUti = getIntent().getStringExtra("id");    // id interlocuteur
+        String idDis = getIntent().getStringExtra("dis");    // id discussion
+        boolean supr = getIntent().getBooleanExtra("supr",false);    // id discussion
+
+        if (fuser == null || idUti==null || idDis == null){
+            Toast.makeText(this,"Une erreur est survenue. Veuillez redémarrer l'application",Toast.LENGTH_LONG).show();
         }else{
+            //affichage de tous les messages
             recyclage = findViewById(R.id.recyclage_de_messages);
             recyclage.setHasFixedSize(true);
             LinearLayoutManager manager = new LinearLayoutManager(this);
             manager.setStackFromEnd(true);
             recyclage.setLayoutManager(manager);
-            String idUti = getIntent().getStringExtra("id");
-            reference = FirebaseDatabase.getInstance(dB).getReference().child("Users").child(idUti);
+            Log.d(TAG, "onCreate: "+idDis);
+            FirebaseDatabase.getInstance(db).getReference().child("Users").child(fuser.getUid()).child("contact").setValue(" ");
+            reference = FirebaseDatabase.getInstance(db).getReference().child("Users").child(idUti);
             TextView nomUti = findViewById(R.id.utilisateur_conv_dis);
             ImageView imgUti = findViewById(R.id.image_profile_dis);
             reference.addValueEventListener(new ValueEventListener() {
@@ -92,29 +100,100 @@ public class ActiviteDiscussion extends AppCompatActivity {
                     Utilisateur uti = snapshot.getValue(Utilisateur.class);
                     assert uti != null;
                     nomUti.setText(uti.getUsername());
-                    if (uti.getImageURL().equals("defaut")){
-                        imgUti.setImageResource(R.drawable.ic_launcher_foreground);
+                    if (uti.getImageURL()!= null && uti.getImageURL().equals("defaut")){
+                        imgUti.setImageResource(R.drawable.ic_baseline_account_circle_24);
                     }
-                    postier(fuser.getUid(),idUti);
+                    postier(idDis);
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     //RàS
                 }
             });
-            if (getIntent().getStringExtra("message")!= null){
-                envoyerMessage(fuser.getUid(),idUti,getIntent().getStringExtra("message"));
+            String msgEnr = getIntent().getStringExtra("message");
+            if (msgEnr != null && !Objects.equals(msgEnr, " ")&& !Objects.equals(msgEnr, "")){
+                envoyerMessage(fuser.getUid(),idDis,msgEnr);
             }
-            findViewById(R.id.envoyer_message).setOnClickListener(v->{
-                if (!msg.getText().toString().equals(""))envoyerMessage(fuser.getUid(),idUti,msg.getText().toString());
-                msg.setText("");
-            });
+            if (!supr){
+                //init messages
+                databaseReference = FirebaseDatabase.getInstance(db).getReference().child("Users").child(fuser.getUid()).child("messages");
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        listeDeMessages = new HashMap<>();
+                        Log.d(TAG, "onDataChange: " + snapshot.getValue());
+                        if (snapshot.getValue() != null) {
+                            listeDeMessages = (HashMap<String, String>) snapshot.getValue();
+                        }
+                        listeMessages();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.d(TAG, "onCancelled: " + error);
+                    }
+                });
+
+                //init btn envoyer message
+                findViewById(R.id.envoyer_message).setOnClickListener(v->{
+                    if (!msg.getText().toString().equals(""))envoyerMessage(fuser.getUid(),idDis,msg.getText().toString());
+                    msg.setText("");
+                });
+            }else{
+                findViewById(R.id.redacteur).setVisibility(View.GONE);
+                findViewById(R.id.conv_terminée).setVisibility(View.VISIBLE);
+            }
         }
+        WindowInsetsControllerCompat windowInsetsController =
+                WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        // Configure the behavior of the hidden system bars.
+        windowInsetsController.setSystemBarsBehavior(
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_SWIPE
+        );
+        textToSpeech = new TextToSpeech(this, status -> maVoix(textToSpeech),"com.google.android.tts");
+
+        findViewById(R.id.supre_conv).setOnClickListener(v-> new AlertDialog.Builder(this)
+                .setTitle("Supprimer la conversation")
+                .setMessage("Voulez vous vraiment supprimer cette conversation?\nCette action est irréversible")
+                .setNegativeButton("Annuler", (dialogInterface, i) -> dialogInterface.dismiss())
+                .setPositiveButton("Supprimer", (dialogInterface, i) -> {
+                    if (idDis != null) {
+                        final DatabaseReference databaseReference3 = FirebaseDatabase.getInstance().getReference().child("ListeChats").child(idDis);
+                        databaseReference3.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                Discussion discussion = snapshot.getValue(Discussion.class);
+                                if (discussion != null && discussion.getSupr() != null) {
+                                    databaseReference3.setValue(null);
+                                    databaseReference3.getRoot().child("Chats").child(idDis).setValue(null);
+                                } else
+                                    databaseReference3.child("supr").setValue(Objects.requireNonNull(fuser).getUid());
+                                onBackPressed();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                //RàS
+                            }
+                        });
+                    }else{
+                        Toast.makeText(this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show());
+
+
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
+        verifToken();
+
         ActionBar ab = (this.getSupportActionBar());
         if(ab != null){
             ab.setDisplayHomeAsUpEnabled(true);
         }
     }
+
+
 
     public void notif(String sujet){
         /*Notification notification = new Notification.Builder().setContentTitle("2 new messages with " + sender.toString())
@@ -127,52 +206,146 @@ public class ActiviteDiscussion extends AppCompatActivity {
                 .build();*/
     }
 
-    private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
-    }
-
-    public void envoyerMessage(String envoyeur, String destinataire, String message){
-        DatabaseReference reference2 = FirebaseDatabase.getInstance(dB).getReference();
+    public void envoyerMessage(String envoyeur, String idDiscussion, String message){
+        Log.d(TAG, "envoyerMessage: "+"OKOKHOK");
+        DatabaseReference reference2 = FirebaseDatabase.getInstance(db).getReference();
         HashMap<String, String> carteDeH = new HashMap<>();
         carteDeH.put("envoyeur",envoyeur);
-        carteDeH.put("destinataire",destinataire);
         carteDeH.put("message",message);
-        reference2.child("Chats").push().setValue(carteDeH);
+        reference2.child("Chats").child(idDiscussion).child(String.valueOf(System.currentTimeMillis())).setValue(carteDeH);
     }
 
-    public void postier(String mId, String uId){
+    public void postier(String idDiscussion){
         listeDeChats = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance(dB).getReference().child("Chats");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listeDeChats.clear();
-                for (DataSnapshot snap:snapshot.getChildren()){
-                    Chat chaton = snap.getValue(Chat.class);
-                    if (chaton!=null && ((chaton.getDestinataire().equals(mId)&& chaton.getEnvoyeur().equals(uId))||(chaton.getDestinataire().equals(uId)&& chaton.getEnvoyeur().equals(mId)))){
-                        listeDeChats.add(chaton);
-                    }
-                }
-                messagerAdapte = new MessagerAdapte(ActiviteDiscussion.this, listeDeChats);
-                recyclage.setAdapter(messagerAdapte);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        reference = FirebaseDatabase.getInstance(db).getReference().child("Chats").child(idDiscussion);
+        reference.addValueEventListener(ecouteNouvMessages);
     }
+
+    private final ValueEventListener ecouteNouvMessages = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            listeDeChats.clear();
+            for (DataSnapshot snap:snapshot.getChildren()){
+                Chat chaton = snap.getValue(Chat.class);
+                listeDeChats.add(chaton);
+            }
+            MessagerAdapte messagerAdapte = new MessagerAdapte(ActiviteDiscussion.this, listeDeChats);
+            recyclage.setAdapter(messagerAdapte);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            // RàS
+        }
+    };
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
-                return true;
-            default:
-                return false;
+        if (item.getItemId() == android.R.id.home) {
+            if (reference!=null) reference.removeEventListener(ecouteNouvMessages);
+            finish();
+            onBackPressed();
+            return true;
         }
+        return false;
+    }
+
+
+
+    public void popUp(String texte){
+        AlertDialog.Builder constr = new AlertDialog.Builder(this);
+        constr.setTitle("Actions sur le message : "+texte);
+        View vue = View.inflate(this, R.layout.pop_up_message,null);
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference databaseReference = null;
+        if (firebaseUser != null) {
+            databaseReference = FirebaseDatabase.getInstance(db).getReference().child("Users").child(firebaseUser.getUid()).child("messages");
+        }
+        constr.setView(vue);
+        AlertDialog show = constr.show();
+        DatabaseReference finalDatabaseReference = databaseReference;
+        vue.findViewById(R.id.pop_enr_mes).setOnClickListener(v->{
+            if (finalDatabaseReference != null) {
+                finalDatabaseReference.child(texte.substring(0,Math.min(20, texte.length()))).removeValue();
+                finalDatabaseReference.child(texte.substring(0,Math.min(20, texte.length()))).setValue(texte);
+                Toast.makeText(this, "Enregistré !", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "Enregistrement impossible", Toast.LENGTH_SHORT).show();
+            }
+            show.dismiss();
+        });
+        vue.findViewById(R.id.pop_lit_mes).setOnClickListener(v->{
+            textToSpeech.speak(texte,TextToSpeech.QUEUE_FLUSH,null, null);
+            Toast.makeText(this,"Lecture en cours",Toast.LENGTH_SHORT).show();
+            show.dismiss();
+        });
+        show.show();
+    }
+
+    public void listeMessages(){
+        String[] listeMsg = listeDeMessages.keySet().toArray(new String[0]);
+        EditText msg = findViewById(R.id.mon_message);
+        findViewById(R.id.liste_messages_enr).setOnClickListener(w->{
+            AlertDialog.Builder constr= new AlertDialog.Builder(this);
+            constr.setTitle("Message à afficher");
+            constr.setItems(listeMsg, (dialog, which) -> msg.setText(String.format("%s%s",msg.getText().toString(),listeDeMessages.get(listeMsg[which]))));
+            constr.show();
+            });
+    }
+
+    private void verifToken(){
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w(MotionEffect.TAG, "Fetching FCM registration token failed", task.getException());
+                        return;
+                    }
+                    String token = task.getResult();
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance(db).getReference().child("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("tokens");
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String tok = snapshot.getValue(String.class);
+                            if(tok!= null){
+                                String[] tokens = tok.split(",");
+                                if (!Arrays.asList(tokens).contains(token)){
+                                    StringBuilder str = new StringBuilder();
+                                    for (String s:tokens)str.append(s).append(",");
+                                    str.append(token);
+                                    databaseReference.setValue(str.toString());
+                                }
+                            }else{
+                                databaseReference.setValue(token);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            //RàS
+                        }
+                    });
+                });
+    }
+
+    public void maVoix(TextToSpeech tts){
+        SharedPreferences pref = this.getSharedPreferences("prefs",Context.MODE_PRIVATE);
+        String voii = pref.getString("voix","fr-FR-language");
+        Log.d(TAG, "maVoix: "+voii);
+        textToSpeech.setVoice(tts.getDefaultVoice());
+        for (Voice tmpVoice : tts.getVoices()) {
+            if (tmpVoice.getName().equals(voii)) {
+                textToSpeech.setVoice(tmpVoice);
+                Log.d(TAG, "maVoix: :))))))");
+            }
+        }
+        textToSpeech.setSpeechRate(1.3F);
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intention = new Intent(getBaseContext(), MainActivity.class);
+        intention.putExtra("disc","go");
+        startActivity(intention);
+        Log.d(TAG, "onBackPressed: OKOK");
     }
 }

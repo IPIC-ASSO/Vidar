@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="5dp"
+    tools:context=".NousContacter">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:maxHeight="100dp"
+        app:srcCompat="@drawable/ipic_asso_logo_sans_fond"
+        android:contentDescription="@string/dsc_logo" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="@string/txt_infos_contact"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/envoyer_mail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="@string/btn_env_msg"
+        app:icon="@drawable/baseline_email_24" />
+
+    <Button
+        android:id="@+id/vers_site"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="@string/txt_vers_site"
+        android:backgroundTint="@color/gaucher"
+        app:iconTint="@color/faux_noir"
+        android:textColor="@color/faux_noir"
+        app:icon="@drawable/baseline_open_in_new_24"/>
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_info_assos"
+        android:textSize="16sp"
+        android:textStyle="italic" />
+</LinearLayout>

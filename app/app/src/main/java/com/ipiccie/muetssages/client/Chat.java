@@ -3,13 +3,19 @@ package com.ipiccie.muetssages.client;
 public class Chat {
 
     private String envoyeur;
-    private String destinataire;
     private String message;
 
-    public Chat(String envoyeur, String destinataire, String message){
+    private int rep;
+
+    public Chat(String envoyeur, String message){
         this.message = message;
-        this.destinataire = destinataire;
         this.envoyeur = envoyeur;
+    }
+
+    public Chat(String envoyeur, String message, int rep){
+        this.message = message;
+        this.envoyeur = envoyeur;
+        this.rep = rep;
     }
 
     public Chat(){
@@ -24,19 +30,19 @@ public class Chat {
         this.envoyeur = envoyeur;
     }
 
-    public String getDestinataire() {
-        return destinataire;
-    }
-
-    public void setDestinataire(String destinataire) {
-        this.destinataire = destinataire;
-    }
-
     public String getMessage() {
         return message;
     }
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public int getRep() {
+        return rep;
+    }
+
+    public void setRep(int rep) {
+        this.rep = rep;
     }
 }

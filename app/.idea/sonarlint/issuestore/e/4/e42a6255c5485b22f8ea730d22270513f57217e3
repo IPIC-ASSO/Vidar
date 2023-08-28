@@ -1,30 +1,23 @@
 
-E
-java:S5411+"*Use the primitive boolean expression here.(‚ÚïÃøÿÿÿÿ
-p
-java:S1450K"[Remove the "firebaseUser" field and declare it as a local variable in the relevant methods.(©™Š
-l
-java:S1450I"VRemove the "mParam1" field and declare it as a local variable in the relevant methods.(•Íï‘
-l
-java:S1450J"VRemove the "mParam2" field and declare it as a local variable in the relevant methods.(¡ˆ€ 
-m
-java:S1450L"XRemove the "reference" field and declare it as a local variable in the relevant methods.(ëú¼
+C
+java:S5411<"(Use a primitive boolean expression here.(‚ÚïÃøÿÿÿÿ
 v
-java:S3923+"[Remove this conditional structure or edit its code blocks so that they're not all the same.(‚ÚïÃøÿÿÿÿ
+java:S3923<"[Remove this conditional structure or edit its code blocks so that they're not all the same.(‚ÚïÃøÿÿÿÿ
 G
-java:S1135."2Complete the task associated to this TODO comment.(Ã’´g
+java:S1135?"2Complete the task associated to this TODO comment.(Ã’´g
 M
-java:S11359"2Complete the task associated to this TODO comment.(¬¸Ýöûÿÿÿÿ
-M
-java:S1135D"2Complete the task associated to this TODO comment.(ÜûŠ—øÿÿÿÿ
-M
-java:S1135Z"2Complete the task associated to this TODO comment.(ßíŠÿÿÿÿÿ
-]	java:S125n"<This block of commented-out lines of code should be removed.(Û¨—ßùÿÿÿÿ8Íë¬¸0
-A
-java:S1068I"+Remove this unused "mParam1" private field.(•Íï‘
-A
-java:S1068J"+Remove this unused "mParam2" private field.(¡ˆ€ 
-B
-java:S1068L"-Remove this unused "reference" private field.(ëú¼
+java:S1135J"2Complete the task associated to this TODO comment.(¬¸Ýöûÿÿÿÿ
+V	java:S125l"<This block of commented-out lines of code should be removed.(ù™Á£ÿÿÿÿÿ
+V	java:S125z"<This block of commented-out lines of code should be removed.(´í®àùÿÿÿÿ
+n
+java:S3776’"RRefactor this method to reduce its Cognitive Complexity from 29 to the 15 allowed.(×ãö†ÿÿÿÿÿ
+K
+java:S1481²"4Remove this unused "bytesDownloaded" local variable.(ÿêŒ¼
+U
+java:S1481³"9Remove this unused "totalBytesToDownload" local variable.(ýÀøøùÿÿÿÿ
+N
+java:S1135´"2Complete the task associated to this TODO comment.(’ßô˜úÿÿÿÿ
+‰
+java:S3252Ó"mUse static access with "com.google.android.material.snackbar.BaseTransientBottomBar" for "LENGTH_INDEFINITE".(•¹È•þÿÿÿÿ
 Y
-java:S11442">Remove this unused private "askNotificationPermission" method.(¿þ¹¬øÿÿÿÿ
+java:S1144C">Remove this unused private "askNotificationPermission" method.(¿þ¹¬øÿÿÿÿ
