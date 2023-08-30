@@ -1,6 +1,6 @@
 {
-    "name": "app_comp",
-    "short_name": "app_comp",
+    "name": "Vidar",
+    "short_name": "Vidar",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

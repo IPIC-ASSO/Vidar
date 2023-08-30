@@ -30,7 +30,7 @@ Widget messagePoissonRouge(
       ),
     ),
     AnimatedContainer(
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       padding: EdgeInsets.all((expansion??false)?5:0),
       width: (expansion??false)?110:0,
       height: (expansion??false)?50:0,
@@ -43,8 +43,8 @@ Widget messagePoissonRouge(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            IconButton(onPressed: ()=>{monTTS!.speak(corps)}, icon: Icon(Icons.volume_up_outlined, color: AppCouleur.tertiaire,)),
-            IconButton(onPressed: ()=>{enreMesss!(corps)}, icon: Icon(Icons.save_rounded, color: AppCouleur.tertiaire)),
+            IconButton(onPressed: ()=>{monTTS!.speak(corps)}, icon: const Icon(Icons.volume_up_outlined, color: AppCouleur.tertiaire,)),
+            IconButton(onPressed: ()=>{enreMesss!(corps)}, icon: const Icon(Icons.save_rounded, color: AppCouleur.tertiaire)),
           ],
         ),
       ),
@@ -60,8 +60,6 @@ Widget messagePoissonRouge(
     await monTTS.setSpeechRate(0.5);
     await monTTS.setVolume(1.0);
     await monTTS.setPitch(1.0);
-    print(prefs.getString("voix")??"Karen");
-    print(prefs.getString("localite")??"fr-FR");
     monTTS.setVoice({
       "name":prefs.getString("voix")??"Karen",
       "locale":prefs.getString("localite")??"fr-FR",

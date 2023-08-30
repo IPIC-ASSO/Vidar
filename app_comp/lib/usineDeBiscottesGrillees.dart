@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 
 
@@ -8,7 +9,7 @@ class Usine {
 
 
   static void montreBiscotte(BuildContext context, String message, TickerProvider ticket, [bool positif = false]) {
-    print("appel");
+    log("appel");
     OverlayEntry _overlayEntry;
     _overlayEntry = createOverlayEntry(context, message, ticket, positif);
     Overlay.of(context).insert(_overlayEntry);
@@ -23,7 +24,7 @@ class Usine {
       vsync: ticket,
       duration: const Duration(milliseconds: 500),
     ); // <-- Se
-    _controller.forward()..whenComplete(() async {
+    _controller.forward().whenComplete(() async {
       await Future.delayed(const Duration(seconds: 3));
       _controller.reverse();
     } );

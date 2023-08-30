@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:vidar/AppCouleur.dart';
+import 'package:vidar/Connexion.dart';
 import 'package:vidar/Postier.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -20,8 +21,9 @@ class InterfaceDiscussion extends StatefulWidget {
   final String pseudoDest;
   final String message;
   final bool supr;
+  final bool tempo;
 
-  const InterfaceDiscussion({super.key, required this.idUti, required this.idConv, required this.pseudoDest, this.message="", this.supr=false});
+  const InterfaceDiscussion({super.key, required this.idUti, required this.idConv, required this.pseudoDest, this.message="", this.supr=false, this.tempo= false});
 
   @override
   State<InterfaceDiscussion> createState() => _InterfaceDiscussionState();
@@ -44,6 +46,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
   int indiceMessageModif=0;
   int indiceMessageTouche = 0;
   Map<String,String> listeMessagesEnr = {};
+  final _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -64,40 +67,59 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
         ));
       }
     });
+    denotifie();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(modif?"Modification":widget.pseudoDest),
-        backgroundColor: modif?AppCouleur.principal:null,
-        automaticallyImplyLeading: false,
-        elevation: 5,
-        actions: [
-          IconButton(onPressed: ()=>{confSupr()}, icon: const Icon(Icons.delete_forever))
-        ],
-        leading: IconButton(onPressed: ()=>{
-          Navigator.of(context).push(PageRouteBuilder(
-            pageBuilder: (_, __, ___) => const MyHomePage(),
-            transitionDuration: const Duration(milliseconds: 500),
-            transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
-          ))
-        }, icon: const Icon(Icons.home)),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6),
-          child: Column(
-            children: [
-              ConstruitListeMessage(),
-              widget.supr?
-              const Padding(padding: EdgeInsets.all(15),child:Text("Conversation supprimée par votre interlocuteur", style: TextStyle(fontSize:16,fontStyle: FontStyle.italic,color: AppCouleur.banni),),):
-              ConstruitRedacteur(),
-            ],
+    return WillPopScope(
+      onWillPop: () async {
+        monPostier.renotifie(widget.idUti);
+        return true;
+      },
+      child:Scaffold(
+
+        appBar: AppBar(
+          title: Text(modif?"Modification":widget.pseudoDest),
+          backgroundColor: modif?AppCouleur.principal:null,
+          automaticallyImplyLeading: false,
+          elevation: 5,
+          actions: [
+            Visibility(visible: !widget.tempo, child: IconButton(onPressed: ()=>{confSupr()}, icon: const Icon(Icons.delete_forever))),
+            Visibility(visible: widget.tempo, child: IconButton(
+              tooltip: "Se connecter/S'inscrire",
+              onPressed: ()=>{
+              Navigator.of(context).push(PageRouteBuilder(
+                pageBuilder: (_, __, ___) =>  Connexion(tempo: widget.idUti,),
+                transitionDuration: const Duration(milliseconds: 500),
+                transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+            ))}, icon: const Icon(Icons.login))),
+
+          ],
+          leading: Visibility(
+            visible: !widget.tempo,
+            child:IconButton(onPressed: ()=>{
+              Navigator.of(context).push(PageRouteBuilder(
+                pageBuilder: (_, __, ___) => const MyHomePage(),
+                transitionDuration: const Duration(milliseconds: 500),
+                transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+              ))
+          }, icon: const Icon(Icons.home))),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Column(
+              children: [
+                ConstruitListeMessage(),
+                widget.supr?
+                const Padding(padding: EdgeInsets.all(15),child:Text("Conversation supprimée par votre interlocuteur", style: TextStyle(fontSize:16,fontStyle: FontStyle.italic,color: AppCouleur.banni),),):
+                ConstruitRedacteur(),
+              ],
+            ),
           ),
         ),
-      ),
+      )
     );
   }
 
@@ -427,7 +449,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
   }
 
   Future<void> prendMessages() async {
-    final mesEnre = await monPostier.prendMessagesPersoStatiques(widget.idUti);
+    final mesEnre = await monPostier.prendPersoStatiques(widget.idUti);
     if(mesEnre.data()!=null && mesEnre.data()!.messages!= null){
       listeMessagesEnr.addAll(mesEnre.data()!.messages!);
     }
@@ -469,8 +491,16 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
   montreMessagesEnr() {
     showDialog(context: context, builder: (context)=>AlertDialog(
       title: const Text("Charger un message"),
-      content: listeMessagesForme(),
+      content: widget.tempo?const Text("Cette fonction est indisponible en session temporaire\nConnectez vous ou inscrivez vous pour enregistrer des messages."):
+      listeMessagesForme(),
       actions: [
+        widget.tempo?TextButton(onPressed: ()=>{
+          Navigator.of(context).push(PageRouteBuilder(
+            pageBuilder: (_, __, ___) =>  Connexion(tempo: widget.idUti,),
+            transitionDuration: const Duration(milliseconds: 500),
+            transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+          ))
+        },child: const Text("Session connectée"),):const SizedBox.shrink(),
         MaterialButton(onPressed: ()=>{Navigator.of(context).pop()},child: const Text("Annuler"),)
       ],
     ),
@@ -501,8 +531,9 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
 
   montreEnregistreMessage(corps){
     showDialog(context: context, builder: (contex)=>AlertDialog(
-      title: Text("Enregistrer le message"),
-      content: Column(
+      title: const Text("Enregistrer le message"),
+      content: widget.tempo?const Text("Cette fonction est indisponible en session temporaire\nConnectez vous ou inscrivez vous pour enregistrer des messages."):
+      Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text("Indiquez l'intitulé du message à enregistrer"),
@@ -522,7 +553,13 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
         ],
       ),
       actions: [
-        TextButton(onPressed: ()=>{nvMessage(corps)},child: const Text("Enregistrer"),),
+        widget.tempo?TextButton(onPressed: ()=>{
+          Navigator.of(context).push(PageRouteBuilder(
+            pageBuilder: (_, __, ___) =>  Connexion(tempo: widget.idUti,),
+            transitionDuration: const Duration(milliseconds: 500),
+            transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+          ))
+        },child: const Text("Session connectée"),):TextButton(onPressed: ()=>{nvMessage(corps)},child: const Text("Enregistrer"),),
         MaterialButton(onPressed: ()=>{Navigator.of(context).pop()},child: const Text("Annuler"),)
       ],
     ));
@@ -534,7 +571,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
           widget.idUti, "", titre.text, corps);
       if (resultat == 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Enregistré !'),
               backgroundColor: AppCouleur.secondaire,
               behavior: SnackBarBehavior.floating,
@@ -547,5 +584,9 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
     }else{
       Usine.montreBiscotte(context, "Oups, un intitulé est nécessaire!", this);
     }
+  }
+
+  void denotifie() {
+    monPostier.denotifie(widget.idUti,widget.idConv);
   }
 }

@@ -1,9 +1,0 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "muetssages",
-    "package_name": "com.ipiccie",
-    "sha256_cert_fingerprints":
-    ["0B:10:70:F4:CB:1D:1E:96:DD:34:AB:64:26:4A:7D:0D:82:57:DE:88:75:95:FB:B7:E8:DF:CE:AD:66:CD:16:8D"]
-  }
-}]

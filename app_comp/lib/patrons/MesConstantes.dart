@@ -7,6 +7,8 @@ class MesConstantes {
   static const cheminListeCode = "ordre";
   static const code = "code";
   static const nbCode = "nb";
+  static const jeton = "jeton";
+  static const co = "co";
   static const id = "id";
   static const nomUti = "pseudo";
   static const nb = "nb";

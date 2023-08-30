@@ -30,10 +30,10 @@ class Utilisateur{
   }
   Map<String, dynamic> toFirestore() {
     return {
-      if (this.pseudo != null) MesConstantes.nomUti: this.pseudo,
-      if (this.contacts != null) MesConstantes.contact: this.contacts,
-      if (this.messages != null) MesConstantes.messagesEnregistres: this.messages,
-      if(this.nb != null) MesConstantes.nb: this.nb,
+      if (pseudo != null) MesConstantes.nomUti: pseudo,
+      if (contacts != null) MesConstantes.contact: contacts,
+      if (messages != null) MesConstantes.messagesEnregistres: messages,
+      if(nb != null) MesConstantes.nb: nb,
     };
   }
 }

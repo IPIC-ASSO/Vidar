@@ -110,7 +110,7 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
                         widget.idUt, widget.titre, titre.text, corps.text);
                 if (resultat == 0) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
                         content: Text('Enregistré !'),
                         backgroundColor: AppCouleur.secondaire,
                         behavior: SnackBarBehavior.floating,
@@ -141,7 +141,7 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
               print(resultat);
               if(resultat==0) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                    const SnackBar(
                       content: Text('Supprimé !'),
                       backgroundColor: AppCouleur.secondaire,
                       behavior: SnackBarBehavior.floating,

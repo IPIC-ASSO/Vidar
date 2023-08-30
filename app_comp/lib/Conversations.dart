@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:vidar/AppCouleur.dart';
 import 'package:vidar/Postier.dart';
 import 'package:vidar/interfaceDiscussion.dart';
@@ -38,13 +37,13 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
         children: [
           Container(
             width: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 border:  Border(
                   bottom: BorderSide(width: 3.0, color: AppCouleur.tete),
                 ),
             ),
-            padding: EdgeInsets.fromLTRB(15,25,15,10),
-            child: Text("Liste des conversations en cours", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18), textAlign: TextAlign.center,)
+            padding: const EdgeInsets.fromLTRB(15,25,15,10),
+            child: const Text("Liste des conversations en cours", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18), textAlign: TextAlign.center,)
           ),
           StreamBuilder(
               stream: monPostier.prendConv(user?.uid??""),
@@ -59,7 +58,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                     }
                   });
                   if (enfants.isEmpty)
-                    return Padding(
+                    return const Padding(
                       padding: EdgeInsets.all(15),
                       child: Text("Aucune conversation enregistrée\nCommencez en une avec le petit bouton bleu clair", textAlign: TextAlign.center,),
                     );
@@ -76,7 +75,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                     )
                   );
                 }else{
-                  return Padding(
+                  return const Padding(
                     padding: EdgeInsets.all(15),
                     child: Text("Aucune conversation enregistrée\nCommencez en une avec le petit bouton bleu clair", textAlign: TextAlign.center,),
                   );
@@ -94,7 +93,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
           ))
         },
         label: const Text('Nouvelle Conversation'),
-        icon:  Icon(Icons.add),
+        icon:  const Icon(Icons.add),
       ),
     );
   }
@@ -103,7 +102,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
 
   Widget construitConv(Discussion dis) {
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
         child:FutureBuilder(
           future: monPostier.prendPseudo(dis.utilisateur1==user!.uid?dis.utilisateur2:dis.utilisateur1),
            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -122,24 +121,24 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                   child:Container(
                     decoration: BoxDecoration(
                       color: dis.supr!=null?AppCouleur.tete:AppCouleur.grisTresClair,
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      boxShadow: [
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
+                      boxShadow: const [
                         BoxShadow(
-                          offset: const Offset(3.0, 3.0,),
+                          offset: Offset(3.0, 3.0,),
                           blurRadius: 3.0,
                         ), //BoxShadow
                         BoxShadow(
                           color: Colors.white,
-                          offset: const Offset(0.0, 0.0),
+                          offset: Offset(0.0, 0.0),
                           blurRadius: 0.0,
                           spreadRadius: 0.0,
                         ), //BoxShadow
                       ],
                     ),
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     child: Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                             flex: 0,
                             child: Padding(
                               padding: EdgeInsets.all(3),
@@ -149,20 +148,20 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                         Expanded(
                             flex: 1,
                             child: Padding(
-                                padding: EdgeInsets.all(3),
-                                child: Text(textAlign: TextAlign.center, dis.pseudo, style: TextStyle(fontSize: 16),)
+                                padding: const EdgeInsets.all(3),
+                                child: Text(textAlign: TextAlign.center, dis.pseudo, style: const TextStyle(fontSize: 16),)
                             )
                         ),
                         Expanded(
                             flex: 0,
                             child: Padding(
-                                padding: EdgeInsets.all(3),
+                                padding: const EdgeInsets.all(3),
                                 child: IconButton(
                                   color: dis.supr!=null?AppCouleur.spaceCadet:AppCouleur.banni,
                                   onPressed: () => {
                                     confSupr(dis)
                                   },
-                                  icon: Icon(Icons.delete_forever),
+                                  icon: const Icon(Icons.delete_forever),
                                   tooltip: "Supprimer la conversation")
                             )
                         ),
@@ -170,7 +169,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                     ),
                   ));
             }else{
-              return LinearProgressIndicator();
+              return const LinearProgressIndicator();
             }
            }
         ));
@@ -180,8 +179,8 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
     showDialog(
         context: context,
         builder: (context)=>AlertDialog(
-          title: Text("Supprimer la conversation"),
-          content: Text("Voulez vous supprimez cette conversation?\nCette action est irréversible."),
+          title: const Text("Supprimer la conversation"),
+          content: const Text("Voulez vous supprimez cette conversation?\nCette action est irréversible."),
           actions: [
             TextButton(onPressed: (){
               Navigator.of(context).pop();

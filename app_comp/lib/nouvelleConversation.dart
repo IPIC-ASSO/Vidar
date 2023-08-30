@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -16,9 +18,9 @@ import 'usineDeBiscottesGrillees.dart';
 class NouvConv extends StatefulWidget {
 
   final String idUti;
-  final bool tempo;
 
-  const NouvConv({super.key, required this.idUti, this.tempo = false});
+
+  const NouvConv({super.key, required this.idUti,});
 
   @override
   State<NouvConv> createState() => _NouvConvState();
@@ -33,6 +35,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
   Map<String,String> listeMessages = {"[AUCUN]":""};
   List<String> messages = ["[AUCUN]","[AUCUN]","[AUCUN]"];
   TextEditingController code = TextEditingController();
+  late int nb;
 
   @override
   void initState() {
@@ -106,7 +109,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                 },child:Text(messages[2]))),
                 Padding(padding: const EdgeInsets.all(20),
                   child:ElevatedButton(
-                    child: Text("Valider"),
+                    child: const Text("Valider"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppCouleur.eco,
                       foregroundColor : AppCouleur.white,
@@ -118,7 +121,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                     onPressed:()=>{
                       Navigator.push(context,
                         PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => MontreQrCode(idUt: widget.idUti, messageAffiche: listeMessages[messages[0]]??"",messageDebut: listeMessages[messages[2]]??"",messageLu: listeMessages[messages[1]]??"",),
+                        pageBuilder: (_, __, ___) => MontreQrCode(idUt: widget.idUti, messageAffiche: listeMessages[messages[0]]??"",messageDebut: listeMessages[messages[2]]??"",messageLu: listeMessages[messages[1]]??"",nb:nb),
                         transitionDuration: const Duration(milliseconds: 500),
                         transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
                         ),
@@ -131,7 +134,9 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                  !kIsWeb?ElevatedButton(
+                  !kIsWeb?Padding(
+                    padding: const EdgeInsets.all(5),
+                    child:ElevatedButton(
                       onPressed: () => scanQR(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppCouleur.principal,
@@ -140,9 +145,9 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)
                         ),),
-                      child: const Text('Lancer le scan', style: TextStyle(fontSize: 17),)):Text("Utilisez un l'application mobile pour scanner un QR-code"),
-                  Padding(padding: EdgeInsets.all(15),child:Text("OU",textAlign: TextAlign.center,)),
-                  Padding(padding: EdgeInsets.all(5),child: TextField(
+                      child: const Text('Lancer le scan', style: TextStyle(fontSize: 17),))):const Text("Utilisez un l'application mobile pour scanner un QR-code"),
+                  const Padding(padding: EdgeInsets.all(15),child:Text("OU",textAlign: TextAlign.center,)),
+                  Padding(padding: const EdgeInsets.all(5),child: TextField(
                     controller: code,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
@@ -151,10 +156,26 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                       hintText: "Entrez un code",
                     ),
                   ),),
-                  Padding(padding: EdgeInsets.all(15),child:
+                  Padding(padding: const EdgeInsets.all(15),child:
                   ElevatedButton(
-                    onPressed: ()=>{prendCode()},
-                    child: Text("Valider"),
+                    onPressed: () async {
+                      try {
+                        await prendCode(code.text, context,this,widget.idUti,db);
+                      } on FirebaseException catch(e){
+                        switch (e.code){
+                          case 'not-found':
+                            Usine.montreBiscotte(context, "Code invalide", this);
+                            break;
+                          default:
+                            Usine.montreBiscotte(context, "La base de donnée refuse la transaction", this);
+                        }
+                      }
+                      catch (e) {
+                        log(e.toString());
+                        Usine.montreBiscotte(context, "Une erreur est survenue", this);
+                      }
+                    },
+                    child: const Text("Valider"),
                   )),
                   ],)
                 )),
@@ -191,12 +212,27 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
   analyselien(String codex) async {
     String destinataire = codex.replaceAll("https://", "");
     destinataire = destinataire.replaceAll("vidar-9e8ac.web.app/?dest=", "");
-    traiteCode(destinataire, widget.idUti,db,context);
+    try {
+      await traiteCode(destinataire, widget.idUti,db,context);
+    } on FirebaseException catch(e){
+      switch (e.code){
+        case 'not-found':
+          Usine.montreBiscotte(context, "Code invalide", this);
+          break;
+        default:
+          Usine.montreBiscotte(context, "La base de donnée refuse la transaction", this);
+      }
+    }
+    catch (e) {
+      log(e.toString());
+      Usine.montreBiscotte(context, "Une erreur est survenue", this);
+    }
   }
 
   Future<void> prendMessages() async {
-    final mesEnre = await monPostier.prendMessagesPersoStatiques(widget.idUti);
+    final mesEnre = await monPostier.prendPersoStatiques(widget.idUti);
     if(mesEnre.data()!=null && mesEnre.data()!.messages!= null){
+      nb = mesEnre.data()!.nb??0;
       listeMessages.addAll(mesEnre.data()!.messages!);
     }
     final DocumentSnapshot<Map<String, dynamic>> lesEnre = await monPostier.prendMessagesParDefaut();
@@ -226,31 +262,8 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
     );
   }
 
-  void prendCode() async{
-    if(code.text.isNotEmpty && isNumeric(code.text)){
-      final DocumentSnapshot x = await db.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).get();
-      if(x.data()!= null ){
-        final doc = x.data() as Map<String, dynamic>;
-        if((doc[MesConstantes.code] as List<dynamic>).length>int.parse(code.text)){
-          traiteCode((doc[MesConstantes.code] as List<dynamic>)[int.parse(code.text)].toString(), widget.idUti,db,context);
-        }else{
-          Usine.montreBiscotte(context, "Code invalide", this);
-        }
-      }else{
-        Usine.montreBiscotte(context, "Une erreur est survenue", this);
-      }
-    }else{
-      Usine.montreBiscotte(context, "Entrez un code numérique valide!", this);
-    }
-
-  }
-
-  bool isNumeric(String s) {
-    return double.tryParse(s) != null;
-  }
-
 }
-traiteCode(String destinataire, String idUti, FirebaseFirestore db, BuildContext context) async {
+traiteCode(String destinataire, String idUti, FirebaseFirestore db, BuildContext context, [bool tempo=false]) async {
   String idConv;
   final QuerySnapshot<Map<String, dynamic>> listeConv = await db.collection(MesConstantes.cheminListeMessages).get();
   if(listeConv.docs.any((element) => element.id.contains(idUti) && element.id.contains(destinataire))){
@@ -273,10 +286,32 @@ traiteCode(String destinataire, String idUti, FirebaseFirestore db, BuildContext
   if(doc.data()!= null && doc.data()![MesConstantes.nomUti]!= null)pseudo = doc.data()![MesConstantes.nomUti];
   Navigator.push(context,
     PageRouteBuilder(
-      pageBuilder: (_, __, ___) => InterfaceDiscussion(idUti: idUti, idConv: idConv, pseudoDest: pseudo),
+      pageBuilder: (_, __, ___) => InterfaceDiscussion(idUti: idUti, idConv: idConv, pseudoDest: pseudo, tempo: tempo,),
       transitionDuration: const Duration(milliseconds: 500),
       transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
     ),
   );
+}
+
+bool isNumeric(String s) {
+  return double.tryParse(s) != null;
+}
+
+ prendCode(String code, BuildContext context, TickerProvider ticket, String idUti, FirebaseFirestore db, [bool tempo = false]) async{
+  if(code.isNotEmpty && isNumeric(code)){
+    final DocumentSnapshot x = await db.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).get();
+    if(x.data()!= null ){
+      final doc = x.data() as Map<String, dynamic>;
+      if((doc[MesConstantes.code] as List<dynamic>).length>int.parse(code)){
+        await traiteCode((doc[MesConstantes.code] as List<dynamic>)[int.parse(code)].toString(), idUti,db,context, tempo);
+      }else{
+        Usine.montreBiscotte(context, "Code invalide", ticket);
+      }
+    }else{
+      Usine.montreBiscotte(context, "Une erreur est survenue", ticket);
+    }
+  }else{
+    Usine.montreBiscotte(context, "Entrez un code numérique valide!", ticket);
+  }
 
 }

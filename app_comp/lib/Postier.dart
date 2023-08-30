@@ -30,6 +30,10 @@ class laPoste {
     return firebaseFirestore.collection(MesConstantes.cheminListeMessages).withConverter(fromFirestore: Discussion.fromFirestore, toFirestore: (Discussion discussion,_)=>Discussion().toFirestore()).where("utilisateur1",isNotEqualTo: "").snapshots();
   }
 
+  Future<QuerySnapshot<Discussion>> prendConvStatique(String idUti) {
+    return firebaseFirestore.collection(MesConstantes.cheminListeMessages).withConverter(fromFirestore: Discussion.fromFirestore, toFirestore: (Discussion discussion,_)=>Discussion().toFirestore()).where("utilisateur1",isNotEqualTo: "").get();
+  }
+
   Future<Discussion> prendLAconv(String idConv) async {
     final Discussion Dis =  (await firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(idConv).withConverter(fromFirestore: Discussion.fromFirestore, toFirestore: (Discussion discussion,_)=>Discussion().toFirestore()).get()).data() as Discussion;
     return Dis;
@@ -132,12 +136,18 @@ class laPoste {
     return firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeMessagesPreEnr).get();
   }
 
-  Stream<DocumentSnapshot<Utilisateur>> prendMessagesPersonnels(String idUti) {
+  Stream<DocumentSnapshot<Utilisateur>> prendPersonnel(String idUti) {
     return  firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).withConverter(fromFirestore: Utilisateur.fromFirestore, toFirestore: (Utilisateur utilisateur,_)=>Utilisateur().toFirestore()).snapshots();
   }
 
-  Future<DocumentSnapshot<Utilisateur>> prendMessagesPersoStatiques(String idUti){
+  Future<DocumentSnapshot<Utilisateur>> prendPersoStatiques(String idUti){
     return  firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).withConverter(fromFirestore: Utilisateur.fromFirestore, toFirestore: (Utilisateur utilisateur,_)=>Utilisateur().toFirestore()).get();
+  }
+
+  Future<int> prendPersoNb(String idUti) async{
+    final DocumentSnapshot<Utilisateur> uti = await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).withConverter(fromFirestore: Utilisateur.fromFirestore, toFirestore: (Utilisateur utilisateur,_)=>Utilisateur().toFirestore()).get();
+    if(uti.data()!=null)return uti.data()!.nb??0;
+    return 0;
   }
 
   Future<int> supprimeMessage(String idUt, String titre) async {
@@ -169,5 +179,32 @@ class laPoste {
   changePseudo(String uid, String text) async {
     await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(uid).update(
         {MesConstantes.nomUti:text});
+  }
+
+  Future<int> creeUti(String uid, String pseudo) async {
+    final int nb = ((((await firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).get()).data())??{} as Map<String,dynamic>)[MesConstantes.nb]??0)as int;
+    final user = <String, dynamic>{
+      MesConstantes.nomUti: pseudo,
+      MesConstantes.nb: nb+1,
+    };
+    await firebaseFirestore.collection("Utilisateurs").doc(uid)
+        .set(user)
+        .then((value) => print('Utilisateur enregistré'))
+        .onError((error, stackTrace) => print(error));
+    await firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).update({MesConstantes.code: FieldValue.arrayUnion([uid])}).onError((error, stackTrace) => log(error.toString()));
+    await firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).update({MesConstantes.nbCode: FieldValue.increment(1)}).onError((error, stackTrace) => log(error.toString()));
+    return nb+1;
+  }
+
+  Future<void> denotifie(String idUti, String idConv) async {
+    await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).update({
+      MesConstantes.co:idConv
+    });
+  }
+
+  Future<void> renotifie(String idUti) async {
+    await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).update({
+      MesConstantes.co:""
+    });
   }
 }

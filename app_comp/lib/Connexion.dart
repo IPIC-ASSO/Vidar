@@ -3,14 +3,19 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:vidar/Postier.dart';
+import 'package:vidar/main.dart';
 import 'package:vidar/patrons/MesConstantes.dart';
+import 'package:vidar/patrons/convDeListe.dart';
 
 import 'AppCouleur.dart';
 import 'usineDeBiscottesGrillees.dart';
 
 class Connexion extends StatefulWidget {
 
-  const Connexion({super.key});
+  final String tempo;
+
+  const Connexion({super.key, this.tempo = ""});
 
   @override
   State<Connexion> createState() => _ConnexionState();
@@ -18,6 +23,7 @@ class Connexion extends StatefulWidget {
 
 class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
 
+  FirebaseFirestore db = FirebaseFirestore.instance;
   late TabController controleTable ;
   TextEditingController mail_co = TextEditingController();
   TextEditingController mdp_co = TextEditingController();
@@ -41,9 +47,9 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
         title: const Text("Authentification",),
         bottom: TabBar(
           controller: controleTable,
-          tabs: [
-            const Tab(icon: Icon(Icons.login), child:Text("Connexion",textAlign: TextAlign.center,)),
-            const Tab(icon: Icon(Icons.nature_people_outlined), child:Text("Inscription",textAlign: TextAlign.center,)),
+          tabs: const [
+            Tab(icon: Icon(Icons.login), child:Text("Connexion",textAlign: TextAlign.center,)),
+            Tab(icon: Icon(Icons.nature_people_outlined), child:Text("Inscription",textAlign: TextAlign.center,)),
           ]
         )
       ),
@@ -107,7 +113,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
                         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             backgroundColor: AppCouleur.principal,
                             foregroundColor : AppCouleur.white,
                             minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
@@ -183,7 +189,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           backgroundColor: AppCouleur.principal,
                           foregroundColor : AppCouleur.white,
                           minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
@@ -244,7 +250,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
           .sendPasswordResetEmail(email: email)
           .then((value) => Usine.montreBiscotte(context, 'Envoyé!', this, true));
     }on FirebaseAuthException catch (e) {
-      print(e.code);
+      log(e.code);
       Usine.montreBiscotte(context, 'Une erreur est survenue. \nL\'accès à la Base données a échoué ', this);
     }catch(e){
       Usine.montreBiscotte(context, 'Une erreur est survenue', this);
@@ -296,19 +302,21 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
   }
 
   Future<void> connecte() async {
-    if (auth.currentUser!=null){
+    if (auth.currentUser!=null && widget.tempo.isEmpty){
       //Pouf il est connecté ! :=)
     }else if(mail_co.text.isNotEmpty && mdp_co.text.isNotEmpty) {
       try {
-        await auth.signInWithEmailAndPassword(email: mail_co.text, password: mdp_co.text);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Connexion...'),
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Connexion...'),));
+        if(widget.tempo.isNotEmpty){
+          final uti = await auth.signInWithEmailAndPassword(email: mail_co.text, password: mdp_co.text);
+          await changeAnonyme(uti.user!.uid);
+        }else{
+          await auth.signInWithEmailAndPassword(email: mail_co.text, password: mdp_co.text);
+        }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           Usine.montreBiscotte(context, "Utilisateur introuvable", this);
         } else if (e.code == 'wrong-password') {
-          print("truc");
           Usine.montreBiscotte(context, "Mot de passe incorrect", this);
         }else if(e.code == 'too-many-requests'){
           Usine.montreBiscotte(context, "L'accès à ce compte a été temporairement bloqué en raison de nombreuses tentatives de connexion. Veuillez réessayer plus tard", this);
@@ -317,7 +325,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
           log(e.code);
         }
       } catch (e) {
-        print(e);
+        log(e.toString());
         Usine.montreBiscotte(context, "Une erreur est survenue", this);
       }
     }else{
@@ -328,43 +336,84 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
   nouvUti() async{
     if(mail_ins.text.isNotEmpty && pseudo.text.isNotEmpty && mdp_ins.text.isNotEmpty){
       try {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Connexion...'),));
-        FirebaseFirestore db = FirebaseFirestore.instance;
-        final credit = await auth.createUserWithEmailAndPassword(email: mail_ins.text.replaceAll(' ', ''), password: mdp_ins.text,);
-        if (credit.user != null) {
-          final int nb = ((((await db.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).get()).data())??{} as Map<String,dynamic>)[MesConstantes.nb]??0)as int;
-          final user = <String, dynamic>{
-            MesConstantes.nomUti: pseudo.text,
-            MesConstantes.nb: nb+1,
-          };
-          await db.collection("Utilisateurs").doc(credit.user?.uid ??
-                  DateTime.now().millisecondsSinceEpoch.toString())
-              .set(user)
-              .then((value) => print('Utilisateur enregistré'))
-              .onError((error, stackTrace) => print(error));
-          await db.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).update({MesConstantes.code: FieldValue.arrayUnion([credit.user!.uid.toString()])}).onError((error, stackTrace) => print(error));
-          await db.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).update({MesConstantes.nbCode: FieldValue.increment(1)}).onError((error, stackTrace) => print(error));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Chargement...'),));
+        if(widget.tempo.isNotEmpty){
+          final credit = EmailAuthProvider.credential(email: mail_ins.text, password: mdp_ins.text);
+          final creditUti = await FirebaseAuth.instance.currentUser?.linkWithCredential(credit);
+          await laPoste(firebaseFirestore: db).creeUti(creditUti!.user!.uid,pseudo.text,);
+          Navigator.of(context).push(PageRouteBuilder(
+            pageBuilder: (_, __, ___) => const MyHomePage(),
+            transitionDuration: const Duration(milliseconds: 500),
+            transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+          ));
         }else{
-          Usine.montreBiscotte(context, "jeton invalide", this);
+          final credit = await auth.createUserWithEmailAndPassword(email: mail_ins.text.replaceAll(' ', ''), password: mdp_ins.text,);
+          if (credit.user != null) {
+            await laPoste(firebaseFirestore: db).creeUti(credit.user!.uid,pseudo.text,);
+          }else{
+            Usine.montreBiscotte(context, "jeton invalide", this);
+          }
         }
       } on FirebaseAuthException catch (e) {
-        if (e.code == 'weak-password') {
-          Usine.montreBiscotte(context, "Mot de passe trop faible", this);
-        } else if (e.code == 'email-already-in-use') {
-          Usine.montreBiscotte(
-              context, "Adresse mail déjà utilisée par un utilisateur", this);
-        } else if (e.code == 'invalid-email') {
-          Usine.montreBiscotte(context, "Adresse mail non valide", this);
-        } else {
-          Usine.montreBiscotte(context, "Inscription impossible", this);
-          print(e);
+        log(e.code);
+        switch (e.code){
+          case'weak-password':
+            Usine.montreBiscotte(context, "Mot de passe trop faible", this);
+            break;
+          case 'email-already-in-use':
+            Usine.montreBiscotte(context, "Adresse mail déjà utilisée par un utilisateur", this);
+            break;
+          case 'invalid-email':
+            Usine.montreBiscotte(context, "Adresse mail non valide", this);
+            break;
+          case "provider-already-linked":
+            Usine.montreBiscotte(context, "Compte déjà lié à un compte existant", this);
+            break;
+          case "invalid-credential":
+            Usine.montreBiscotte(context, "Le fournisseur de jetons est un escroc", this);
+            break;
+          case "credential-already-in-use":
+            Usine.montreBiscotte(context, "Crédit déjà utilisé", this);
+            break;
+          default:
+            Usine.montreBiscotte(context, "Inscription impossible", this);
         }
       } catch (e) {
-        print(e);
+        log(e.toString());
         Usine.montreBiscotte(context, "Une erreur est survenue", this);
       }
     }else{
       Usine.montreBiscotte(context, "Oups! Vous n'avez pas rempli tous les champs", this);
     }
+  }
+
+  Future<void> changeAnonyme(String uti) async {
+    final QuerySnapshot<Discussion> listeDiscussions = await laPoste(firebaseFirestore: db).prendConvStatique(widget.tempo);
+    final theBat = db.batch();
+    for(QueryDocumentSnapshot<Discussion> element in listeDiscussions.docs){
+      if(element.data().utilisateur1 == widget.tempo || element.data().utilisateur2 == widget.tempo){
+        //met à jour liste cov
+        DocumentReference docRefConv = db.collection(MesConstantes.cheminMessages).doc(element.id);
+        DocumentReference docRef = db.collection(MesConstantes.cheminListeMessages).doc(element.id.replaceAll(widget.tempo, uti));
+        final Discussion discussion = element.data();
+        if (discussion.utilisateur1 == widget.tempo)discussion.utilisateur1 = uti;
+        else discussion.utilisateur2 = uti;
+        theBat.set(docRef, discussion.toFirestore());
+        //met à jour conv en elles même
+        DocumentReference docRefnouvConv = db.collection(MesConstantes.cheminMessages).doc(element.id.replaceAll(widget.tempo, uti));
+        final DocumentSnapshot maConv = await db.doc(docRefConv.path).get();
+        theBat.set(docRefnouvConv, maConv.data());
+        theBat.delete(docRefConv);
+        theBat.delete(element.reference);
+      }
+    }
+    final DocumentReference docRef4 = db.collection(MesConstantes.cheminUtilisateur).doc(widget.tempo);
+    theBat.delete(docRef4);
+    await theBat.commit();
+    Navigator.of(context).push(PageRouteBuilder(
+      pageBuilder: (_, __, ___) => const MyHomePage(),
+      transitionDuration: const Duration(milliseconds: 500),
+      transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+    ));
   }
 }

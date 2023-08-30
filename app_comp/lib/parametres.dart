@@ -347,7 +347,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
     showDialog(context: context, builder: (context)=>AlertDialog(
       title: const Text('Choix de la voix'),
       content: StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {return Container(height:1000,width:1000,child:ListView(
+        builder: (BuildContext context, StateSetter setState) {return SizedBox(height:1000,width:1000,child:ListView(
         shrinkWrap: true,
         children: List<Widget>.generate(lesvoix.length, (index){
             final indice = index;

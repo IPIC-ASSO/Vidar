@@ -40,13 +40,13 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
        automaticallyImplyLeading: false,
        title: Container(
            width: double.infinity,
-           decoration: BoxDecoration(
+           decoration: const BoxDecoration(
              border:  Border(
                bottom: BorderSide(width: 8.0, color: AppCouleur.tete),
              ),
            ),
-           padding: EdgeInsets.fromLTRB(15,25,15,10),
-           child: Text(" Messages enregistrés ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18), textAlign: TextAlign.center,)
+           padding: const EdgeInsets.fromLTRB(15,25,15,10),
+           child: const Text(" Messages enregistrés ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18), textAlign: TextAlign.center,)
        ),
      ),
      body:MediaQuery.of(context).size.width>MediaQuery.of(context).size.height?Row(
@@ -70,14 +70,14 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
          ))
        },
        label: const Text('Nouveau message'),
-       icon:  Icon(Icons.add),
+       icon:  const Icon(Icons.add),
      ),
    );
   }
 
   Widget MessagesPerso() {
   return StreamBuilder(
-      stream: monPostier.prendMessagesPersonnels(widget.idUti), // a previously-obtained Future<String> or null
+      stream: monPostier.prendPersonnel(widget.idUti), // a previously-obtained Future<String> or null
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Utilisateur>> snapshot) {
         List<Widget> enfants = [
           const Row(

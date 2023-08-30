@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,10 +9,10 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:vidar/patrons/MesConstantes.dart';
 import 'package:vidar/patrons/OutilsUtiles.dart';
 import 'package:vidar/usineDeBiscottesGrillees.dart';
-
 import 'AppCouleur.dart';
 import 'interfaceDiscussion.dart';
 import 'main.dart';
+import 'nouvelleConversation.dart';
 
 class MontreQrCode extends StatefulWidget {
 
@@ -19,8 +20,10 @@ class MontreQrCode extends StatefulWidget {
   final String messageAffiche;
   final String messageLu;
   final String messageDebut;
+  final int nb;
+  final bool tempo;
 
-  const MontreQrCode({super.key, required this.idUt, required this.messageAffiche, required this.messageLu, required this.messageDebut, });
+  const MontreQrCode({super.key, required this.idUt, required this.messageAffiche, required this.messageLu, required this.messageDebut, this.tempo=false, required this.nb });
 
   @override
   State<MontreQrCode> createState() => _MontreQrCodeState();
@@ -32,6 +35,7 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
   late final StreamSubscription<DocumentSnapshot<Map<String, dynamic>>> ecouteur;
   String? nomInconnu;
   late FlutterTts monTTS;
+  TextEditingController code = TextEditingController();
 
   @override
   void initState() {
@@ -53,23 +57,86 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Visibility(
+            visible: widget.tempo,
+            child: Expanded(flex:0,
+                child: Column(
+                  children: [
+                    Padding(padding: const EdgeInsets.all(5),child: TextField(
+                      controller: code,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Code',
+                        hintText: "Entrez un code",
+                      ),
+                    ),),
+                    Padding(padding: const EdgeInsets.all(15),child:
+                    ElevatedButton(
+                      onPressed: () async {
+                        try {
+                           await prendCode(code.text, context,this,widget.idUt,db, widget.tempo);
+                        } on FirebaseException catch(e){
+                          switch (e.code){
+                            case 'not-found':
+                              Usine.montreBiscotte(context, "Code invalide", this);
+                              break;
+                            default:
+                              Usine.montreBiscotte(context, "La base de donnée refuse la transaction", this);
+                          }
+                        }
+                        catch (e) {
+                          log(e.toString());
+                          Usine.montreBiscotte(context, "Une erreur est survenue", this);
+                        }
+                      },
+                      child: const Text("Valider"),
+                    )),
+                    const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text("ou faites scannez ce QR-code par votre interlocuteur", style: TextStyle(fontSize: 17),textAlign: TextAlign.center,),
+                    )
+                  ],
+                )),),
           Expanded(
             flex: 1,
-            child:Padding(padding:EdgeInsets.fromLTRB(15, 25, 15,0),child:QrImageView(
+            child:Padding(padding:const EdgeInsets.fromLTRB(15, 25, 15,0),child:QrImageView(
                 data: "https://vidar-9e8ac.web.app/?dest=${widget.idUt}",
                 version: QrVersions.auto,
               ),)
           ),
+          Expanded(flex:0,child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(fontStyle: FontStyle.italic),
+                children: <TextSpan>[
+                  const TextSpan(
+                    text: "Si le QR-code ne fonctionne pas, entrez le code: "
+                  ),
+                  TextSpan(
+                      style: const TextStyle(fontStyle: FontStyle.normal, fontSize: 20),
+                      text: widget.nb.toString()
+                  ),
+                  const TextSpan(
+                    text: " dans l'application mobile Vidar où sur https://ipic-asso/vidar"
+                  )
+
+              ]))
+
+
+            )),
           Expanded(
             flex: 0,
-            child: Padding(padding:EdgeInsets.all(15),child:Row(
+            child: Padding(padding:const EdgeInsets.all(15),child:Row(
               children: [
               Visibility(
                 visible: widget.messageAffiche.isNotEmpty,
-                child: Expanded(child:Padding(padding:EdgeInsets.all(5),
+                child: Expanded(child:Padding(padding:const EdgeInsets.all(5),
                       child:ElevatedButton.icon(
-                      icon: Icon(Icons.text_snippet_outlined),
+                      icon: const Icon(Icons.text_snippet_outlined),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppCouleur.principal,
                         foregroundColor : AppCouleur.white,
@@ -81,18 +148,18 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
                       onPressed: (){
                         showDialog(context: context,
                             builder: (context)=>AlertDialog(
-                              title: Text("Vidar-communication"),
-                              content: Text(widget.messageAffiche+" \n\nIPIC-ASSO garantit la confidentialité et la sécurité de la communication"),
-                              actions: [IconButton(onPressed: ()=>{Navigator.of(context).pop()}, icon: Icon(Icons.close))],
+                              title: const Text("Vidar-communication"),
+                              content: Text("${widget.messageAffiche} \n\nIPIC-ASSO garantit la confidentialité et la sécurité de la communication"),
+                              actions: [IconButton(onPressed: ()=>{Navigator.of(context).pop()}, icon: const Icon(Icons.close))],
                             ));
                       },
-                      label: Text("Afficher le message")
+                      label: const Text("Afficher le message")
                   ))),),
                 Visibility(
                     visible: widget.messageLu.isNotEmpty,
-                    child:Expanded(child: Padding(padding:EdgeInsets.all(5),
+                    child:Expanded(child: Padding(padding:const EdgeInsets.all(5),
                       child:ElevatedButton.icon(
-                        icon: Icon(Icons.volume_up,),
+                        icon: const Icon(Icons.volume_up,),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppCouleur.principal,
                           foregroundColor : AppCouleur.white,
@@ -102,7 +169,7 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
                           ),
                         ),
                         onPressed: ()=>{monTTS.speak(widget.messageLu)},
-                        label: Text("Lire le message")
+                        label: const Text("Lire le message")
                   ))))
               ],
             ))
@@ -110,12 +177,14 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppCouleur.greyColor,
-        child: Icon(Icons.close),
-        onPressed: ()=>{Navigator.of(context).pop()},
-        tooltip: "Fermer",
-      ),
+      floatingActionButton: Visibility(
+        visible: !widget.tempo,
+        child:FloatingActionButton(
+          backgroundColor: AppCouleur.greyColor,
+          child: const Icon(Icons.close),
+          onPressed: ()=>{Navigator.of(context).pop()},
+          tooltip: "Fermer",
+        ),)
     );
   }
 
@@ -131,17 +200,15 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
           final doc = await db.collection(MesConstantes.cheminUtilisateur).doc(destinataire).get();
           String pseudo = "inconnu au bataillon";
           if(doc.data()!= null && doc.data()![MesConstantes.nomUti]!= null)pseudo = doc.data()![MesConstantes.nomUti];
-
+          ecouteur.cancel();
+          await db.collection(MesConstantes.cheminUtilisateur).doc(widget.idUt).update({MesConstantes.contact:""});
           Navigator.push(context,
             PageRouteBuilder(
-              pageBuilder: (_, __, ___) => InterfaceDiscussion(idUti: widget.idUt, idConv: idConv, pseudoDest: pseudo,message: widget.messageDebut,),
+              pageBuilder: (_, __, ___) => InterfaceDiscussion(idUti: widget.idUt, idConv: idConv, pseudoDest: pseudo,message: widget.messageDebut,tempo:widget.tempo),
               transitionDuration: const Duration(milliseconds: 500),
               transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
             ),
           );
-
-          ecouteur.cancel();
-          db.collection(MesConstantes.cheminUtilisateur).doc(widget.idUt).update({MesConstantes.contact:""});
           }else{
           Usine.montreBiscotte(context, "Veuillez scanner le QR-code à nouveau", this);
         }
