@@ -46,7 +46,6 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
   int indiceMessageModif=0;
   int indiceMessageTouche = 0;
   Map<String,String> listeMessagesEnr = {};
-  final _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -508,7 +507,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
   }
 
   Widget listeMessagesForme() {
-    return Container(width: 1000,
+    return SizedBox(width: 1000,
         child: ListView.builder(
             shrinkWrap: true,
             itemCount: listeMessagesEnr.keys.length,

@@ -53,7 +53,6 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                   snapshot.data!.docs.forEach((element) async {
                     final dis = element.data() as Discussion;
                     if((dis.supr==null || dis.supr!=user!.uid) && (dis.utilisateur1==user!.uid ||dis.utilisateur2==user!.uid)){
-                      print(dis.utilisateur1);
                       enfants.add(construitConv(dis));
                     }
                   });

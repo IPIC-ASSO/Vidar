@@ -343,7 +343,6 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
     FlutterTts monTTs = FlutterTts();
     monTTs.setSpeechRate(0.3);
     List<Map<String,String>> lesvoix = ((await  FlutterTts().getVoices) as List<Object?>).map((e) => (e as Map).cast<String,String>()).toList();
-    print(lesvoix);
     showDialog(context: context, builder: (context)=>AlertDialog(
       title: const Text('Choix de la voix'),
       content: StatefulBuilder(

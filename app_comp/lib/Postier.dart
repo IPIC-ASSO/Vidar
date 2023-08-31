@@ -100,11 +100,11 @@ class laPoste {
         );
         return 0;
       }else{
-        log("b${e.code}");
+        log(e.toString());
         return 1;
       }
     }catch(e){
-      print("a $e");
+      log(e.toString());
       return 1;
     }
   }
@@ -114,7 +114,7 @@ class laPoste {
       await firebaseFirestore.doc("${MesConstantes.cheminMessages}/$idConv").update({temps: FieldValue.delete()});
       return 0;
     }catch(e){
-      print(e);
+      log(e.toString());
       return 1;
     }
   }
@@ -122,12 +122,11 @@ class laPoste {
   modifie(String idConv, Map<String,String> nouvMessage) async {
     final nouvMessage2 = Map.from(nouvMessage);
     nouvMessage2.remove(MesConstantes.temps);
-    print(nouvMessage2);
     try {
       await firebaseFirestore.collection(MesConstantes.cheminMessages).doc(idConv).update({nouvMessage[MesConstantes.temps]??"1676633613878": nouvMessage2});
       return 0;
     } catch (e) {
-      print(e);
+      log(e.toString());
       return 1;
     }
   }
@@ -158,7 +157,7 @@ class laPoste {
       await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).update({MesConstantes.messagesEnregistres:messages});
       return 0;
     }catch(e){
-      print(e);
+      log(e.toString());
       return 1;
     }
   }
@@ -189,8 +188,8 @@ class laPoste {
     };
     await firebaseFirestore.collection("Utilisateurs").doc(uid)
         .set(user)
-        .then((value) => print('Utilisateur enregistré'))
-        .onError((error, stackTrace) => print(error));
+        .then((value) => log('Utilisateur enregistré'))
+        .onError((error, stackTrace) => log(error.toString()));
     await firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).update({MesConstantes.code: FieldValue.arrayUnion([uid])}).onError((error, stackTrace) => log(error.toString()));
     await firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).update({MesConstantes.nbCode: FieldValue.increment(1)}).onError((error, stackTrace) => log(error.toString()));
     return nb+1;

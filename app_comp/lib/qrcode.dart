@@ -181,9 +181,9 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
         visible: !widget.tempo,
         child:FloatingActionButton(
           backgroundColor: AppCouleur.greyColor,
-          child: const Icon(Icons.close),
           onPressed: ()=>{Navigator.of(context).pop()},
           tooltip: "Fermer",
+          child: const Icon(Icons.close),
         ),)
     );
   }

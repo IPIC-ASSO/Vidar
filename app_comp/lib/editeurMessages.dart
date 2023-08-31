@@ -138,7 +138,6 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
             ),
             onPressed:(widget.nouveau || widget.defaut)?null:() async {
               final resultat = await laPoste(firebaseFirestore: FirebaseFirestore.instance).supprimeMessage(widget.idUt, widget.titre);
-              print(resultat);
               if(resultat==0) {
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

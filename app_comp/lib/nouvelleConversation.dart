@@ -62,10 +62,10 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
           bottom: TabBar(
               isScrollable: true,
               controller: controleTable,
-              tabs: [
-                const Tab(icon: Icon(Icons.app_registration),
+              tabs: const [
+                Tab(icon: Icon(Icons.app_registration),
                     child: Text("Créer un QR-code", textAlign: TextAlign.center,)),
-                const Tab(icon: Icon(Icons.qr_code_scanner),
+                Tab(icon: Icon(Icons.qr_code_scanner),
                     child: Text("Scanner un QR-code", textAlign: TextAlign.center,)),
               ]
           )
@@ -243,7 +243,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
   }
 
   Widget listeMessagesForme(int maj){
-    return Container(width:1000,
+    return SizedBox(width:1000,
         child:ListView.builder(
             shrinkWrap: true,
             itemCount: listeMessages.keys.length,

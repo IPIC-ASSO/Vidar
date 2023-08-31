@@ -13,21 +13,21 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.appComp</string>
+	<string>com.ipiccie.muetssages</string>
 	<key>PROJECT_ID</key>
 	<string>vidar-9e8ac</string>
 	<key>STORAGE_BUCKET</key>
 	<string>vidar-9e8ac.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:276571176774:ios:1546e7fbe261f22b97af47</string>
 	<key>DATABASE_URL</key>

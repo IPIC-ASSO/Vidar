@@ -13,7 +13,7 @@ class ListeMessages extends StatefulWidget {
 
   final String idUti;
 
-  ListeMessages({super.key, required this.idUti});
+  const ListeMessages({super.key, required this.idUti});
 
   @override
   State<ListeMessages> createState() => _ListeMessagesState();
