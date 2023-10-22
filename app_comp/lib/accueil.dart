@@ -40,7 +40,7 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppCouleur.blanc,
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text("Bienvenue"),
@@ -76,7 +76,7 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.all(5),
-                              backgroundColor: AppCouleur.principal,
+                              backgroundColor: AppCouleur().principal,
                               foregroundColor : AppCouleur.white,
                               minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                               shape: RoundedRectangleBorder(
@@ -86,11 +86,11 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
                             child: const Text("Session connectée", style: TextStyle(fontSize: 18),)
                           )
                       ),
-                      const Padding(
+                      Padding(
                       padding: EdgeInsets.all(5),
                         child: Tooltip(
                           preferBelow: false,
-                          textStyle: TextStyle(fontSize: 16, color: AppCouleur.blanc),
+                          textStyle: TextStyle(fontSize: 16, color: AppCouleur().blanc),
                           message: "Utilisation d'un compte, pour utiliser des messages pré-enregistrés, conserver les conversations, et les continuer sur n'importe quel appareil.",
                           child: Icon(Icons.info_outline),
                         )
@@ -120,10 +120,10 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
                                 child: const Text("Session temporaire", style: TextStyle(fontSize: 18),)
                             )
                         ),
-                        const Padding(
+                        Padding(
                             padding: EdgeInsets.all(5),
                             child:Tooltip(
-                              textStyle: TextStyle(fontSize: 16, color: AppCouleur.blanc),
+                              textStyle: TextStyle(fontSize: 16, color: AppCouleur().blanc),
                               preferBelow: false,
                               message: "Continuez sans vous connectez, pour un usage occasionel et rapide.",
                               child: Icon(Icons.info_outline),

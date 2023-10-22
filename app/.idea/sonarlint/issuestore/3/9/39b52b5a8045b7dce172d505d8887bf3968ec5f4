@@ -1,5 +1,0 @@
-
-g	java:S101$"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(²Ä°èúÿÿÿÿ
-t	java:S115-"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ƒ¼ëÏþÿÿÿÿ
-h
-java:S3776\"RRefactor this method to reduce its Cognitive Complexity from 27 to the 15 allowed.(ÃÃÞ­

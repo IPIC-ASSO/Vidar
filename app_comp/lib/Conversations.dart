@@ -33,6 +33,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
@@ -61,9 +62,10 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                       padding: EdgeInsets.all(15),
                       child: Text("Aucune conversation enregistrée\nCommencez en une avec le petit bouton bleu clair", textAlign: TextAlign.center,),
                     );
-                  return ListView(
+                  return Expanded(child: ListView(
+                    padding: EdgeInsets.only(bottom: 100),
                     shrinkWrap: true,
-                    children: enfants);
+                    children: enfants));
                 }else if(snapshot.hasError){
                   return const Center(
                     child: Column(
@@ -84,6 +86,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: AppCouleur().eco,
         onPressed: ()=>{
           Navigator.of(context).push(PageRouteBuilder(
             pageBuilder: (_, __, ___) => NouvConv(idUti: user?.uid??"erreur",),//TODO
@@ -101,7 +104,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
 
   Widget construitConv(Discussion dis) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(vertical:10,horizontal:15),
         child:FutureBuilder(
           future: monPostier.prendPseudo(dis.utilisateur1==user!.uid?dis.utilisateur2:dis.utilisateur1),
            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -119,7 +122,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                   },
                   child:Container(
                     decoration: BoxDecoration(
-                      color: dis.supr!=null?AppCouleur.tete:AppCouleur.grisTresClair,
+                      color: dis.supr!=null?AppCouleur.tete:AppCouleur().grisTresClair,
                       borderRadius: const BorderRadius.all(Radius.circular(15)),
                       boxShadow: const [
                         BoxShadow(

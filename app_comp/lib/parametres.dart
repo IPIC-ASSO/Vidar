@@ -13,6 +13,7 @@ import 'package:vidar/Postier.dart';
 import 'package:vidar/usineDeBiscottesGrillees.dart';
 
 
+
 class Parametres extends StatefulWidget {
 
 
@@ -31,15 +32,27 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
   TextEditingController mdp = TextEditingController();
   late laPoste monPostier;
   int valeur = 0;
+  bool azizlumiere = false;
+  late  MaterialStateProperty<Icon?> Icontombe;
 
   @override
   void initState() {
     super.initState();
+    Icontombe =
+        MaterialStateProperty.resolveWith<Icon?>((Set<MaterialState> states) {
+            print(states);
+            if (azizlumiere) {
+              return const Icon(Icons.nightlight_outlined);
+            }
+            return const Icon(Icons.sunny);
+          },
+        );
     monPostier = laPoste(firebaseFirestore: FirebaseFirestore.instance);
     SharedPreferences.getInstance().then((value) {
       prefs = value;
       setState(() {
         voix = prefs.getString("voix")??"Karen";
+        azizlumiere = prefs.getBool("nuit")??false;
       });
     });
     monPostier.prendPseudo(auth.currentUser!.uid).then((value) {
@@ -47,6 +60,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
        pseudo.text = value;
      });
     });
+
   }
 
   @override
@@ -73,7 +87,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
             leading: const Icon(Icons.manage_accounts),
             textColor: Colors.black,
             collapsedTextColor: Colors.black,
-            collapsedBackgroundColor: AppCouleur.grisTresClair,
+            collapsedBackgroundColor: AppCouleur().grisTresClair,
             iconColor: Colors.black,
             children: <Widget>[
               Padding(
@@ -104,7 +118,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
                   icon: const Icon(Icons.nat),
                   label: const Text("Changer le pseudo"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppCouleur.principal,
+                    backgroundColor: AppCouleur().principal,
                     foregroundColor : AppCouleur.white,
                     minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                     shape: RoundedRectangleBorder(
@@ -141,7 +155,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
                   icon: const Icon(Icons.password),
                   label: const Text("Changer le mot de passe"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppCouleur.principal,
+                    backgroundColor: AppCouleur().principal,
                     foregroundColor : AppCouleur.white,
                     minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                     shape: RoundedRectangleBorder(
@@ -163,7 +177,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
                   icon: const Icon(Icons.logout),
                   label: const Text("Se déconnecter"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppCouleur.secondaire,
+                    backgroundColor: AppCouleur().secondaire,
                     foregroundColor : AppCouleur.white,
                     minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                     shape: RoundedRectangleBorder(
@@ -179,7 +193,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
             leading: const Icon(Icons.volume_up),
             textColor: Colors.black,
             collapsedTextColor: Colors.black,
-            collapsedBackgroundColor: AppCouleur.grisTresClair,
+            collapsedBackgroundColor: AppCouleur().grisTresClair,
             iconColor: Colors.black,
             children: <Widget>[Padding(
                 padding: const EdgeInsets.all(10),
@@ -190,11 +204,11 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
                     Expanded(child:ElevatedButton(
                       onPressed: ()=>{montreVoix()},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppCouleur.principal,
+                        backgroundColor: AppCouleur().principal,
                         foregroundColor : AppCouleur.white,
                         minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                         shape: RoundedRectangleBorder(
-                          side: const BorderSide(width: 3.0, color: AppCouleur.grisTresClair),
+                          side:  BorderSide(width: 3.0, color: AppCouleur().grisTresClair),
                           borderRadius: BorderRadius.circular(10.0),
                         ),),
                       child: Text(voix, textAlign: TextAlign.center,),
@@ -202,13 +216,34 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
                   ],
                 )
               ),])),
+          /*Padding(
+            padding: const EdgeInsets.all(10),
+            child:Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("Mode sombre", textAlign: TextAlign.center,),
+                Switch(
+                  value: azizlumiere,
+                  onChanged: (bool value) {
+                    setState(() {
+                      azizlumiere = !azizlumiere;
+                      if(azizlumiere)MonVidar.of(context).changeTheme(ThemeMode.dark);
+                      else MonVidar.of(context).changeTheme(ThemeMode.light);
+                      prefs.setBool("nuit", azizlumiere);
+                    });
+                  },
+                ),
+                Icon(azizlumiere?Icons.nightlight_outlined:Icons.sunny)
+              ],
+            ),
+          ),*/
           Padding(
             padding: const EdgeInsets.all(10),
             child: ElevatedButton.icon(
               onPressed: ()=>{
                 showDialog(context: context, builder: (context)=>const AlertDialog(
                   title: Text("Notes de version"),
-                  content: Text("Version 2.0 \n• Nouvelle interface\n• Compatibilité avec iOS."),
+                  content: Text("Version 2.1 \n• Nouvelle interface\n• Compatibilité avec iOS."),
                 ))
               },
               icon: const Icon(Icons.sticky_note_2_sharp),
@@ -296,7 +331,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
       ),
       applicationIcon: Tab(icon: Image.asset("assets/images/IPIC_logo_petit.png",width: 40,)),
       applicationName: 'Vidar',
-      applicationVersion: '2.0.0',
+      applicationVersion: '2.1.3',
       applicationLegalese: '© 2023 IPIC-ASSO',
       aboutBoxChildren: aboutBoxChildren,
       child: Container(

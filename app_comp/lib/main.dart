@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -38,26 +37,59 @@ Future<void> main() async {
     };
   }
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-  runApp(const MonIpic());
+  runApp(MonVidar());
 }
 
-class MonIpic extends StatelessWidget {
-  const MonIpic({super.key});
-  
-  // This widget is the root of your application.
+
+
+class MonVidar extends StatefulWidget {
+  const MonVidar({super.key});
+
+  @override
+  _MonVidarState createState() => _MonVidarState();
+
+  static _MonVidarState of(BuildContext context) =>
+      context.findAncestorStateOfType<_MonVidarState>()!;
+}
+
+/// Our State object
+class _MonVidarState extends State<MonVidar> {
+  /// 1) our themeMode "state" field
+  ThemeMode _themeMode = ThemeMode.system;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Vidar',
       theme: ThemeData(
-        scaffoldBackgroundColor: AppCouleur.blanc,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0x2B4689FF)),
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0x84206EFF)),
         useMaterial3: true,
       ),
+      darkTheme: ThemeData(
+        toggleableActiveColor: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lightBlue, brightness: Brightness.dark)
+            .copyWith( secondary: Colors.red),
+        useMaterial3: true,
+      ),
+      themeMode: _themeMode, // 2) ← ← ← use "state" field here //////////////
+      debugShowCheckedModeBanner: false,
       home: const MyHomePage(),
     );
   }
+
+  /// 3) Call this to change theme from any context using "of" accessor
+  /// e.g.:
+  /// MonVidar.of(context).changeTheme(ThemeMode.dark);
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
 }
+
+
 
 class MyHomePage extends StatefulWidget {
 
@@ -87,8 +119,6 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
             connecte = false;
           });
         } else {
-          enregistreNotifieur();
-          laPoste(firebaseFirestore: db).renotifie(auth.currentUser!.uid);
           if(user.isAnonymous){
             int nb = await laPoste(firebaseFirestore: db).prendPersoNb(user.uid);
             Future.delayed(Duration.zero).then((value) => Navigator.of(context).push(PageRouteBuilder(
@@ -97,6 +127,8 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
               transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
             )));
           }else{
+            enregistreNotifieur();
+            laPoste(firebaseFirestore: db).renotifie(auth.currentUser!.uid);
             setState(() {
               connecte = true;
             });
@@ -112,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
               }else if(!connecte && !widget.sessionConnecte){
                 Future.delayed(Duration.zero).then((value) =>
                     Navigator.of(context).push(PageRouteBuilder(
-                      pageBuilder: (_, __, ___) => const Accueil(),
+                      pageBuilder:(_, __, ___) => const Accueil(),
                       transitionDuration: const Duration(milliseconds: 500),
                       transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
                     )));
@@ -132,6 +164,14 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
         }
       }
     WidgetsBinding.instance.addObserver(this);
+    /*SharedPreferences.getInstance().then((value) {
+      value;
+      setState(() {
+        if(value.getBool("nuit")??false){
+          MonVidar.of(context).changeTheme(ThemeMode.dark);
+        }
+      });
+    });*/
     }
 
   List<Widget> pages = [
@@ -174,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
             bottomNavigationBar: BottomNavigationBar( //TODO: disparait lors du scroll
               selectedFontSize: 18,
               unselectedItemColor: Colors.black,
-              selectedItemColor: Colors.blue[800],
+              selectedItemColor: AppCouleur().principal,
               selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
               mouseCursor: SystemMouseCursors.grab,
               items: const <BottomNavigationBarItem>[
@@ -215,6 +255,12 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
             children: [
               /// Pretty similar to the BottomNavigationBar!
               SideNavigationBar(
+                theme: SideNavigationBarTheme(
+                  backgroundColor: AppCouleur.grisTre,
+                  togglerTheme: SideNavigationBarTogglerTheme.standard(),
+                  itemTheme: SideNavigationBarItemTheme.standard(),
+                  dividerTheme: SideNavigationBarDividerTheme.standard(),
+                ),
                 selectedIndex: indiceChoisi,
                 items: const [
                   SideNavigationBarItem(

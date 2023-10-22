@@ -54,7 +54,7 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
         children: [
           Padding(padding: const EdgeInsets.all(10),child:ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppCouleur.principal,
+              backgroundColor: AppCouleur().principal,
               foregroundColor : AppCouleur.white,
               minimumSize: const Size.fromHeight(50),
               shape: RoundedRectangleBorder(
@@ -93,7 +93,7 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
           ),),
           Padding(padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 10),child:ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppCouleur.eco,
+              backgroundColor: AppCouleur().eco,
               foregroundColor : AppCouleur.white,
               minimumSize: const Size.fromHeight(50),
               shape: RoundedRectangleBorder(
@@ -110,9 +110,9 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
                         widget.idUt, widget.titre, titre.text, corps.text);
                 if (resultat == 0) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Enregistré !'),
-                        backgroundColor: AppCouleur.secondaire,
+                      SnackBar(
+                        content: const Text('Enregistré !'),
+                        backgroundColor: AppCouleur().secondaire,
                         behavior: SnackBarBehavior.floating,
                       )
                   );
@@ -140,9 +140,9 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
               final resultat = await laPoste(firebaseFirestore: FirebaseFirestore.instance).supprimeMessage(widget.idUt, widget.titre);
               if(resultat==0) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Supprimé !'),
-                      backgroundColor: AppCouleur.secondaire,
+                    SnackBar(
+                      content: const Text('Supprimé !'),
+                      backgroundColor: AppCouleur().secondaire,
                       behavior: SnackBarBehavior.floating,
                     )
                 );

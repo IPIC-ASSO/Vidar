@@ -80,7 +80,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
 
         appBar: AppBar(
           title: Text(modif?"Modification":widget.pseudoDest),
-          backgroundColor: modif?AppCouleur.principal:null,
+          backgroundColor: modif?AppCouleur().principal:null,
           automaticallyImplyLeading: false,
           elevation: 5,
           actions: [
@@ -185,7 +185,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                 height: 52,
                 width: 52,
                 decoration: BoxDecoration(
-                  color: modif?AppCouleur.banni:AppCouleur.principal,
+                  color: modif?AppCouleur.banni:AppCouleur().principal,
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: modif?
@@ -221,7 +221,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                 height: 52,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    color: modif?AppCouleur.eco:AppCouleur.principal
+                    color: modif?AppCouleur().eco:AppCouleur().principal
                 ),
                 child: modif?
                 IconButton(
@@ -570,9 +570,9 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
           widget.idUti, "", titre.text, corps);
       if (resultat == 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+             SnackBar(
               content: Text('Enregistré !'),
-              backgroundColor: AppCouleur.secondaire,
+              backgroundColor: AppCouleur().secondaire,
               behavior: SnackBarBehavior.floating,
             )
         );

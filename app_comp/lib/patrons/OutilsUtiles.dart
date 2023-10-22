@@ -35,7 +35,7 @@ Widget messagePoissonRouge(
       width: (expansion??false)?110:0,
       height: (expansion??false)?50:0,
       decoration: BoxDecoration(
-        color: AppCouleur.grisTresClair,
+        color: AppCouleur().grisTresClair,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Visibility(

@@ -57,8 +57,25 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          Expanded(flex:0,child:
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Visibility(
+                  visible: !widget.tempo,
+                  child:FloatingActionButton(
+                    shape:RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.0)),
+                    backgroundColor: AppCouleur.greyColor,
+                    onPressed: ()=>{Navigator.of(context).pop()},
+                    tooltip: "Fermer",
+                    child: const Icon(Icons.close),
+                  ),),
+              )
+            )),
           Visibility(
             visible: widget.tempo,
             child: Expanded(flex:0,
@@ -102,16 +119,20 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
                 )),),
           Expanded(
             flex: 1,
-            child:Padding(padding:const EdgeInsets.fromLTRB(15, 25, 15,0),child:QrImageView(
+            child:Padding(padding:const EdgeInsets.fromLTRB(15, 5, 15,0),child:Wrap(
+              children:[  QrImageView(
+                backgroundColor: AppCouleur.white,
                 data: "https://vidar-9e8ac.web.app/?dest=${widget.idUt}",
                 version: QrVersions.auto,
-              ),)
+              ),])
+              ,
+            )
           ),
           Expanded(flex:0,child: Padding(
             padding: const EdgeInsets.all(10),
             child: RichText(
               text: TextSpan(
-                style: const TextStyle(fontStyle: FontStyle.italic),
+                style: TextStyle(fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.bodyMedium?.color??Colors.white),
                 children: <TextSpan>[
                   const TextSpan(
                     text: "Si le QR-code ne fonctionne pas, entrez le code: "
@@ -138,7 +159,7 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
                       child:ElevatedButton.icon(
                       icon: const Icon(Icons.text_snippet_outlined),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppCouleur.principal,
+                        backgroundColor: AppCouleur().principal,
                         foregroundColor : AppCouleur.white,
                         minimumSize: const Size.fromHeight(50),
                         shape: RoundedRectangleBorder(
@@ -161,7 +182,7 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
                       child:ElevatedButton.icon(
                         icon: const Icon(Icons.volume_up,),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppCouleur.principal,
+                          backgroundColor: AppCouleur().principal,
                           foregroundColor : AppCouleur.white,
                           minimumSize: const Size.fromHeight(50),
                           shape: RoundedRectangleBorder(
@@ -176,15 +197,6 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
           )
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      floatingActionButton: Visibility(
-        visible: !widget.tempo,
-        child:FloatingActionButton(
-          backgroundColor: AppCouleur.greyColor,
-          onPressed: ()=>{Navigator.of(context).pop()},
-          tooltip: "Fermer",
-          child: const Icon(Icons.close),
-        ),)
     );
   }
 

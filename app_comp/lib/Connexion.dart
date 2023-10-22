@@ -58,10 +58,10 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
             width: 500,
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
-              child: const Text(
-                'Vidar - plateforme de communication',
+              child: Text(
+                'Vidar\nplateforme de communication',
                 style: TextStyle(
-                    color: AppCouleur.eco,
+                    color: AppCouleur().quartenaire,
                     fontWeight: FontWeight.w500,
                     fontSize: 30),
                 textAlign: TextAlign.center,
@@ -81,7 +81,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'email',
+                          labelText: 'Email',
                           hintText: "adresse email",
                         ),
                       ),
@@ -114,7 +114,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(5),
-                            backgroundColor: AppCouleur.principal,
+                            backgroundColor: AppCouleur().principal,
                             foregroundColor : AppCouleur.white,
                             minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                             shape: RoundedRectangleBorder(
@@ -190,7 +190,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.all(5),
-                          backgroundColor: AppCouleur.principal,
+                          backgroundColor: AppCouleur().principal,
                           foregroundColor : AppCouleur.white,
                           minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                           shape: RoundedRectangleBorder(
@@ -306,7 +306,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
       //Pouf il est connecté ! :=)
     }else if(mail_co.text.isNotEmpty && mdp_co.text.isNotEmpty) {
       try {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Connexion...'),));
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text('Connexion...'),backgroundColor: AppCouleur().grisTresClair,));
         if(widget.tempo.isNotEmpty){
           final uti = await auth.signInWithEmailAndPassword(email: mail_co.text, password: mdp_co.text);
           await changeAnonyme(uti.user!.uid);

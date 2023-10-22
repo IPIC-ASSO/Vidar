@@ -111,7 +111,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                   child:ElevatedButton(
                     child: const Text("Valider"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppCouleur.eco,
+                      backgroundColor: AppCouleur().eco,
                       foregroundColor : AppCouleur.white,
                       minimumSize: const Size.fromHeight(50),
                       shape: RoundedRectangleBorder(
@@ -139,7 +139,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                     child:ElevatedButton(
                       onPressed: () => scanQR(),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppCouleur.principal,
+                        backgroundColor: AppCouleur().principal,
                         foregroundColor : AppCouleur.white,
                         minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                         shape: RoundedRectangleBorder(
