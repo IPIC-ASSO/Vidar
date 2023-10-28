@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:vidar/patrons/MesConstantes.dart';
 import 'package:vidar/patrons/OutilsUtiles.dart';
@@ -34,13 +33,11 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
   FirebaseFirestore db = FirebaseFirestore.instance;
   late final StreamSubscription<DocumentSnapshot<Map<String, dynamic>>> ecouteur;
   String? nomInconnu;
-  late FlutterTts monTTS;
   TextEditingController code = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    OutilsOutils.ConfigureTTS().then((value) => monTTS=value);
     ecoute();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
@@ -56,12 +53,14 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //appBar: AppBar(automaticallyImplyLeading: widget.tempo,),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.max,
         children: [
           Expanded(flex:0,child:
             Padding(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Align(
                 alignment: Alignment.topRight,
                 child: Visibility(
@@ -119,13 +118,14 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
                 )),),
           Expanded(
             flex: 1,
-            child:Padding(padding:const EdgeInsets.fromLTRB(15, 5, 15,0),child:Wrap(
-              children:[  QrImageView(
+            child:Padding(padding:const EdgeInsets.fromLTRB(15, 5, 15,5),child:
+              QrImageView(
+                //size: MediaQuery.of(context).size.aspectRatio>1?MediaQuery.of(context).size.height*0.7:MediaQuery.of(context).size.width*0.9,
                 backgroundColor: AppCouleur.white,
                 data: "https://vidar-9e8ac.web.app/?dest=${widget.idUt}",
                 version: QrVersions.auto,
-              ),])
-              ,
+              ),
+
             )
           ),
           Expanded(flex:0,child: Padding(
@@ -189,7 +189,7 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
                               borderRadius: BorderRadius.circular(10.0)
                           ),
                         ),
-                        onPressed: ()=>{monTTS.speak(widget.messageLu)},
+                        onPressed: ()=>{OutilsOutils.afficheTTS(context,widget.messageLu)},
                         label: const Text("Lire le message")
                   ))))
               ],

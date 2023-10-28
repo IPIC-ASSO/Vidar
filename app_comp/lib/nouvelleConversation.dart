@@ -32,7 +32,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
   late laPoste monPostier;
   FirebaseFirestore db = FirebaseFirestore.instance;
   bool charge = false;
-  Map<String,String> listeMessages = {"[AUCUN]":""};
+  Map<String,dynamic> listeMessages = {"defaut":{"[AUCUN]":""}};
   List<String> messages = ["[AUCUN]","[AUCUN]","[AUCUN]"];
   TextEditingController code = TextEditingController();
   late int nb;
@@ -145,7 +145,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)
                         ),),
-                      child: const Text('Lancer le scan', style: TextStyle(fontSize: 17),))):const Text("Utilisez un l'application mobile pour scanner un QR-code"),
+                      child: const Text('Lancer le scan', style: TextStyle(fontSize: 17),))):const Text("Utilisez l'application mobile pour scanner un QR-code"),
                   const Padding(padding: EdgeInsets.all(15),child:Text("OU",textAlign: TextAlign.center,)),
                   Padding(padding: const EdgeInsets.all(5),child: TextField(
                     controller: code,
@@ -235,10 +235,11 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
       nb = mesEnre.data()!.nb??0;
       listeMessages.addAll(mesEnre.data()!.messages!);
     }
-    final DocumentSnapshot<Map<String, dynamic>> lesEnre = await monPostier.prendMessagesParDefaut();
-    if(lesEnre.data()!=null && lesEnre.data()!= null){
-      final x = Map<String,String>.from(lesEnre.data()!);
-      listeMessages.addAll(x);
+    final List<QueryDocumentSnapshot<Map<String, dynamic>>> lesEnre = (await monPostier.prendMessagesParDefaut()).docs;
+    if(lesEnre.isNotEmpty){
+      lesEnre.forEach((element) {
+        listeMessages.addAll({element.id:element.data()});
+      });
     }
   }
 
@@ -248,18 +249,29 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
             shrinkWrap: true,
             itemCount: listeMessages.keys.length,
             itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title:Text(listeMessages.keys.toList()[index]),
-                onTap: (){
-                  setState(() {
-                    messages[maj] = listeMessages.keys.toList()[index];
-                  });
-                  Navigator.of(context).pop();
-                },
+              return ExpansionTile(
+                title: Text(listeMessages.keys.toList()[index]),
+                children: creetuile(listeMessages.values.toList()[index], maj),
               );
             }
         )
     );
+  }
+
+  List<Widget> creetuile(Map<String,dynamic> lesmessages, int maj) {
+    List<Widget> enfants = [];
+    lesmessages.forEach((key, value) {
+      enfants.add(ListTile(
+        title: Text(key),
+        onTap: (){
+          setState(() {
+            messages[maj] = key;
+          });
+          Navigator.of(context).pop();
+        },
+      ));
+    });
+    return enfants;
   }
 
 }

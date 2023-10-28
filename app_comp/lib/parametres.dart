@@ -16,8 +16,9 @@ import 'package:vidar/usineDeBiscottesGrillees.dart';
 
 class Parametres extends StatefulWidget {
 
+  final bool vitefait;
 
-  const Parametres({super.key});
+  const Parametres({super.key,this.vitefait=false});
 
   @override
   State<Parametres> createState() => _ParametresState();
@@ -28,6 +29,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
   FirebaseAuth auth = FirebaseAuth.instance;
   late final SharedPreferences prefs;
   String voix = "casser la voix";
+  double vitesse = 0.5;
   TextEditingController pseudo = TextEditingController();
   TextEditingController mdp = TextEditingController();
   late laPoste monPostier;
@@ -52,6 +54,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
       prefs = value;
       setState(() {
         voix = prefs.getString("voix")??"Karen";
+        vitesse = prefs.getDouble("vitesse")??0.5;
         azizlumiere = prefs.getBool("nuit")??false;
       });
     });
@@ -76,7 +79,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
           ),
           padding: const EdgeInsets.fromLTRB(0,25,0,10),
           child: const Text(" Paramètres ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18), textAlign: TextAlign.center,)),
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: widget.vitefait,
       ),
       body: ListView(
         shrinkWrap: true,
@@ -118,7 +121,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
                   icon: const Icon(Icons.nat),
                   label: const Text("Changer le pseudo"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppCouleur().principal,
+                    backgroundColor: Theme.of(context).primaryColor,
                     foregroundColor : AppCouleur.white,
                     minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                     shape: RoundedRectangleBorder(
@@ -155,7 +158,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
                   icon: const Icon(Icons.password),
                   label: const Text("Changer le mot de passe"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppCouleur().principal,
+                    backgroundColor: Theme.of(context).primaryColor,
                     foregroundColor : AppCouleur.white,
                     minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                     shape: RoundedRectangleBorder(
@@ -204,7 +207,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
                     Expanded(child:ElevatedButton(
                       onPressed: ()=>{montreVoix()},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppCouleur().principal,
+                        backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor : AppCouleur.white,
                         minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                         shape: RoundedRectangleBorder(
@@ -215,7 +218,27 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
                     ))
                   ],
                 )
-              ),])),
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:Row(
+                    children: [
+                      const Expanded(flex:0,child: Icon(Icons.speed)),
+                      const Expanded(child: Text("Vitesse", textAlign: TextAlign.center,)),
+                      Expanded(child:Slider(
+                          value: vitesse*4,
+                          max: 4.0,
+                          onChanged: (double value){
+                            prefs.setDouble("vitesse", value/4);
+                            setState(() {
+                              vitesse = value/4;
+                            });
+                          }
+                      ))
+                    ],
+                  )
+              ),
+            ])),
           /*Padding(
             padding: const EdgeInsets.all(10),
             child:Row(
@@ -243,7 +266,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
               onPressed: ()=>{
                 showDialog(context: context, builder: (context)=>const AlertDialog(
                   title: Text("Notes de version"),
-                  content: Text("Version 2.1 \n• Nouvelle interface\n• Compatibilité avec iOS."),
+                  content: Text("Version 2.1.5\n• Améliorations mineures de l'interface\n• tableau de contrôle du texte-to-speech. \n• Nouvelle interface de gestion des messages.\n• Résolution de bugs affectant la session temporaire web"),
                 ))
               },
               icon: const Icon(Icons.sticky_note_2_sharp),
@@ -331,7 +354,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
       ),
       applicationIcon: Tab(icon: Image.asset("assets/images/IPIC_logo_petit.png",width: 40,)),
       applicationName: 'Vidar',
-      applicationVersion: '2.1.3',
+      applicationVersion: '2.1.5',
       applicationLegalese: '© 2023 IPIC-ASSO',
       aboutBoxChildren: aboutBoxChildren,
       child: Container(

@@ -131,8 +131,12 @@ class laPoste {
     }
   }
 
-  Future<DocumentSnapshot<Map<String,dynamic>>> prendMessagesParDefaut() async{
+  Future<DocumentSnapshot<Map<String,dynamic>>> prendMessagesParDefaut2() async{
     return firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeMessagesPreEnr).get();
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> prendMessagesParDefaut() async{
+    return firebaseFirestore.collection(MesConstantes.cheminMessagePreEnr).get();
   }
 
   Stream<DocumentSnapshot<Utilisateur>> prendPersonnel(String idUti) {

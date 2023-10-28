@@ -3,7 +3,8 @@ class MesConstantes {
   static const cheminMessages = "Messages";
   static const cheminMessagesTest = "MessagesTest";
   static const cheminListeMessages = "ListeMessages";
-  static const cheminListeMessagesPreEnr = "messages_pre-enregistres";
+  static const cheminListeMessagesPreEnr = "messages_pre-enregistres";//supr
+  static const cheminMessagePreEnr = "messages-pre-enregistres";
   static const cheminListeCode = "ordre";
   static const code = "code";
   static const nbCode = "nb";

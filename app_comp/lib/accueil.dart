@@ -40,7 +40,7 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text("Bienvenue"),
@@ -107,7 +107,7 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
                         Padding(
                             padding: const EdgeInsets.all(10),
                             child:ElevatedButton(
-                                onPressed: ()=>{temporise()},
+                                onPressed: ()=>{temporise(context,auth,this)},
                                 style: ElevatedButton.styleFrom(
                                   padding: const EdgeInsets.all(5),
                                   backgroundColor: AppCouleur.tertiaire,
@@ -148,34 +148,35 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
     );
   }
 
-  temporise() async {
-    try {
-      final credit = await auth.signInAnonymously();
-      final int nb = await laPoste(firebaseFirestore: FirebaseFirestore.instance).creeUti(credit.user!.uid,"Utilisateur ${DateTime.now().millisecond}",);
-      if(Uri.base.queryParameters["dest"]!=null && credit.user!=null){
-        await traiteCode(Uri.base.queryParameters["dest"]!,credit.user!.uid,FirebaseFirestore.instance,context);
-        html.window.history.pushState(null, 'iren', '#/iren');
-      }else{
-        Future.delayed(Duration.zero).then((value) => Navigator.of(context).push(PageRouteBuilder(
-          pageBuilder: (_, __, ___) => MontreQrCode(idUt:credit.user!.uid,messageAffiche:"",messageDebut:"",messageLu:"",tempo: true,nb:nb),
-          transitionDuration: const Duration(milliseconds: 500),
-          transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
-        )));
-      }
-    } on FirebaseException catch(e){
-      switch (e.code){
-        case 'not-found':
-          Usine.montreBiscotte(context, "Code invalide", this);
-          break;
-        default:
-          Usine.montreBiscotte(context, "La base de donnée refuse la transaction", this);
-      }
-    }
-    catch (e) {
-      log(e.toString());
-      Usine.montreBiscotte(context, "Une erreur est survenue", this);
-    }
+}
 
+temporise(BuildContext context, FirebaseAuth auth, TickerProvider ticket) async {
+  try {
+    final credit = await auth.signInAnonymously();
+    final int nb = await laPoste(firebaseFirestore: FirebaseFirestore.instance).creeUti(credit.user!.uid,"Utilisateur ${DateTime.now().millisecond}",);
+    if(Uri.base.queryParameters["dest"]!=null && credit.user!=null){
+      print("8");
+      await traiteCode(Uri.base.queryParameters["dest"]!,credit.user!.uid,FirebaseFirestore.instance,context);
+      html.window.history.pushState(null, 'iren', '#/iren');
+    }else{
+      print("9");
+      Future.delayed(Duration.zero).then((value) => Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (_, __, ___) => MontreQrCode(idUt:credit.user!.uid,messageAffiche:"",messageDebut:"",messageLu:"",tempo: true,nb:nb),
+        transitionDuration: const Duration(milliseconds: 500),
+        transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+      )));
+    }
+  } on FirebaseException catch(e){
+    switch (e.code){
+      case 'not-found':
+        Usine.montreBiscotte(context, "Code invalide", ticket);
+        break;
+      default:
+        Usine.montreBiscotte(context, "La base de donnée refuse la transaction", ticket);
+    }
   }
-
+  catch (e) {
+    log(e.toString());
+    Usine.montreBiscotte(context, "Une erreur est survenue", ticket);
+  }
 }

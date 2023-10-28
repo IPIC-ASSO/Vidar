@@ -1,8 +1,9 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vidar/AppCouleur.dart';
 import 'package:vidar/Connexion.dart';
 import 'package:vidar/Postier.dart';
@@ -34,7 +35,6 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
   final user = FirebaseAuth.instance.currentUser;
   FirebaseFirestore db = FirebaseFirestore.instance;
   late laPoste monPostier;
-  late FlutterTts monTTS = FlutterTts();
   List<Map<String,String>> listeMessages = [];
   final TextEditingController redaction = TextEditingController();
   final TextEditingController titre = TextEditingController();
@@ -45,14 +45,11 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
   bool marque = false;
   int indiceMessageModif=0;
   int indiceMessageTouche = 0;
-  Map<String,String> listeMessagesEnr = {};
+  Map<String,dynamic> listeMessagesEnr = {};
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      OutilsOutils.ConfigureTTS().then((value) => monTTS=value);
-    });
     monPostier = laPoste(firebaseFirestore: db);
     initializeDateFormatting('fr_FR');
     if(widget.message.isNotEmpty)versLaPoste(widget.message);
@@ -80,11 +77,50 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
 
         appBar: AppBar(
           title: Text(modif?"Modification":widget.pseudoDest),
-          backgroundColor: modif?AppCouleur().principal:null,
+          backgroundColor: modif?AppCouleur.modification:AppCouleur().principal,
           automaticallyImplyLeading: false,
           elevation: 5,
           actions: [
             Visibility(visible: !widget.tempo, child: IconButton(onPressed: ()=>{confSupr()}, icon: const Icon(Icons.delete_forever))),
+          Visibility(visible: widget.tempo, child: IconButton(
+            tooltip: "Informations",
+            icon: const Icon(Icons.info_outline),
+            onPressed: ()=>{
+              showDialog(context: context, builder: (BuildContext Lecontext)=>AlertDialog(
+              title: const Text("Vidar"),
+                content: RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      const TextSpan(
+                        text: "Vous utilisez actuellement Vidar, une plateforme de messagerie instantanée destinée à aider les personnes ne pouvant s'exprimer oralement.\nVotre échange est entièrement sécurisée, et nous ne récoltons aucune donnée sur vous.\nSi vous souhaitez poursuivre votre échange plus tard, vous pouvez vous "),
+                      TextSpan(
+                        text: 'inscrire',
+                        style: const TextStyle(color: Colors.blue),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () =>
+                            Navigator.of(context).push(PageRouteBuilder(
+                              pageBuilder: (_, __, ___) =>  Connexion(tempo: widget.idUti,),
+                              transitionDuration: const Duration(milliseconds: 500),
+                              transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+                            ))
+                      ),
+                      const TextSpan(
+                        text: ' ou télécharger l\'application mobile.\nCe service est proposé par ',
+                      ),
+                      TextSpan(
+                        text: 'IPIC-ASSO',
+                        style: const TextStyle(color: Colors.blue),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            launchUrl(Uri.parse('https://www.ipic-asso.fr'));
+                          },
+                      ),
+                    ],
+                  ),
+                ),
+            ))
+            },
+          )),
             Visibility(visible: widget.tempo, child: IconButton(
               tooltip: "Se connecter/S'inscrire",
               onPressed: ()=>{
@@ -196,6 +232,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                   icon: const Icon(
                     Icons.text_snippet_outlined,
                     size: 28,
+                    //color: Colors.white,
                   ),
                 ),
               ),
@@ -231,8 +268,8 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                   onPressed: () {
                     versLaPoste(redaction.text,);
                   },
-                  icon: const Icon(Icons.send_rounded),
-
+                  icon: const Icon(Icons.send),
+                  //color: Colors.white,
                 ),
               ),
             ],
@@ -271,17 +308,18 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                 GestureDetector(
                 onDoubleTap: ()=>modifMessage(index),
                 child:messagePoissonRouge(
+                  context: context,
                     corps: chaton.corps,
                     color: (modif && indiceMessageModif==index)?AppCouleur.modification:AppCouleur.droitier,
                     textColor: AppCouleur.white,
                     expansion: (modif && indiceMessageModif==index),
-                    monTTS: monTTS,
                     enreMesss: montreEnregistreMessage,
                     margin: const EdgeInsets.fromLTRB(0,1,3,1),
                     bords:BorderRadius.only(
-                      bottomLeft:  unMessagePoste(index)?const Radius.circular(10.0):const Radius.circular(0),
-                      topLeft: unAncienMessagePoste(index)?const Radius.circular(10.0):const Radius.circular(0),
-                      topRight:unAncienMessagePoste(index)? const Radius.circular(10.0):const Radius.circular(0),)))
+                      bottomRight: const Radius.circular(5.0),
+                      bottomLeft:  const Radius.circular(12.0),//unMessagePoste(index)?const Radius.circular(10.0):const Radius.circular(0),
+                      topLeft: const Radius.circular(12.0),//unAncienMessagePoste(index)?const Radius.circular(10.0):const Radius.circular(0),
+                      topRight:unAncienMessagePoste(index)? const Radius.circular(12.0):const Radius.circular(5.0),)))
               ],
             ),
             unMessagePoste(index)
@@ -312,16 +350,17 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
             GestureDetector(
             onDoubleTap: ()=>marqueMessage(index),
             child:messagePoissonRouge(
+              context: context,
               color: AppCouleur.gaucher,
               textColor: AppCouleur.white,
               corps: chaton.corps,
               expansion: (marque && indiceMessageTouche==index),
-              monTTS: monTTS,
               enreMesss: montreEnregistreMessage,
               bords:BorderRadius.only(
-                bottomLeft:  unMessageRecu(index)?const Radius.circular(10.0):const Radius.circular(0),
-                bottomRight: unMessageRecu(index)?const Radius.circular(10.0):const Radius.circular(0),
-                topRight:unAncienMessageRecu(index)?const Radius.circular(10.0):const Radius.circular(0),),
+                topLeft: const Radius.circular(5.0),
+                bottomLeft: unMessageRecu(index)?const Radius.circular(12.0):const Radius.circular(5.0),
+                bottomRight: const Radius.circular(12.0),//unMessageRecu(index)?const Radius.circular(12.0):const Radius.circular(0),
+                topRight:const Radius.circular(12.0)),//unAncienMessageRecu(index)?const Radius.circular(12.0):const Radius.circular(5),),
               margin: const EdgeInsets.fromLTRB(3,1,0,1),
             ),),
             unMessageRecu(index) ? Container(
@@ -452,10 +491,11 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
     if(mesEnre.data()!=null && mesEnre.data()!.messages!= null){
       listeMessagesEnr.addAll(mesEnre.data()!.messages!);
     }
-    final DocumentSnapshot<Map<String, dynamic>> lesEnre = await monPostier.prendMessagesParDefaut();
-    if(lesEnre.data()!=null && lesEnre.data()!= null){
-      final x = Map<String,String>.from(lesEnre.data()!);
-      listeMessagesEnr.addAll(x);
+    final List<QueryDocumentSnapshot<Map<String, dynamic>>> lesEnre = (await monPostier.prendMessagesParDefaut()).docs;
+    if(lesEnre.isNotEmpty){
+      lesEnre.forEach((element) {
+        listeMessagesEnr.addAll({element.id:element.data()});
+      });
     }
   }
 
@@ -512,16 +552,9 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
             shrinkWrap: true,
             itemCount: listeMessagesEnr.keys.length,
             itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Text(listeMessagesEnr.keys.toList()[index]),
-                onTap: () {
-                  redaction.text += listeMessagesEnr.values.toList()[index];
-                  Navigator.of(context).pop();
-                },
-                trailing: IconButton(
-                  icon: const Icon(Icons.volume_up),
-                  onPressed: ()=>{monTTS.speak(listeMessagesEnr.values.toList()[index])},
-                ),
+              return ExpansionTile(
+              title: Text(listeMessagesEnr.keys.toList()[index]),
+                children: creetuile(listeMessagesEnr.values.toList()[index]),
               );
             }
         )
@@ -571,7 +604,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
       if (resultat == 0) {
         ScaffoldMessenger.of(context).showSnackBar(
              SnackBar(
-              content: Text('Enregistré !'),
+              content: const Text('Enregistré !'),
               backgroundColor: AppCouleur().secondaire,
               behavior: SnackBarBehavior.floating,
             )
@@ -584,8 +617,25 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
       Usine.montreBiscotte(context, "Oups, un intitulé est nécessaire!", this);
     }
   }
-
   void denotifie() {
     monPostier.denotifie(widget.idUti,widget.idConv);
+  }
+
+  List<Widget> creetuile(Map<String,dynamic> messages) {
+    List<Widget> enfants = [];
+    messages.forEach((key, value) {
+      enfants.add(ListTile(
+        title: Text(key),
+        onTap: () {
+          redaction.text += value.toString();
+          Navigator.of(context).pop();
+        },
+        trailing: IconButton(
+          icon: const Icon(Icons.volume_up),
+          onPressed: ()=>{OutilsOutils.afficheTTS(context,value.toString())},
+        ),
+      ));
+    });
+    return enfants;
   }
 }

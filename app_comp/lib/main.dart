@@ -37,7 +37,7 @@ Future<void> main() async {
     };
   }
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-  runApp(MonVidar());
+  runApp(const MonVidar());
 }
 
 
@@ -63,15 +63,38 @@ class _MonVidarState extends State<MonVidar> {
       title: 'Vidar',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0x84206EFF)),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF3794FF)),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
-        toggleableActiveColor: Colors.blue,
+        primarySwatch: Colors.blue,
+        brightness: Brightness.dark,
+        //colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF3794FF), primary: Colors.blue, secondary:Colors.blue,brightness: Brightness.dark),
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lightBlue, brightness: Brightness.dark)
-            .copyWith( secondary: Colors.red),
-        useMaterial3: true,
+        useMaterial3: true, checkboxTheme: CheckboxThemeData(
+ fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+ if (states.contains(MaterialState.disabled)) { return null; }
+ if (states.contains(MaterialState.selected)) { return Colors.blue; }
+ return null;
+ }),
+ ), radioTheme: RadioThemeData(
+ fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+ if (states.contains(MaterialState.disabled)) { return null; }
+ if (states.contains(MaterialState.selected)) { return Colors.blue; }
+ return null;
+ }),
+ ), switchTheme: SwitchThemeData(
+ thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+ if (states.contains(MaterialState.disabled)) { return null; }
+ if (states.contains(MaterialState.selected)) { return Colors.blue; }
+ return null;
+ }),
+ trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+ if (states.contains(MaterialState.disabled)) { return null; }
+ if (states.contains(MaterialState.selected)) { return Colors.blue; }
+ return null;
+ }),
+ ),
       ),
       themeMode: _themeMode, // 2) ← ← ← use "state" field here //////////////
       debugShowCheckedModeBanner: false,
@@ -109,9 +132,14 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
   FirebaseMessaging messager = FirebaseMessaging.instance;
   late StreamSubscription<User?> ecouteur;
   bool connecte = false;
+  int entier = 5;
+
+  Map<List<String>,String> ah = {["a","a"]:"a"};
 
   @override
   initState() {
+
+
     super.initState();
     ecouteur = auth.authStateChanges().listen((User? user) async {
         if (user == null) {
@@ -119,7 +147,9 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
             connecte = false;
           });
         } else {
+          print("1");
           if(user.isAnonymous){
+            print(user.uid);
             int nb = await laPoste(firebaseFirestore: db).prendPersoNb(user.uid);
             Future.delayed(Duration.zero).then((value) => Navigator.of(context).push(PageRouteBuilder(
               pageBuilder: (_, __, ___) => MontreQrCode(idUt:user.uid,messageAffiche:"",messageDebut:"",messageLu:"",tempo: true,nb:nb),
@@ -127,6 +157,7 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
               transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
             )));
           }else{
+            print("13");
             enregistreNotifieur();
             laPoste(firebaseFirestore: db).renotifie(auth.currentUser!.uid);
             setState(() {
@@ -138,17 +169,26 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
     });
     if(kIsWeb){
       try {
-        if(Uri.base.queryParameters["dest"]!=null && auth.currentUser!=null){
-              traiteCode(Uri.base.queryParameters["dest"]!,auth.currentUser!.uid,db,context);
-                html.window.history.pushState(null, 'iren', '#/iren');
-              }else if(!connecte && !widget.sessionConnecte){
-                Future.delayed(Duration.zero).then((value) =>
-                    Navigator.of(context).push(PageRouteBuilder(
-                      pageBuilder:(_, __, ___) => const Accueil(),
-                      transitionDuration: const Duration(milliseconds: 500),
-                      transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
-                    )));
-                  }
+        if(Uri.base.queryParameters["dest"]!=null){
+          print("4");
+          print(":O");
+          if( auth.currentUser!=null){
+            print("6");
+            traiteCode(Uri.base.queryParameters["dest"]!,auth.currentUser!.uid,db,context);
+            html.window.history.pushState(null, 'iren', '#/iren');
+          }else{
+            print("7");
+            temporise(context,auth,this);
+          }
+        }else if(!connecte && !widget.sessionConnecte){
+          print("5");
+          Future.delayed(Duration.zero).then((value) =>
+            Navigator.of(context).push(PageRouteBuilder(
+              pageBuilder:(_, __, ___) => const Accueil(),
+              transitionDuration: const Duration(milliseconds: 500),
+              transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+            )));
+            }
       } on FirebaseException catch(e){
           switch (e.code){
             case 'not-found':
@@ -213,8 +253,8 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
             ),
             bottomNavigationBar: BottomNavigationBar( //TODO: disparait lors du scroll
               selectedFontSize: 18,
-              unselectedItemColor: Colors.black,
-              selectedItemColor: AppCouleur().principal,
+              unselectedItemColor: AppCouleur().noir,
+              selectedItemColor: Theme.of(context).primaryColorLight,
               selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
               mouseCursor: SystemMouseCursors.grab,
               items: const <BottomNavigationBarItem>[
@@ -256,7 +296,7 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
               /// Pretty similar to the BottomNavigationBar!
               SideNavigationBar(
                 theme: SideNavigationBarTheme(
-                  backgroundColor: AppCouleur.grisTre,
+                  backgroundColor: AppCouleur().grisTresClair,
                   togglerTheme: SideNavigationBarTogglerTheme.standard(),
                   itemTheme: SideNavigationBarItemTheme.standard(),
                   dividerTheme: SideNavigationBarDividerTheme.standard(),
@@ -330,6 +370,7 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
       Usine.montreBiscotte(context, err.message.toString(), this);
     });
   }
+
 
 
 }

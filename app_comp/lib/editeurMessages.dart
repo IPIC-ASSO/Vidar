@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:vidar/AppCouleur.dart';
 import 'package:vidar/patrons/OutilsUtiles.dart';
 import 'package:vidar/usineDeBiscottesGrillees.dart';
@@ -27,12 +26,10 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
 
   TextEditingController titre = TextEditingController();
   TextEditingController corps = TextEditingController();
-  late FlutterTts monTTS;
 
   @override
   void initState() {
     super.initState();
-    OutilsOutils.ConfigureTTS().then((value) => monTTS=value);
     setState(() {
       titre.text = widget.titre;
       corps.text = widget.corps;
@@ -54,14 +51,14 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
         children: [
           Padding(padding: const EdgeInsets.all(10),child:ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppCouleur().principal,
+              backgroundColor: Theme.of(context).primaryColor,
               foregroundColor : AppCouleur.white,
               minimumSize: const Size.fromHeight(50),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)
               ),
             ),
-            onPressed: corps.text.isNotEmpty?()=>{monTTS.speak(corps.text)}:null,
+            onPressed: corps.text.isNotEmpty?()=>{OutilsOutils.afficheTTS(context, corps.text)}:null,
             icon: const Icon(Icons.volume_up_rounded),
             label: const Text("Lire le texte", ),
           ),),

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:vidar/AppCouleur.dart';
 import 'package:vidar/editeurMessages.dart';
 import 'package:vidar/patrons/OutilsUtiles.dart';
@@ -22,14 +21,12 @@ class ListeMessages extends StatefulWidget {
 class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateMixin {
 
   late laPoste monPostier;
-  late FlutterTts monTTS;
   FirebaseFirestore db = FirebaseFirestore.instance;
   bool charge = false;
 
   @override
   void initState() {
     super.initState();
-    OutilsOutils.ConfigureTTS().then((value) => monTTS=value);
     monPostier = laPoste(firebaseFirestore: db);
   }
 
@@ -92,10 +89,10 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
                 ),
               ]),
         ];
-        if (snapshot.hasData && snapshot.data?.data() != null && (snapshot.data?.data() as Utilisateur).messages != null && (snapshot.data?.data() as Utilisateur).messages!.isNotEmpty) {
-          final Map<String, String>? monUti = (snapshot.data!.data() as Utilisateur).messages;
-          for (MapEntry<String, String> messageEntree in monUti?.entries ?? {}) {
-            enfants.add(creeMessage(messageEntree.key,messageEntree.value));
+        if (snapshot.hasData && snapshot.data?.data() != null && (snapshot.data?.data() as Utilisateur).messages2 != null && (snapshot.data?.data() as Utilisateur).messages2!.isNotEmpty) {
+          final Map<String, dynamic>? monUti = (snapshot.data!.data() as Utilisateur).messages2;
+          for (MapEntry<String, dynamic> messageEntree in monUti?.entries ?? {}) {
+            enfants.add(creeGroupe(messageEntree.key,messageEntree.value));
           }
         }else{
           enfants.add(const Center(
@@ -112,8 +109,8 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
 
   MessagesDeBase() {
     return FutureBuilder(
-        future: monPostier.prendMessagesParDefaut(), // a previously-obtained Future<String> or null
-        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+        future: monPostier.prendMessagesParDefaut(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           List<Widget> enfants = [
             const Row(
                 children: <Widget>[
@@ -126,10 +123,10 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
                   ),
                 ]),
           ];
-          if (snapshot.hasData && (snapshot.data!.data()!= null && snapshot.data!.data()!.isNotEmpty)) {
-            final x = snapshot.data!.data() as Map<String,dynamic>;
-            x.forEach((key, value) {
-              enfants.add(creeMessage(key,value,true ));
+          print(snapshot.error);
+          if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+            snapshot.data?.docs.forEach((element) {
+              enfants.add(creeGroupe(element.id,element.data(),true));
             });
           }else{
             enfants.add(const Center(
@@ -164,12 +161,23 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
             Expanded(flex:1,child: Text(titre,style: TextStyle(color: defaut?AppCouleur().indyBlue:AppCouleur.spaceCadet),)),
             Expanded(flex:0,child: Padding(padding: const EdgeInsets.all(5),child:
               MediaQuery.of(context).size.width>800?
-              ElevatedButton.icon(onPressed: ()=>{monTTS.speak(corps)}, icon: const Icon(Icons.volume_up_rounded), label: const Text("Lire le message")):
-              IconButton(onPressed: ()=>{monTTS.speak(corps)}, icon: const Icon(Icons.volume_up_rounded), tooltip: "Lire le message")
+              ElevatedButton.icon(onPressed: ()=>{OutilsOutils.afficheTTS(context,corps)}, icon: const Icon(Icons.volume_up_rounded), label: const Text("Lire le message")):
+              IconButton(onPressed: ()=>{OutilsOutils.afficheTTS(context,corps)}, icon: const Icon(Icons.volume_up_rounded), tooltip: "Lire le message")
             ))
           ],),
         )
       )
     ,) ;
+  }
+
+  Widget creeGroupe(String titre, Map<String,dynamic> messages,  [bool defaut = false]) {
+      List<Widget> mesEnfants = [];
+      (messages as Map<String,dynamic>).forEach((key, value) {
+        mesEnfants.add(creeMessage(key,value.toString(),true ));
+      });
+      return ExpansionTile(
+          title: Text(titre),
+        children: mesEnfants,
+      );
   }
 }
