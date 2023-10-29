@@ -23,6 +23,7 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
   late laPoste monPostier;
   FirebaseFirestore db = FirebaseFirestore.instance;
   bool charge = false;
+  TextEditingController txt_section = TextEditingController();
 
   @override
   void initState() {
@@ -58,17 +59,6 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
          Expanded(flex:1,child: Padding(padding: const EdgeInsets.all(10),child: MessagesDeBase(),)),
        ],
      ),
-     floatingActionButton: FloatingActionButton.extended(
-       onPressed: ()=>{
-         Navigator.of(context).push(PageRouteBuilder(
-           pageBuilder: (_, __, ___) => EditeurMessages(titre: "",corps: "",idUt: widget.idUti,),
-           transitionDuration: const Duration(milliseconds: 500),
-           transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
-         ))
-       },
-       label: const Text('Nouveau message'),
-       icon:  const Icon(Icons.add),
-     ),
    );
   }
 
@@ -88,6 +78,42 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
                     child: Divider()
                 ),
               ]),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+            child:ElevatedButton.icon(
+            onPressed: (){
+              showDialog(context: context, builder: (context)=> AlertDialog(
+                title: const Text("Nouveau groupe de messages"),
+                content: TextField(
+                  textInputAction:TextInputAction.done,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.sentences,
+                  controller: txt_section,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Nom de la section'
+                  ),
+                  onSubmitted: (value) {
+                    nouvelleSection();
+                  },
+                ),
+                actions: [
+                  MaterialButton(onPressed: ()=>{nouvelleSection()},child: const Text("Valider"),),
+                  TextButton(onPressed: ()=>{Navigator.of(context).pop()},child: const Text("Annuler"),)
+                ],
+              ));
+            },
+            icon: const Icon(Icons.create_new_folder_outlined),
+            label: const Text("Nouvelle section"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppCouleur().eco,
+              foregroundColor : AppCouleur.white,
+              minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0)
+              ),
+            ),
+          ),)
         ];
         if (snapshot.hasData && snapshot.data?.data() != null && (snapshot.data?.data() as Utilisateur).messages2 != null && (snapshot.data?.data() as Utilisateur).messages2!.isNotEmpty) {
           final Map<String, dynamic>? monUti = (snapshot.data!.data() as Utilisateur).messages2;
@@ -123,7 +149,6 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
                   ),
                 ]),
           ];
-          print(snapshot.error);
           if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
             snapshot.data?.docs.forEach((element) {
               enfants.add(creeGroupe(element.id,element.data(),true));
@@ -141,21 +166,24 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
     );
   }
 
-  Widget creeMessage(String titre, String corps, [bool defaut = false]) {
+  Widget creeMessage(String section, String titre, String corps, [bool defaut = false]) {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: GestureDetector(
         onTap: (){
           Navigator.push(context,
             PageRouteBuilder(
-              pageBuilder: (_, __, ___) => EditeurMessages(titre: titre, corps: corps,idUt: widget.idUti,defaut: defaut,),
+              pageBuilder: (_, __, ___) => EditeurMessages(titre: titre,section: section, corps: corps,idUt: widget.idUti,defaut: defaut,),
               transitionDuration: const Duration(milliseconds: 500),
               transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
             ),
           );
         },
           child:Container(
-            color: AppCouleur().grisTresClair,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              color: AppCouleur().grisTresClair,
+            ),
           padding: const EdgeInsets.all(15),
           child: Row(children: [
             Expanded(flex:1,child: Text(titre,style: TextStyle(color: defaut?AppCouleur().indyBlue:AppCouleur.spaceCadet),)),
@@ -173,11 +201,44 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
   Widget creeGroupe(String titre, Map<String,dynamic> messages,  [bool defaut = false]) {
       List<Widget> mesEnfants = [];
       (messages as Map<String,dynamic>).forEach((key, value) {
-        mesEnfants.add(creeMessage(key,value.toString(),true ));
+        mesEnfants.add(creeMessage(titre, key,value.toString(),defaut ));
       });
-      return ExpansionTile(
-          title: Text(titre),
-        children: mesEnfants,
+      if (mesEnfants.isEmpty)mesEnfants.add(
+        Padding(
+          padding: EdgeInsets.all(15),
+          child: Text("Cette section est vide, créez un message avec l'icon vert",style: TextStyle(fontStyle:FontStyle.italic),textAlign: TextAlign.center,),
+        )
       );
+      return Card(
+        child:Theme(
+          data: ThemeData().copyWith(dividerColor: Colors.transparent),
+          child:ExpansionTile(
+          leading: defaut?null:IconButton(
+            color: AppCouleur.banni,
+            icon: Icon(Icons.delete),
+            onPressed: ()=>{
+            monPostier.enleveSection(widget.idUti,titre)
+            },
+          ),
+          trailing: defaut?null:IconButton(
+            color: AppCouleur().eco,
+            icon: Icon(Icons.add),
+            onPressed: ()=>{
+              Navigator.of(context).push(PageRouteBuilder(
+                pageBuilder: (_, __, ___) => EditeurMessages(section:titre,titre: "",corps: "",idUt: widget.idUti,defaut: defaut,),
+                transitionDuration: const Duration(milliseconds: 500),
+                transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+              ))
+            },
+          ),
+          title: Text(titre),
+          children: mesEnfants,
+        ))
+      );
+  }
+
+  void nouvelleSection() {
+    monPostier.creeSection(widget.idUti,txt_section.text);
+    Navigator.pop(context);
   }
 }

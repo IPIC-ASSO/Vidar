@@ -28,8 +28,8 @@ class AppCouleur {
 
 
   AppCouleur(){
-
-    if(SchedulerBinding.instance.platformDispatcher.platformBrightness==Brightness.dark){
+    //TODO:couleurs!!!!!
+    if(SchedulerBinding.instance.platformDispatcher.platformBrightness==Brightness.dark && false){
       grisTresClair  = const Color(0xff8d8686);
       eco = const Color(0xFF22B629);
       principal = const Color(0xE63DA6DE);

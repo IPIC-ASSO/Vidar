@@ -10,12 +10,13 @@ import 'Postier.dart';
 class EditeurMessages extends StatefulWidget {
 
   final String idUt;
+  final String section;
   final String titre;
   final String corps;
   final bool defaut;
   final bool nouveau;
 
-  const EditeurMessages({super.key, required this.titre, required this.corps, this.defaut= false, this.nouveau=false, required this.idUt});
+  const EditeurMessages({super.key, required this.titre, required this.corps, this.defaut= false, this.nouveau=false, required this.idUt, required this.section});
 
   @override
   State<EditeurMessages> createState() => _EditeurMessagesState();
@@ -104,7 +105,7 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
                 final resultat = await laPoste(
                         firebaseFirestore: FirebaseFirestore.instance)
                     .EnregistreMessage(
-                        widget.idUt, widget.titre, titre.text, corps.text);
+                        widget.idUt, widget.section,widget.titre, titre.text, corps.text);
                 if (resultat == 0) {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -134,7 +135,7 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
               ),
             ),
             onPressed:(widget.nouveau || widget.defaut)?null:() async {
-              final resultat = await laPoste(firebaseFirestore: FirebaseFirestore.instance).supprimeMessage(widget.idUt, widget.titre);
+              final resultat = await laPoste(firebaseFirestore: FirebaseFirestore.instance).supprimeMessage(widget.idUt, widget.section, widget.titre);
               if(resultat==0) {
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

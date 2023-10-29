@@ -76,7 +76,7 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.all(5),
-                              backgroundColor: AppCouleur().principal,
+                              backgroundColor: AppCouleur().secondaire,
                               foregroundColor : AppCouleur.white,
                               minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                               shape: RoundedRectangleBorder(

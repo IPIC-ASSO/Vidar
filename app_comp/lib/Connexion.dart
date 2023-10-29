@@ -114,7 +114,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(5),
-                            backgroundColor: AppCouleur().principal,
+                            backgroundColor: AppCouleur().secondaire,
                             foregroundColor : AppCouleur.white,
                             minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                             shape: RoundedRectangleBorder(
@@ -190,7 +190,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.all(5),
-                          backgroundColor: AppCouleur().principal,
+                          backgroundColor: AppCouleur().secondaire,
                           foregroundColor : AppCouleur.white,
                           minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
                           shape: RoundedRectangleBorder(
@@ -306,7 +306,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
       //Pouf il est connecté ! :=)
     }else if(mail_co.text.isNotEmpty && mdp_co.text.isNotEmpty) {
       try {
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text('Connexion...'),backgroundColor: AppCouleur().grisTresClair,));
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text('Connexion...'),));
         if(widget.tempo.isNotEmpty){
           final uti = await auth.signInWithEmailAndPassword(email: mail_co.text, password: mdp_co.text);
           await changeAnonyme(uti.user!.uid);
@@ -336,7 +336,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
   nouvUti() async{
     if(mail_ins.text.isNotEmpty && pseudo.text.isNotEmpty && mdp_ins.text.isNotEmpty){
       try {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Chargement...'),));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Chargement...')));
         if(widget.tempo.isNotEmpty){
           final credit = EmailAuthProvider.credential(email: mail_ins.text, password: mdp_ins.text);
           final creditUti = await FirebaseAuth.instance.currentUser?.linkWithCredential(credit);
@@ -388,7 +388,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
   }
 
   Future<void> changeAnonyme(String uti) async {
-    final QuerySnapshot<Discussion> listeDiscussions = await laPoste(firebaseFirestore: db).prendConvStatique(widget.tempo);
+    final QuerySnapshot<Discussion> listeDiscussions = await laPoste(firebaseFirestore: db).prendConvStatique();
     final theBat = db.batch();
     for(QueryDocumentSnapshot<Discussion> element in listeDiscussions.docs){
       if(element.data().utilisateur1 == widget.tempo || element.data().utilisateur2 == widget.tempo){

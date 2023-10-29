@@ -12,6 +12,8 @@ import 'package:vidar/AppCouleur.dart';
 import 'package:vidar/Postier.dart';
 import 'package:vidar/usineDeBiscottesGrillees.dart';
 
+import 'patrons/convDeListe.dart';
+
 
 
 class Parametres extends StatefulWidget {
@@ -42,7 +44,6 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
     super.initState();
     Icontombe =
         MaterialStateProperty.resolveWith<Icon?>((Set<MaterialState> states) {
-            print(states);
             if (azizlumiere) {
               return const Icon(Icons.nightlight_outlined);
             }
@@ -188,7 +189,32 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-              )
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: ElevatedButton.icon(
+                  onPressed: (){
+                    showDialog(context: context, builder: (context)=> AlertDialog(
+                      title: const Text("Supprimer le compte"),
+                      content: const Text("Etes vous sûr de vouloir supprimer votre compte?\nCette action et irréversible et toutes vos messages seront effacés."),
+                      actions: [
+                        MaterialButton(onPressed: ()=>{suuupprime()},child: const Text("Supprimer"),),
+                        TextButton(onPressed: ()=>{Navigator.of(context).pop()},child: const Text("Annuler"),)
+                      ],
+                    ));
+                  },
+                  icon: const Icon(Icons.no_accounts_rounded),
+                  label: const Text("Supprimer le compte"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppCouleur.banni,
+                    foregroundColor : AppCouleur.white,
+                    minimumSize:Size(MediaQuery.of(context).size.width/(MediaQuery.of(context).size.aspectRatio>1?2:1),50),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)
+                    ),
+                  ),
+                ),
+              ),
               ],
            ),),
           Padding(padding:const EdgeInsets.all(5),child:ExpansionTile(
@@ -266,7 +292,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
               onPressed: ()=>{
                 showDialog(context: context, builder: (context)=>const AlertDialog(
                   title: Text("Notes de version"),
-                  content: Text("Version 2.1.5\n• Améliorations mineures de l'interface\n• tableau de contrôle du texte-to-speech. \n• Nouvelle interface de gestion des messages.\n• Résolution de bugs affectant la session temporaire web"),
+                  content: Text("Version 2.1.6\n• Améliorations mineures de l'interface\n• Résolution de bugs affectant les messages pré-enregistrés"),
                 ))
               },
               icon: const Icon(Icons.sticky_note_2_sharp),
@@ -354,7 +380,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
       ),
       applicationIcon: Tab(icon: Image.asset("assets/images/IPIC_logo_petit.png",width: 40,)),
       applicationName: 'Vidar',
-      applicationVersion: '2.1.5',
+      applicationVersion: '2.1.6',
       applicationLegalese: '© 2023 IPIC-ASSO',
       aboutBoxChildren: aboutBoxChildren,
       child: Container(
@@ -437,5 +463,31 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
           }, child: const Text("Valider"))
       ],
     ));
+  }
+
+  suuupprime() async {
+    bool ok = true;
+    String id = auth.currentUser!.uid;
+    final QuerySnapshot<Discussion> listeDiscussions = await monPostier.prendConvStatique2(id);
+    for(QueryDocumentSnapshot<Discussion> element in listeDiscussions.docs) {
+      monPostier.suprConv(element.data().utilisateur1 + element.data().utilisateur2, id, element.data().supr)
+          .onError((error, stackTrace) {
+        Usine.montreBiscotte(context, "Une erreur est survenue", this, false);
+        ok = false;
+        return error.toString();
+      });
+    }
+    await monPostier.suprUtilisateur(id);
+    await auth.currentUser!.delete().catchError((error, stackTrace) {
+      ok = false;
+      if (error.toString=="requires-recent-login")
+          Usine.montreBiscotte(context, "Une erreur est survenue\nVotre dernière connexion remonte à trop longtemps. Déconnectez vous puis reconnectez vous.", this, false);
+      else
+        Usine.montreBiscotte(context, "Une erreur est survenue", this, false);
+      });
+    if(ok){
+      Usine.montreBiscotte(context, "Le compte a été supprimé avec succès", this,true);
+      auth.signOut();
+    }
   }
 }

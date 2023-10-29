@@ -599,8 +599,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
 
   Future<void> nvMessage(String corps) async {
     if (titre.text.isNotEmpty && corps.isNotEmpty) {
-      final resultat = await monPostier.EnregistreMessage(
-          widget.idUti, "", titre.text, corps);
+      final resultat = await monPostier.EnregistreMessage(widget.idUti, widget.pseudoDest,"", titre.text, corps);
       if (resultat == 0) {
         ScaffoldMessenger.of(context).showSnackBar(
              SnackBar(

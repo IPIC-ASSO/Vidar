@@ -30,8 +30,12 @@ class laPoste {
     return firebaseFirestore.collection(MesConstantes.cheminListeMessages).withConverter(fromFirestore: Discussion.fromFirestore, toFirestore: (Discussion discussion,_)=>Discussion().toFirestore()).where("utilisateur1",isNotEqualTo: "").snapshots();
   }
 
-  Future<QuerySnapshot<Discussion>> prendConvStatique(String idUti) {
+  Future<QuerySnapshot<Discussion>> prendConvStatique() {
     return firebaseFirestore.collection(MesConstantes.cheminListeMessages).withConverter(fromFirestore: Discussion.fromFirestore, toFirestore: (Discussion discussion,_)=>Discussion().toFirestore()).where("utilisateur1",isNotEqualTo: "").get();
+  }
+
+  Future<QuerySnapshot<Discussion>> prendConvStatique2(String idUti) {
+    return firebaseFirestore.collection(MesConstantes.cheminListeMessages).withConverter(fromFirestore: Discussion.fromFirestore, toFirestore: (Discussion discussion,_)=>Discussion().toFirestore()).where(Filter.or(Filter("utilisateur1",isEqualTo: idUti),Filter("utilisateur2",isEqualTo: idUti))).get();
   }
 
   Future<Discussion> prendLAconv(String idConv) async {
@@ -62,6 +66,10 @@ class laPoste {
     }catch(e){
       return(e.toString());
     }
+  }
+
+  suprUtilisateur(idUti) async {
+    await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).delete();
   }
 
   Stream<DocumentSnapshot> prendLesChatsDuQuartier(String conv) {
@@ -153,12 +161,12 @@ class laPoste {
     return 0;
   }
 
-  Future<int> supprimeMessage(String idUt, String titre) async {
+  Future<int> supprimeMessage(String idUt, String section, String titre) async {
     try{
       DocumentSnapshot<Utilisateur> uti = await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).withConverter(fromFirestore: Utilisateur.fromFirestore, toFirestore: (Utilisateur utilisateur, _) => Utilisateur().toFirestore()).get();
       Map<String,String> messages = uti.data()!.messages??{};
       if(messages.containsKey(titre))messages.remove(titre);
-      await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).update({MesConstantes.messagesEnregistres:messages});
+      await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).update({"${MesConstantes.messagesEnregistres}.$section.$titre":FieldValue.delete()});
       return 0;
     }catch(e){
       log(e.toString());
@@ -166,15 +174,13 @@ class laPoste {
     }
   }
 
-  Future<int> EnregistreMessage(String idUt, String titre,String nouvtitre, String corps) async{
+  Future<int> EnregistreMessage(String idUt, String section, String titre,String nouvtitre, String corps) async{
     try{
-      DocumentSnapshot<Utilisateur> uti = await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).withConverter(fromFirestore: Utilisateur.fromFirestore, toFirestore: (Utilisateur utilisateur, _) => Utilisateur().toFirestore()).get();
-      Map<String,String> messages = uti.data()!.messages??{};
-      if(messages.containsKey(titre))messages.remove(titre);
-      messages[nouvtitre] = corps;
-      await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).update({MesConstantes.messagesEnregistres:messages});
+      if(titre.isNotEmpty)await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).update({"${MesConstantes.messagesEnregistres}.$section.$titre":FieldValue.delete()});//suppression de l'ancien message
+      await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).update({"${MesConstantes.messagesEnregistres}.$section.$nouvtitre":corps});//nouveau message
       return 0;
     }catch(e){
+      log(e.toString());
       return 1;
     }
   }
@@ -208,6 +214,19 @@ class laPoste {
   Future<void> renotifie(String idUti) async {
     await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).update({
       MesConstantes.co:""
+    });
+  }
+
+  void creeSection(String idUti, String txt_section) {
+
+    firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).update({
+      "${MesConstantes.messagesEnregistres}.$txt_section":{}
+    });
+  }
+
+  enleveSection(String idUti, String titre) {
+    firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).update({
+      "${MesConstantes.messagesEnregistres}.$titre":FieldValue.delete()
     });
   }
 }

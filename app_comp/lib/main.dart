@@ -96,7 +96,7 @@ class _MonVidarState extends State<MonVidar> {
  }),
  ),
       ),
-      themeMode: _themeMode, // 2) ← ← ← use "state" field here //////////////
+      themeMode: ThemeMode.light,//_themeMode, // 2) ← ← ← use "state" field here //////////////
       debugShowCheckedModeBanner: false,
       home: const MyHomePage(),
     );
