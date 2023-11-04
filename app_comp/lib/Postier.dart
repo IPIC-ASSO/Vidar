@@ -139,10 +139,6 @@ class laPoste {
     }
   }
 
-  Future<DocumentSnapshot<Map<String,dynamic>>> prendMessagesParDefaut2() async{
-    return firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeMessagesPreEnr).get();
-  }
-
   Future<QuerySnapshot<Map<String, dynamic>>> prendMessagesParDefaut() async{
     return firebaseFirestore.collection(MesConstantes.cheminMessagePreEnr).get();
   }
@@ -163,9 +159,6 @@ class laPoste {
 
   Future<int> supprimeMessage(String idUt, String section, String titre) async {
     try{
-      DocumentSnapshot<Utilisateur> uti = await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).withConverter(fromFirestore: Utilisateur.fromFirestore, toFirestore: (Utilisateur utilisateur, _) => Utilisateur().toFirestore()).get();
-      Map<String,String> messages = uti.data()!.messages??{};
-      if(messages.containsKey(titre))messages.remove(titre);
       await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUt).update({"${MesConstantes.messagesEnregistres}.$section.$titre":FieldValue.delete()});
       return 0;
     }catch(e){

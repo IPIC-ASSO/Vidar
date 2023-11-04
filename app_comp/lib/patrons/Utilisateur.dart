@@ -5,8 +5,7 @@ class Utilisateur{
   String? id;
   String? pseudo;
   List<String>? contacts;
-  Map<String, String>? messages;
-  Map<String, dynamic>? messages2;
+  Map<String, dynamic>? messages;
   int? nb;
 
 
@@ -14,7 +13,7 @@ class Utilisateur{
   Utilisateur();
 
 
-  Utilisateur.complet({this.id, this.pseudo, this.contacts, this.messages, this.nb, required this.messages2});
+  Utilisateur.complet({this.id, this.pseudo, this.contacts, this.nb, required this.messages});
 
   factory Utilisateur.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -27,7 +26,7 @@ class Utilisateur{
       nb: data?[MesConstantes.nb],
       contacts: data?[MesConstantes.contact] is Iterable ? List.from(data?[MesConstantes.contact]) : [],
       //messages: data?[MesConstantes.messagesEnregistres] is Map ? Map.from(data?[MesConstantes.messagesEnregistres]) : {},
-      messages2: data?[MesConstantes.messagesEnregistres] is Map ? Map.from(data?[MesConstantes.messagesEnregistres]) : {},
+      messages: data?[MesConstantes.messagesEnregistres] is Map ? Map.from(data?[MesConstantes.messagesEnregistres]) : {},
     );
   }
   Map<String, dynamic> toFirestore() {
@@ -35,7 +34,6 @@ class Utilisateur{
       if (pseudo != null) MesConstantes.nomUti: pseudo,
       if (contacts != null) MesConstantes.contact: contacts,
       if (messages != null) MesConstantes.messagesEnregistres: messages,
-      if (messages2 != null) MesConstantes.messagesEnregistres: messages2,
       if(nb != null) MesConstantes.nb: nb,
     };
   }

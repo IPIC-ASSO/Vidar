@@ -491,6 +491,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
     if(mesEnre.data()!=null && mesEnre.data()!.messages!= null){
       listeMessagesEnr.addAll(mesEnre.data()!.messages!);
     }
+    print(mesEnre.data()!.messages);
     final List<QueryDocumentSnapshot<Map<String, dynamic>>> lesEnre = (await monPostier.prendMessagesParDefaut()).docs;
     if(lesEnre.isNotEmpty){
       lesEnre.forEach((element) {

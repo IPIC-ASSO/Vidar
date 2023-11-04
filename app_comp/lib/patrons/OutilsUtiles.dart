@@ -71,7 +71,8 @@ Widget messagePoissonRouge(
 
   static afficheTTS(BuildContext context, String texte) async {
     var (monTTS, vitesse) = await ConfigureTTS();
-    bool pause = true;
+    bool pause = false;
+    monTTS.speak(texte);
     showModalBottomSheet<void>(
         context: context,
         builder: (BuildContext context){

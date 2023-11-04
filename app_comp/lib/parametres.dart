@@ -374,7 +374,9 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
       ),
     ];
 
-    return AboutListTile(
+    return Container(
+        color: AppCouleur.white,
+        child:AboutListTile(
       icon: const Icon(
         Icons.contact_mail,
       ),
@@ -386,11 +388,12 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
       child: Container(
         padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
+
           borderRadius: BorderRadius.circular(10)
         ),
         child:const Text('Nous contacter', textAlign: TextAlign.center,),
       )
-    );
+    ));
   }
 
   void changePseudo() async{

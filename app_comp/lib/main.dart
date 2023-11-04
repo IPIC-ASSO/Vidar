@@ -138,8 +138,6 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
 
   @override
   initState() {
-
-
     super.initState();
     ecouteur = auth.authStateChanges().listen((User? user) async {
         if (user == null) {
@@ -163,7 +161,7 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
             setState(() {
               connecte = true;
             });
-            Usine.montreBiscotte(context, "Bienvenue!", this, true);
+            Usine.montreBiscotte(context, "Bienvenue !", this, true);
           }
         }
     });

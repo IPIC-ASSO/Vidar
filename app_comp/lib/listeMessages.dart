@@ -115,8 +115,8 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
             ),
           ),)
         ];
-        if (snapshot.hasData && snapshot.data?.data() != null && (snapshot.data?.data() as Utilisateur).messages2 != null && (snapshot.data?.data() as Utilisateur).messages2!.isNotEmpty) {
-          final Map<String, dynamic>? monUti = (snapshot.data!.data() as Utilisateur).messages2;
+        if (snapshot.hasData && snapshot.data?.data() != null && (snapshot.data?.data() as Utilisateur).messages != null && (snapshot.data?.data() as Utilisateur).messages!.isNotEmpty) {
+          final Map<String, dynamic>? monUti = (snapshot.data!.data() as Utilisateur).messages;
           for (MapEntry<String, dynamic> messageEntree in monUti?.entries ?? {}) {
             enfants.add(creeGroupe(messageEntree.key,messageEntree.value));
           }
