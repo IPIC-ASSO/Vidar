@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -108,7 +109,7 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
                           Usine.montreBiscotte(context, "Une erreur est survenue", this);
                         }
                       },
-                      child: const Text("Valider"),
+                      child: const Text("Valider", style: TextStyle(fontWeight: FontWeight.bold),),
                     )),
                     const Padding(
                       padding: EdgeInsets.all(10),
@@ -159,7 +160,7 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
                       child:ElevatedButton.icon(
                       icon: const Icon(Icons.text_snippet_outlined),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppCouleur().principal,
+                        backgroundColor: AppCouleur().secondaire,
                         foregroundColor : AppCouleur.white,
                         minimumSize: const Size.fromHeight(50),
                         shape: RoundedRectangleBorder(
@@ -182,7 +183,7 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
                       child:ElevatedButton.icon(
                         icon: const Icon(Icons.volume_up,),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppCouleur().principal,
+                          backgroundColor: AppCouleur().secondaire,
                           foregroundColor : AppCouleur.white,
                           minimumSize: const Size.fromHeight(50),
                           shape: RoundedRectangleBorder(

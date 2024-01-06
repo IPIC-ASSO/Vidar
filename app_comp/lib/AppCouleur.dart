@@ -6,7 +6,7 @@ import 'package:flutter/scheduler.dart';
 class AppCouleur {
   static const Color charge = Color(0xff2b3a67);
   static const Color droitier = Color(0xE62877FF);
-  Color principal = const Color(0xE6C1CBFF);
+  Color principal = const Color(0xE698BFFF);
   Color secondaire = const Color(0xE653C2F5);
   static const Color tertiaire = Color(0xE6316AE3);
   Color quartenaire = const Color(0xFF37CB86);

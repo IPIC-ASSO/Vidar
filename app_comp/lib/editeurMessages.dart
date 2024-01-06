@@ -45,6 +45,7 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text("Edition de messages"),
       ),
@@ -123,7 +124,7 @@ class _EditeurMessagesState extends State<EditeurMessages> with TickerProviderSt
               }
             },
             icon: const Icon(Icons.save),
-            label: const Text("Enregistrer", style: TextStyle(color: AppCouleur.white),),
+            label: const Text("Enregistrer", style:TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
           ),),
           Padding(padding: const EdgeInsets.all(10),child:ElevatedButton.icon(
             style: ElevatedButton.styleFrom(

@@ -14,6 +14,7 @@ import 'package:vidar/Connexion.dart';
 import 'package:vidar/Conversations.dart';
 import 'package:vidar/Postier.dart';
 import 'package:vidar/accueil.dart';
+import 'package:vidar/aide.dart';
 import 'package:vidar/listeMessages.dart';
 import 'package:vidar/nouvelleConversation.dart';
 import 'package:vidar/parametres.dart';
@@ -28,7 +29,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
-  if(kIsWeb)await FirebaseFirestore.instance.enablePersistence(const PersistenceSettings(synchronizeTabs: true));
+  if(kIsWeb)await FirebaseFirestore.instance.enablePersistence(new PersistenceSettings(synchronizeTabs: true));
   else{
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
     PlatformDispatcher.instance.onError = (error, stack) {
@@ -220,14 +221,7 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
       child: ListeMessages(idUti: (FirebaseAuth.instance.currentUser?.uid??"erreur"))
     ),
     const Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.construction),
-          Text("Nous attendons les retours des testeurs (vos retours;) ) pour rédiger au mieux cette section essentielle.")
-        ],
-      ),
+      child: Aide()
     ),
     const Center(
       child: Parametres(),
@@ -241,9 +235,8 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
       if (MediaQuery.of(context).size.height /
           MediaQuery.of(context).size.width > 1) {
         return
-        WillPopScope( onWillPop: ()async{
+        PopScope( onPopInvoked: (bool x){
             ecouteur.cancel();
-            return true;
           },
           child:Scaffold(
             body: Center(
@@ -252,7 +245,7 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
             bottomNavigationBar: BottomNavigationBar( //TODO: disparait lors du scroll
               selectedFontSize: 18,
               unselectedItemColor: AppCouleur().noir,
-              selectedItemColor: Theme.of(context).primaryColorLight,
+              selectedItemColor: Theme.of(context).primaryColorDark,
               selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
               mouseCursor: SystemMouseCursors.grab,
               items: const <BottomNavigationBarItem>[

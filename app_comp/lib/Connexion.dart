@@ -306,7 +306,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
       //Pouf il est connecté ! :=)
     }else if(mail_co.text.isNotEmpty && mdp_co.text.isNotEmpty) {
       try {
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text('Connexion...'),));
+        ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Connexion...'),));
         if(widget.tempo.isNotEmpty){
           final uti = await auth.signInWithEmailAndPassword(email: mail_co.text, password: mdp_co.text);
           await changeAnonyme(uti.user!.uid);

@@ -18,7 +18,7 @@ Widget messagePoissonRouge(
       crossAxisAlignment: CrossAxisAlignment.end,
       children:[
     Container(
-      constraints: BoxConstraints(minWidth: 50, maxWidth: 250),
+      constraints: const BoxConstraints(minWidth: 50, maxWidth: 250),
       padding: const EdgeInsets.all(10),
       margin: margin,
 
@@ -97,7 +97,7 @@ Widget messagePoissonRouge(
                         setState(() {
                           pause = false;
                         });
-                      }, icon: Icon(Icons.replay),),
+                      }, icon: const Icon(Icons.replay),),
                       IconButton(
                         iconSize: 40.0,
                         icon: Icon(pause?Icons.play_arrow:Icons.pause),
@@ -110,9 +110,9 @@ Widget messagePoissonRouge(
                         }
                       ),
                       IconButton(
-                        icon: Icon(Icons.settings),
+                        icon: const Icon(Icons.settings),
                         onPressed: () => Navigator.of(context).push(PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => Parametres(vitefait: true,),
+                          pageBuilder: (_, __, ___) => const Parametres(vitefait: true,),
                           transitionDuration: const Duration(milliseconds: 500),
                           transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
                         ))

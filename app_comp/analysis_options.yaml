@@ -1,3 +1,7 @@
+analyzer:
+  errors:
+    undefined_prefixed_name: ignore
+
 # This file configures the analyzer, which statically analyzes Dart code to
 # check for errors, warnings, and lints.
 #

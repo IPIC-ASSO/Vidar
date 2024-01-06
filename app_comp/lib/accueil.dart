@@ -87,12 +87,12 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
                           )
                       ),
                       Padding(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                         child: Tooltip(
                           preferBelow: false,
                           textStyle: TextStyle(fontSize: 16, color: AppCouleur().blanc),
                           message: "Utilisation d'un compte, pour utiliser des messages pré-enregistrés, conserver les conversations, et les continuer sur n'importe quel appareil.",
-                          child: Icon(Icons.info_outline),
+                          child: const Icon(Icons.info_outline),
                         )
                       )
 
@@ -121,12 +121,12 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
                             )
                         ),
                         Padding(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child:Tooltip(
                               textStyle: TextStyle(fontSize: 16, color: AppCouleur().blanc),
                               preferBelow: false,
                               message: "Continuez sans vous connectez, pour un usage occasionel et rapide.",
-                              child: Icon(Icons.info_outline),
+                              child: const Icon(Icons.info_outline),
                             )
                         )
                       ],

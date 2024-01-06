@@ -34,6 +34,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
   bool charge = false;
   Map<String,dynamic> listeMessages = {"defaut":{"[AUCUN]":""}};
   List<String> messages = ["[AUCUN]","[AUCUN]","[AUCUN]"];
+  List<String> sectionDumessages = ["defaut","defaut","defaut"];
   TextEditingController code = TextEditingController();
   late int nb;
 
@@ -109,7 +110,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                 },child:Text(messages[2]))),
                 Padding(padding: const EdgeInsets.all(20),
                   child:ElevatedButton(
-                    child: const Text("Valider"),
+                      child: const Text("Valider",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppCouleur().eco,
                       foregroundColor : AppCouleur.white,
@@ -118,14 +119,15 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(10.0)
                       ),
                     ),
-                    onPressed:()=>{
+                    onPressed:(){
+                      print(listeMessages);
                       Navigator.push(context,
                         PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => MontreQrCode(idUt: widget.idUti, messageAffiche: listeMessages[messages[0]]??"",messageDebut: listeMessages[messages[2]]??"",messageLu: listeMessages[messages[1]]??"",nb:nb),
+                        pageBuilder: (_, __, ___) => MontreQrCode(idUt: widget.idUti, messageAffiche: listeMessages[sectionDumessages[0]][messages[0]]??"",messageDebut: listeMessages[sectionDumessages[2]][messages[2]]??"",messageLu: listeMessages[sectionDumessages[1]][messages[1]]??"",nb:nb),
                         transitionDuration: const Duration(milliseconds: 500),
                         transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
                         ),
-                      )
+                      );
                     }
                   ))
               ],),
@@ -145,7 +147,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)
                         ),),
-                      child: const Text('Lancer le scan', style: TextStyle(fontSize: 17),))):const Text("Utilisez l'application mobile pour scanner un QR-code"),
+                      child: const Text('Lancer le scan', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),))):const Text("Utilisez l'application mobile pour scanner un QR-code"),
                   const Padding(padding: EdgeInsets.all(15),child:Text("OU",textAlign: TextAlign.center,)),
                   Padding(padding: const EdgeInsets.all(5),child: TextField(
                     controller: code,
@@ -175,7 +177,14 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                         Usine.montreBiscotte(context, "Une erreur est survenue", this);
                       }
                     },
-                    child: const Text("Valider"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppCouleur().eco,
+                      foregroundColor : AppCouleur.white,
+                      minimumSize: const Size.fromHeight(50),
+                      shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0))
+                    ),
+                    child: const Text("Valider",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
                   )),
                   ],)
                 )),
@@ -249,22 +258,24 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
             shrinkWrap: true,
             itemCount: listeMessages.keys.length,
             itemBuilder: (BuildContext context, int index) {
+              String section = listeMessages.keys.toList()[index];
               return ExpansionTile(
-                title: Text(listeMessages.keys.toList()[index]),
-                children: creetuile(listeMessages.values.toList()[index], maj),
+                title: Text(section),
+                children: creetuile(listeMessages.values.toList()[index], maj,section),
               );
             }
         )
     );
   }
 
-  List<Widget> creetuile(Map<String,dynamic> lesmessages, int maj) {
+  List<Widget> creetuile(Map<String,dynamic> lesmessages, int maj, String section) {
     List<Widget> enfants = [];
     lesmessages.forEach((key, value) {
       enfants.add(ListTile(
         title: Text(key),
         onTap: (){
           setState(() {
+            sectionDumessages [maj] = section;
             messages[maj] = key;
           });
           Navigator.of(context).pop();

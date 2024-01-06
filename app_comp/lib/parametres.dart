@@ -292,7 +292,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
               onPressed: ()=>{
                 showDialog(context: context, builder: (context)=>const AlertDialog(
                   title: Text("Notes de version"),
-                  content: Text("Version 2.1.6\n• Améliorations mineures de l'interface\n• Résolution de bugs affectant les messages pré-enregistrés"),
+                  content: Text("Version 2.1.7\n• Améliorations mineures de l'interface\n• Résolution de bugs affectant les messages pré-enregistrés\n• Nouveau tutoriel"),
                 ))
               },
               icon: const Icon(Icons.sticky_note_2_sharp),
@@ -382,7 +382,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
       ),
       applicationIcon: Tab(icon: Image.asset("assets/images/IPIC_logo_petit.png",width: 40,)),
       applicationName: 'Vidar',
-      applicationVersion: '2.1.6',
+      applicationVersion: '2.1.7',
       applicationLegalese: '© 2023 IPIC-ASSO',
       aboutBoxChildren: aboutBoxChildren,
       child: Container(

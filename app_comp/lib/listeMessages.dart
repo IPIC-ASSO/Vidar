@@ -79,7 +79,7 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
                 ),
               ]),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
             child:ElevatedButton.icon(
             onPressed: (){
               showDialog(context: context, builder: (context)=> AlertDialog(
@@ -104,7 +104,7 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
               ));
             },
             icon: const Icon(Icons.create_new_folder_outlined),
-            label: const Text("Nouvelle section"),
+            label: const Text("Nouvelle section", style:TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppCouleur().eco,
               foregroundColor : AppCouleur.white,
@@ -181,7 +181,7 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
         },
           child:Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
               color: AppCouleur().grisTresClair,
             ),
           padding: const EdgeInsets.all(15),
@@ -204,7 +204,7 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
         mesEnfants.add(creeMessage(titre, key,value.toString(),defaut ));
       });
       if (mesEnfants.isEmpty)mesEnfants.add(
-        Padding(
+        const Padding(
           padding: EdgeInsets.all(15),
           child: Text("Cette section est vide, créez un message avec l'icon vert",style: TextStyle(fontStyle:FontStyle.italic),textAlign: TextAlign.center,),
         )
@@ -215,14 +215,14 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
           child:ExpansionTile(
           leading: defaut?null:IconButton(
             color: AppCouleur.banni,
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             onPressed: ()=>{
             monPostier.enleveSection(widget.idUti,titre)
             },
           ),
           trailing: defaut?null:IconButton(
             color: AppCouleur().eco,
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             onPressed: ()=>{
               Navigator.of(context).push(PageRouteBuilder(
                 pageBuilder: (_, __, ___) => EditeurMessages(section:titre,titre: "",corps: "",idUt: widget.idUti,defaut: defaut,),
