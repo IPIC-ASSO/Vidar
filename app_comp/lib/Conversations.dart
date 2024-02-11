@@ -22,6 +22,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
 
   final user = FirebaseAuth.instance.currentUser;
   late laPoste monPostier;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -179,7 +181,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
 
   confSupr(Discussion dis) {
     showDialog(
-        context: context,
+        context: _scaffoldKey.currentContext!,
         builder: (context)=>AlertDialog(
           title: const Text("Supprimer la conversation"),
           content: const Text("Voulez vous supprimez cette conversation?\nCette action est irréversible."),
@@ -187,7 +189,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
             TextButton(onPressed: (){
               Navigator.of(context).pop();
               laPoste(firebaseFirestore: FirebaseFirestore.instance).suprConv(dis.utilisateur1+dis.utilisateur2,user?.uid??"erreur",dis.supr).then((value){
-                if(value=="0")Usine.montreBiscotte(context, "Supprimé !", this, true);
+                if(value=="0")Usine.montreBiscotte(context, "Supprimé !", this, true,true);
                 else{
                   log(value);
                   Usine.montreBiscotte(context, "Une erreur est survenue: $value", this);

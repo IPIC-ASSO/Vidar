@@ -162,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
             setState(() {
               connecte = true;
             });
-            Usine.montreBiscotte(context, "Bienvenue !", this, true);
+            Usine.montreBiscotte(context, "Bienvenue !", this, true,true);
           }
         }
     });
@@ -194,6 +194,8 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
               Usine.montreBiscotte(context, "Code invalide", this);
               break;
             default:
+              print("message $e.message");
+              log(e.code);
               Usine.montreBiscotte(context, "La base de donnée refuse la transaction", this);
           }
         }
@@ -234,9 +236,10 @@ class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver, T
     if(connecte){
       if (MediaQuery.of(context).size.height /
           MediaQuery.of(context).size.width > 1) {
-        return
-        PopScope( onPopInvoked: (bool x){
-            ecouteur.cancel();
+        return WillPopScope(
+          onWillPop:()async{
+            await ecouteur.cancel();
+            return false;
           },
           child:Scaffold(
             body: Center(

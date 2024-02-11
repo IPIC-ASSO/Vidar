@@ -74,17 +74,13 @@ class _AideState extends State<Aide> with TickerProviderStateMixin {
                               padding: const EdgeInsets.all(10),
                               child: Align(
                                 alignment: Alignment.topRight,
-                                child: FloatingActionButton(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          50.0)),
-                                  backgroundColor: AppCouleur.greyColor,
+                                child: IconButton(
                                   onPressed: () =>
                                   {
                                     Navigator.of(context).pop()
                                   },
                                   tooltip: "Fermer",
-                                  child: const Icon(Icons.close),
+                                  icon: const Icon(Icons.close, size: 40),
                                 ),
                               )
                           ),
@@ -96,7 +92,7 @@ class _AideState extends State<Aide> with TickerProviderStateMixin {
                                 alignment: Alignment.bottomLeft,
                                 child: FloatingActionButton(
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(50.0)),
+                                      borderRadius: BorderRadius.circular(5.0)),
                                   backgroundColor: AppCouleur().secondaire,
                                   onPressed: () =>
                                   {
@@ -169,34 +165,14 @@ Column(
     Expanded(flex:0,child:Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(10,0,10,30),
+        padding: const EdgeInsets.fromLTRB(10,0,10,70),
 
         child: RichText(
             text: TextSpan(
               style: const TextStyle(
                 fontSize: 24,
-                fontWeight: FontWeight.bold,shadows: <Shadow>[
-                  Shadow(
-                  offset: Offset(1.0, 1.0),
-                  blurRadius: 3.0,
-                  color: Color.fromARGB(255, 0, 0, 0),
-                ),
-                  Shadow(
-                    offset: Offset(-1.0, -1.0),
-                    blurRadius: 3.0,
-                    color: Color.fromARGB(255, 0, 0, 0),
-                  ),
-                Shadow(
-                  offset: Offset(-1.0, 1.0),
-                  blurRadius: 3.0,
-                  color: Color.fromARGB(255, 0, 0, 0),
-                ),
-                Shadow(
-                  offset: Offset(1.0, -1.0),
-                  blurRadius: 3.0,
-                  color: Color.fromARGB(255, 0, 0, 0),
-                ),
-              ],
+                color: Colors.black,
+                fontWeight: FontWeight.bold
               ),
                 children: <TextSpan>[
                 TextSpan(

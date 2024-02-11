@@ -1,4 +1,4 @@
-package com.ipiccie.app_comp
+package com.ipiccie.muetssages
 
 import io.flutter.embedding.android.FlutterActivity
 

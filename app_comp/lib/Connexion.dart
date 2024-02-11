@@ -248,7 +248,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
     try{
       await auth
           .sendPasswordResetEmail(email: email)
-          .then((value) => Usine.montreBiscotte(context, 'Envoyé!', this, true));
+          .then((value) => Usine.montreBiscotte(context, 'Envoyé!', this, true,true));
     }on FirebaseAuthException catch (e) {
       log(e.code);
       Usine.montreBiscotte(context, 'Une erreur est survenue. \nL\'accès à la Base données a échoué ', this);

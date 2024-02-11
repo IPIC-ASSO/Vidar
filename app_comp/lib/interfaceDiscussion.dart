@@ -115,6 +115,9 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                             launchUrl(Uri.parse('https://www.ipic-asso.fr'));
                           },
                       ),
+                    /*  const TextSpan(
+                        text: ' \n\n Vous ^etes actuellement visible sous le nom de  ',
+                      ),*/
                     ],
                   ),
                 ),
@@ -283,20 +286,12 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
       if(index >_limite){
         return const SizedBox.shrink();
       }
-      if (index == _limite && _limite<listeMessages.length){
+      if (index == listeMessages.length-1 && _limite<=listeMessages.length){
         return Visibility(
-            visible: _limite<listeMessages.length,
-            child: Container(
-                constraints: const BoxConstraints(minWidth: 100, maxWidth: 250),
-                width: 20,
-                padding: const EdgeInsets.all(4),
-                child: ElevatedButton(
-                  onPressed:(){setState(() {
-                    _limite+= _ajoutLimite;
-                  });},
-                  child: const Text("Charger plus de messages"),
-                )
-            )
+            visible: _limite<=listeMessages.length,
+            child: bouton("Charger plus de messages", Icons.add, AppCouleur().eco, (){setState(() {
+              _limite+= _ajoutLimite;
+            });})
         );
       } else if (chaton.envoyeur == widget.idUti) {  //c'est moi qui envoie--> droite
         return Column(

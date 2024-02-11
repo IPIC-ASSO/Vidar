@@ -144,3 +144,19 @@ Widget messagePoissonRouge(
     );
   }
  }
+
+ Widget bouton (String texte, IconData ico, Color couleur,void Function() onPressed){
+  return Padding(padding: const EdgeInsets.all(10),child:ElevatedButton.icon(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: couleur,
+      foregroundColor : AppCouleur.white,
+      minimumSize: const Size.fromHeight(50),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0)
+      ),
+    ),
+    onPressed: onPressed,
+    icon:  Icon(ico),
+    label: Text(texte,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17), ),
+  ),);
+ }

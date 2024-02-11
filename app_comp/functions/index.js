@@ -44,6 +44,9 @@ exports.sendNotification = functions.firestore
                 console.log(`Destinataires trouvés: ${destinataireNotif.data().pseudo}`)
                 if (destinataireNotif.data().jeton && (destinataireNotif.data().co == null || destinataireNotif.data().co!=idConv)) {
                     console.log(destinataireNotif.data().jeton)
+                    admin.firestore().collection('ListeMessages').doc(idConv).update({
+                        "notif":idDestinataire
+                    })
                     admin
                     .messaging()
                     .sendToDevice(destinataireNotif.data().jeton, payload)
