@@ -49,6 +49,12 @@ class laPoste {
     return (x.data()!.pseudo)??"Inconnu au bataillon";
   }
 
+   enleve_pastille(Discussion dis) async {
+    firebaseFirestore.collection(MesConstantes.cheminListeMessages).doc(dis.utilisateur1+dis.utilisateur2).update(
+      {"notif":""}
+    );
+  }
+
   Future<String> suprConv(String idConv, String idMoi, String? dejaSupr) async {
     try{
       if (dejaSupr!=null) {
@@ -222,4 +228,5 @@ class laPoste {
       "${MesConstantes.messagesEnregistres}.$titre":FieldValue.delete()
     });
   }
+
 }

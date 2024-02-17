@@ -53,7 +53,12 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Discussion>> snapshot) {
                 if(snapshot.hasData && snapshot.data!.docs.length>0){
                   List<Widget> enfants = [];
-                  snapshot.data!.docs.forEach((element) async {
+                  List<QueryDocumentSnapshot<Discussion>> lst =snapshot.data!.docs;
+                  lst.sort((a,b){
+                    if (b.data().notif==user?.uid) return 1;
+                    return -1;
+                  });
+                  lst.forEach((element) async {
                     final dis = element.data() as Discussion;
                     if((dis.supr==null || dis.supr!=user!.uid) && (dis.utilisateur1==user!.uid ||dis.utilisateur2==user!.uid)){
                       enfants.add(construitConv(dis));
@@ -69,6 +74,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                     shrinkWrap: true,
                     children: enfants));
                 }else if(snapshot.hasError){
+                  log(snapshot.error.toString());
                   return const Center(
                     child: Column(
                       children: [
@@ -114,6 +120,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
               dis.pseudo = snapshot.data??"Inconnu au bataillon";
               return GestureDetector(
                   onTap: (){
+                    if(dis.notif==user?.uid)monPostier.enleve_pastille(dis);
                     Navigator.push(context,
                       PageRouteBuilder(
                         pageBuilder: (_, __, ___) => InterfaceDiscussion(idUti: user!.uid, idConv: dis.utilisateur1+dis.utilisateur2, pseudoDest: dis.pseudo, supr: dis.supr!=null,),
@@ -147,6 +154,16 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                             child: Padding(
                               padding: EdgeInsets.all(3),
                               child: Icon(Icons.account_circle_rounded),
+                            )
+                        ),
+                        Expanded(
+                          flex: 0,
+                            child: Padding(
+                              padding: EdgeInsets.all(3),
+                              child: Visibility(
+                                visible: dis.notif==user?.uid,
+                                child:Icon(Icons.mail_outline_rounded, color: AppCouleur().eco,),
+                              )
                             )
                         ),
                         Expanded(

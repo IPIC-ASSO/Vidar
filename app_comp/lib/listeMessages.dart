@@ -24,6 +24,7 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
   FirebaseFirestore db = FirebaseFirestore.instance;
   bool charge = false;
   TextEditingController txt_section = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
    return Scaffold(
+     key: _scaffoldKey,
      appBar: AppBar(
        automaticallyImplyLeading: false,
        title: Container(
@@ -217,7 +219,7 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
             color: AppCouleur.banni,
             icon: const Icon(Icons.delete),
             onPressed: ()=>{
-            monPostier.enleveSection(widget.idUti,titre)
+              confSupr(widget.idUti,titre)
             },
           ),
           trailing: defaut?null:IconButton(
@@ -240,5 +242,21 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
   void nouvelleSection() {
     monPostier.creeSection(widget.idUti,txt_section.text);
     Navigator.pop(context);
+  }
+
+  confSupr(String id, String titre) {
+    showDialog(
+        context: _scaffoldKey.currentContext!,
+        builder: (context)=>AlertDialog(
+          title: const Text("Supprimer la section"),
+          content: const Text("Voulez vous supprimez cette section?\nCette action est irréversible."),
+          actions: [
+            TextButton(onPressed: (){
+              Navigator.of(context).pop();
+              monPostier.enleveSection(id,titre);
+            }, child: const Text("Valider", style: TextStyle(fontWeight: FontWeight.bold),),),
+            MaterialButton(onPressed: ()=>{Navigator.of(context).pop()}, child: const Text("Annuler"),)
+          ],
+        ));
   }
 }

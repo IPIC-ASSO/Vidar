@@ -55,6 +55,49 @@ Widget messagePoissonRouge(
 }
  class OutilsOutils{
 
+   static String voiceNameToReadableVoiceName(String rawVoiceName) {
+     // For non parsable voice name (TTS other than Android)
+     if (rawVoiceName.contains(' ')) {
+       return rawVoiceName;
+     }
+
+     // Example: 'fr-CA#female_1-local' -> 'fr_CA - Female 1 Local'
+     if (rawVoiceName.contains('#')) {
+       List<String> pre = rawVoiceName.split('#');
+       String sec = pre[1].replaceAll('_', ' ');
+       sec = sec.replaceAll('-', ' ');
+       if (pre[0].contains('-')) {
+         List<String> sal2 = pre[0].split('-');
+         return '${sal2[0]}_${sal2[1]} - ${sec.toAllWordsCapitalized()}';
+       }
+     }
+
+     // Example: 'fr-CA-x-cad-local' -> 'fr_CA - Cad Local'
+     if (rawVoiceName.contains('-x-')) {
+       List<String> noSal = rawVoiceName.split('-x-');
+       if (noSal[0].contains('-')) {
+         List<String> noSal2 = noSal[0].split('-');
+         String noSal3 = noSal[1].replaceAll('-', ' ');
+         return '${noSal2[0]}_${noSal2[1]} - ${noSal3.toAllWordsCapitalized()}';
+       }
+     }
+
+     // Example: 'fr-CA-language' -> 'fr_CA - Language'
+     if (rawVoiceName.contains('-')) {
+       List<String> finalSal = rawVoiceName.split('-');
+       if (finalSal.length >= 3) {
+         return '${finalSal[0]}_${finalSal[1]} - ${finalSal[2].toAllWordsCapitalized()}';
+       }
+     }
+
+     // Fallback to default if not parsed
+     return rawVoiceName;
+   }
+
+
+
+
+
   static Future<(FlutterTts,double)> ConfigureTTS() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final FlutterTts monTTS = FlutterTts();
@@ -144,6 +187,28 @@ Widget messagePoissonRouge(
     );
   }
  }
+
+
+
+// Extension for String
+extension StringExtend on String {
+  String toFirstWordCapitalized() {
+    if (length > 0) {
+      return '${this[0].toUpperCase()}${substring(1).toLowerCase()}';
+    } else {
+      return '';
+    }
+  }
+
+  String toAllWordsCapitalized() {
+    // Get list of words
+    List<String> words = replaceAll(RegExp(' +'), ' ').split(' ');
+    // Capitalize all words
+    words = words.map((str) => str.toFirstWordCapitalized()).toList();
+    // recreate the phrase
+    return words.join(' ');
+  }
+}
 
  Widget bouton (String texte, IconData ico, Color couleur,void Function() onPressed){
   return Padding(padding: const EdgeInsets.all(10),child:ElevatedButton.icon(

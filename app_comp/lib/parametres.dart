@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vidar/AppCouleur.dart';
 import 'package:vidar/Postier.dart';
+import 'package:vidar/patrons/OutilsUtiles.dart';
 import 'package:vidar/usineDeBiscottesGrillees.dart';
 
 import 'patrons/convDeListe.dart';
@@ -240,7 +241,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
                           side:  BorderSide(width: 3.0, color: AppCouleur().grisTresClair),
                           borderRadius: BorderRadius.circular(10.0),
                         ),),
-                      child: Text(voix, textAlign: TextAlign.center,),
+                      child: Text(OutilsOutils.voiceNameToReadableVoiceName(voix), textAlign: TextAlign.center,),
                     ))
                   ],
                 )
@@ -310,7 +311,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
           Padding(
             padding: const EdgeInsets.all(10),
             child: ElevatedButton.icon(
-              onPressed: ()=>{launchUrl(Uri.parse('https://docs.google.com/document/d/1P6C6ESkxnLY3JsDM0D38scITB3YxAliEFzSw1db3X8E/edit?usp=sharing'))},
+              onPressed: ()=>{launchUrl(Uri.parse('https://www.ipic-asso.fr/politique-confidentialite/Vidar/vidar.html'))},
               icon: const Icon(Icons.security),
               label: const Text("Politique de confidentialité"),
               style: ElevatedButton.styleFrom(
@@ -452,7 +453,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
                 },
                 groupValue: valeur,
                 value:indice,
-                title: Text(lesvoix[index]["name"]??"indisponible"),
+                title: Text(OutilsOutils.voiceNameToReadableVoiceName(lesvoix[index]["name"]??"indisponible")),
             ));}))
       );}),
         actions: [

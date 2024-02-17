@@ -14,6 +14,8 @@ import 'package:vidar/patrons/MesConstantes.dart';
 import 'package:vidar/patrons/OutilsUtiles.dart';
 import 'package:vidar/patrons/convDeListe.dart';
 import 'package:vidar/usineDeBiscottesGrillees.dart';
+import 'package:flutter/foundation.dart' as foundation;
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 class InterfaceDiscussion extends StatefulWidget {
 
@@ -46,6 +48,8 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
   int indiceMessageModif=0;
   int indiceMessageTouche = 0;
   Map<String,dynamic> listeMessagesEnr = {};
+  bool _emojiShowing = false;
+  String pseudo = "inconnu au bataillon";
 
   @override
   void initState() {
@@ -63,6 +67,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
         ));
       }
     });
+    if(widget.tempo)monPostier.prendPseudo(widget.idUti).then((psedo)=>{pseudo = psedo});
     denotifie();
   }
 
@@ -115,9 +120,9 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                             launchUrl(Uri.parse('https://www.ipic-asso.fr'));
                           },
                       ),
-                    /*  const TextSpan(
-                        text: ' \n\n Vous ^etes actuellement visible sous le nom de  ',
-                      ),*/
+                       TextSpan(
+                        text: ' \n\n Vous ^etes actuellement visible sous le nom de $pseudo ',
+                      ),
                     ],
                   ),
                 ),
@@ -153,6 +158,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                 widget.supr?
                 const Padding(padding: EdgeInsets.all(15),child:Text("Conversation supprimée par votre interlocuteur", style: TextStyle(fontSize:16,fontStyle: FontStyle.italic,color: AppCouleur.banni),),):
                 ConstruitRedacteur(),
+                ConstruitVisagesQuiSourient()
               ],
             ),
           ),
@@ -239,6 +245,12 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                   ),
                 ),
               ),
+              IconButton(onPressed: (){
+                setState(() {
+                  _emojiShowing =!_emojiShowing;
+                });
+              }, icon: const Icon(Icons.add_reaction_outlined)
+            ),
               Flexible(
                   child:Padding(
                       padding: const EdgeInsets.all(4),
@@ -254,6 +266,13 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                         ),
                         onSubmitted: (value) {
                           versLaPoste(redaction.text);
+                        },
+                        onTap: (){
+                          if (_emojiShowing) {
+                            setState(() {
+                            _emojiShowing = false;
+                          });
+                          }
                         },
                       ))),
               Container(
@@ -281,6 +300,32 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
     );
   }
 
+  Widget ConstruitVisagesQuiSourient(){
+    return Offstage(
+      offstage: !_emojiShowing,
+      child: EmojiPicker(
+        textEditingController: redaction,
+        config: Config(
+          height: 256,
+          checkPlatformCompatibility: true,
+          emojiViewConfig: EmojiViewConfig(
+            // Issue: https://github.com/flutter/flutter/issues/28894
+            emojiSizeMax: 28 *
+                (foundation.defaultTargetPlatform ==
+                    TargetPlatform.iOS
+                    ? 1.2
+                    : 1.0),
+          ),
+          swapCategoryAndBottomBar: false,
+          skinToneConfig: const SkinToneConfig(),
+          categoryViewConfig: const CategoryViewConfig(),
+          bottomActionBarConfig: const BottomActionBarConfig(),
+          searchViewConfig: const SearchViewConfig(),
+        ),
+      ),
+    );
+  }
+
   Widget construitChat (int index, Map<String,String> doc)  {
       Message chaton = Message.fromDocument(doc);
       if(index >_limite){
@@ -301,7 +346,14 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                onDoubleTap: ()=>modifMessage(index),
+                onDoubleTap: () {
+                  if (_emojiShowing) {
+                    setState(() {
+                      _emojiShowing = false;
+                    });
+                  };
+                  modifMessage(index);
+                },
                 child:messagePoissonRouge(
                   context: context,
                     corps: chaton.corps,
@@ -486,7 +538,6 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
     if(mesEnre.data()!=null && mesEnre.data()!.messages!= null){
       listeMessagesEnr.addAll(mesEnre.data()!.messages!);
     }
-    print(mesEnre.data()!.messages);
     final List<QueryDocumentSnapshot<Map<String, dynamic>>> lesEnre = (await monPostier.prendMessagesParDefaut()).docs;
     if(lesEnre.isNotEmpty){
       lesEnre.forEach((element) {

@@ -6,14 +6,14 @@ class Discussion{
 
   String utilisateur1="erreur";
   String utilisateur2="erreur";
-  String? notif;
+  String notif = "";
   String pseudo = "Inconnu au bataillon";
   String? supr;
 
   Discussion();
 
-  Discussion.complet({required this.utilisateur1, required this.utilisateur2, this.supr});
-  Discussion.trescomplet({required this.utilisateur1, required this.utilisateur2, this.notif, this.supr});
+
+  Discussion.trescomplet({required this.utilisateur1, required this.utilisateur2, required this.notif, this.supr});
 
 
   factory Discussion.fromFirestore(
@@ -21,10 +21,11 @@ class Discussion{
       SnapshotOptions? options,
       ) {
     final data = snapshot.data();
-    return Discussion.complet(
+    return Discussion.trescomplet(
       utilisateur1: data?['utilisateur1']??"erreur",
       utilisateur2: data?['utilisateur2']??"erreur",
       supr: data?['supr'],
+      notif: data?['notif']??" ",
     );
   }
 
@@ -33,6 +34,7 @@ class Discussion{
      "utilisateur1": utilisateur1,
      "utilisateur2": utilisateur2,
       if(supr!=null)"supr": supr,
+      "notif":notif,
     };
   }
 }

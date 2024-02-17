@@ -297,6 +297,7 @@ traiteCode(String destinataire, String idUti, FirebaseFirestore db, BuildContext
         {
           "utilisateur1": destinataire,
           "utilisateur2": idUti,
+          "notif":false,
         }
     );
     await db.collection(MesConstantes.cheminMessages).doc(idConv).set({});
