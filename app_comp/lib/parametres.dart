@@ -293,7 +293,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
               onPressed: ()=>{
                 showDialog(context: context, builder: (context)=>const AlertDialog(
                   title: Text("Notes de version"),
-                  content: Text("Version 2.1.7\n• Améliorations mineures de l'interface\n• Résolution de bugs affectant les messages pré-enregistrés\n• Nouveau tutoriel"),
+                  content: Text("Version 2.1.7\n• Améliorations mineures de l'interface\n• Résolution de bugs affectant les messages pré-enregistrés et la création de nouvelles conversations\n• Nouveau tutoriel \n• Ajout d'un clavier emoticone\n• ajout de notifications dans l'application"),
                 ))
               },
               icon: const Icon(Icons.sticky_note_2_sharp),

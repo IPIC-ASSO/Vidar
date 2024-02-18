@@ -15,7 +15,7 @@ import 'package:vidar/patrons/OutilsUtiles.dart';
 import 'package:vidar/patrons/convDeListe.dart';
 import 'package:vidar/usineDeBiscottesGrillees.dart';
 import 'package:flutter/foundation.dart' as foundation;
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+//import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 class InterfaceDiscussion extends StatefulWidget {
 
@@ -158,7 +158,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                 widget.supr?
                 const Padding(padding: EdgeInsets.all(15),child:Text("Conversation supprimée par votre interlocuteur", style: TextStyle(fontSize:16,fontStyle: FontStyle.italic,color: AppCouleur.banni),),):
                 ConstruitRedacteur(),
-                ConstruitVisagesQuiSourient()
+                //ConstruitVisagesQuiSourient()
               ],
             ),
           ),
@@ -300,7 +300,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
     );
   }
 
-  Widget ConstruitVisagesQuiSourient(){
+  /*Widget ConstruitVisagesQuiSourient(){
     return Offstage(
       offstage: !_emojiShowing,
       child: EmojiPicker(
@@ -324,7 +324,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
         ),
       ),
     );
-  }
+  }*/
 
   Widget construitChat (int index, Map<String,String> doc)  {
       Message chaton = Message.fromDocument(doc);

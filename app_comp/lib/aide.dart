@@ -92,7 +92,7 @@ class _AideState extends State<Aide> with TickerProviderStateMixin {
                                 alignment: Alignment.bottomLeft,
                                 child: FloatingActionButton(
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.0)),
+                                      borderRadius: BorderRadius.circular(50.0)),
                                   backgroundColor: AppCouleur().secondaire,
                                   onPressed: () =>
                                   {

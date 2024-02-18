@@ -155,7 +155,6 @@ temporise(BuildContext context, FirebaseAuth auth, TickerProvider ticket) async 
     final credit = await auth.signInAnonymously();
     final int nb = await laPoste(firebaseFirestore: FirebaseFirestore.instance).creeUti(credit.user!.uid,"Utilisateur ${DateTime.now().millisecond}",);
     if(Uri.base.queryParameters["dest"]!=null && credit.user!=null){
-      print("8");
       await traiteCode(Uri.base.queryParameters["dest"]!,credit.user!.uid,FirebaseFirestore.instance,context);
       html.window.history.pushState(null, 'iren', '#/iren');
     }else{

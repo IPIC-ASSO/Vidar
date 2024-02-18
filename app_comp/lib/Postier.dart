@@ -74,6 +74,24 @@ class laPoste {
     }
   }
 
+  Future<String> restaure(String idConv) async {
+    try{
+      await firebaseFirestore
+          .collection(MesConstantes.cheminListeMessages)
+          .doc(idConv)
+          .update({"supr": ""});
+      return "0";
+    }on FirebaseException catch(e){
+      return(e.code);
+    }catch(e){
+      return(e.toString());
+    }
+  }
+
+
+
+
+
   suprUtilisateur(idUti) async {
     await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).delete();
   }

@@ -32,7 +32,9 @@ exports.sendNotification = functions.firestore
               title: `Nouveau message de ${envoyeur.data().pseudo}`,
               body: corps,
               badge: '1',
-              sound: 'default'
+              sound: 'default',
+              collapseKey:idEnvoyeur,
+              tag:idEnvoyeur
             }
           }
           admin
@@ -47,15 +49,13 @@ exports.sendNotification = functions.firestore
                     admin.firestore().collection('ListeMessages').doc(idConv).update({
                         "notif":idDestinataire
                     })
-                    admin
-                    .messaging()
-                    .sendToDevice(destinataireNotif.data().jeton, payload)
-                    .then(response => {
-                      console.log('Message envoyé avec succès:', response, 'à: ',destinataireNotif.data().pseudo)
-                    })
-                    .catch(error => {
-                      console.log('Error sending message:', error)
-                    })
+                    admin.messaging().sendToDevice(destinataireNotif.data().jeton, payload)
+                        .then(response => {
+                          console.log('Message envoyé avec succès:', response, 'à: ',destinataireNotif.data().pseudo)
+                        })
+                        .catch(error => {
+                          console.log('Error sending message:', error)
+                        })
                 }else {
                     console.log('jeton destinataire introuvable ou pas visible')
                 }

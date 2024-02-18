@@ -48,7 +48,7 @@ dependencies:
   firebase_messaging: ^14.4.1
   firebase_crashlytics: ^3.3.5
   flutter_carousel_widget: ^2.2.0
-  emoji_picker_flutter: ^2.0.0
+  #emoji_picker_flutter: ^2.0.0
 
 
 dev_dependencies:

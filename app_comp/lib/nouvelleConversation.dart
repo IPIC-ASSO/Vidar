@@ -290,7 +290,10 @@ traiteCode(String destinataire, String idUti, FirebaseFirestore db, BuildContext
   String idConv;
   final QuerySnapshot<Map<String, dynamic>> listeConv = await db.collection(MesConstantes.cheminListeMessages).get();
   if(listeConv.docs.any((element) => element.id.contains(idUti) && element.id.contains(destinataire))){
-    idConv = listeConv.docs.firstWhere((element) => element.id.contains(idUti) && element.id.contains(destinataire)).id;
+    idConv = listeConv.docs.firstWhere((element) => element.id.contains(idUti) && element.id.contains(destinataire) && element.data()["supr"]!=idUti).id;
+    db.collection(MesConstantes.cheminListeMessages)
+        .doc(idConv)
+        .update({"supr": ""});
   }else{
     idConv = destinataire + idUti;
     await db.collection(MesConstantes.cheminListeMessages).doc(idConv).set(
@@ -300,7 +303,7 @@ traiteCode(String destinataire, String idUti, FirebaseFirestore db, BuildContext
           "notif":false,
         }
     );
-    await db.collection(MesConstantes.cheminMessages).doc(idConv).set({});
+    await db.collection(MesConstantes.cheminMessages).doc(idConv).set({});    //TODO: très louche cette ligne
   }
   await db.collection(MesConstantes.cheminUtilisateur).doc(destinataire).update(
       {"contact":idUti}
@@ -326,9 +329,11 @@ bool isNumeric(String s) {
     final DocumentSnapshot x = await db.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).get();
     if(x.data()!= null ){
       final doc = x.data() as Map<String, dynamic>;
+      print(x.data());
       if((doc[MesConstantes.code] as List<dynamic>).length>int.parse(code)){
         await traiteCode((doc[MesConstantes.code] as List<dynamic>)[int.parse(code)].toString(), idUti,db,context, tempo);
       }else{
+        print((doc[MesConstantes.code] as List<dynamic>).length);
         Usine.montreBiscotte(context, "Code invalide", ticket);
       }
     }else{
