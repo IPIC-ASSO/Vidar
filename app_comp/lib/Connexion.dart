@@ -82,7 +82,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Email',
-                          hintText: "adresse email",
+                          hintText: "Adresse email",
                         ),
                       ),
                     ),
@@ -276,7 +276,7 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'email',
-                    hintText: "adresse email",
+                    hintText: "Adresse email",
                   ),
                 ),
               ],
