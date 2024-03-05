@@ -1,8 +1,11 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vidar/AppCouleur.dart';
 import 'package:vidar/Connexion.dart';
@@ -50,6 +53,20 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
   Map<String,dynamic> listeMessagesEnr = {};
   bool _emojiShowing = false;
   String pseudo = "inconnu au bataillon";
+
+  late final _focusNode = FocusNode(
+    onKey: (FocusNode node, RawKeyEvent evt) {
+      if (!evt.isShiftPressed && evt.logicalKey.keyLabel == 'Enter') {
+        if (evt is RawKeyDownEvent) {
+          versLaPoste(redaction.text);
+        }
+        return KeyEventResult.handled;
+      }
+      else {
+        return KeyEventResult.ignored;
+      }
+    },
+  );
 
   @override
   void initState() {
@@ -158,7 +175,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                 widget.supr?
                 const Padding(padding: EdgeInsets.all(15),child:Text("Conversation supprimée par votre interlocuteur", style: TextStyle(fontSize:16,fontStyle: FontStyle.italic,color: AppCouleur.banni),),):
                 ConstruitRedacteur(),
-                //ConstruitVisagesQuiSourient()
+                ConstruitVisagesQuiSourient()
               ],
             ),
           ),
@@ -255,7 +272,8 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                   child:Padding(
                       padding: const EdgeInsets.all(4),
                       child: TextField(
-                        textInputAction:TextInputAction.newline,
+                        focusNode: kIsWeb?_focusNode:null,
+                        textInputAction:kIsWeb?TextInputAction.newline:TextInputAction.newline,
                         keyboardType: TextInputType.multiline,
                         textCapitalization: TextCapitalization.sentences,
                         controller: redaction,
@@ -300,7 +318,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
     );
   }
 
-  /*Widget ConstruitVisagesQuiSourient(){
+  Widget ConstruitVisagesQuiSourient(){
     return Offstage(
       offstage: !_emojiShowing,
       child: EmojiPicker(
@@ -324,7 +342,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
         ),
       ),
     );
-  }*/
+  }
 
   Widget construitChat (int index, Map<String,String> doc)  {
       Message chaton = Message.fromDocument(doc);
