@@ -117,6 +117,8 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
             if(snapshot.hasData){
               dis.pseudo = snapshot.data??"Inconnu au bataillon";
+              print(dis.pseudo);
+              print(dis.supr);
               return GestureDetector(
                   onTap: (){
                     if(dis.notif==user?.uid)monPostier.enleve_pastille(dis);
@@ -130,7 +132,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                   },
                   child:Container(
                     decoration: BoxDecoration(
-                      color: dis.supr!=null?AppCouleur.tete:AppCouleur().grisTresClair,
+                      color: (dis.supr!=null && dis.supr != "")?AppCouleur.tete:AppCouleur().grisTresClair,
                       borderRadius: const BorderRadius.all(Radius.circular(15)),
                       boxShadow: const [
                         BoxShadow(
@@ -177,7 +179,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                             child: Padding(
                                 padding: const EdgeInsets.all(3),
                                 child: IconButton(
-                                  color: dis.supr!=null?AppCouleur.spaceCadet:AppCouleur.banni,
+                                  color: (dis.supr!=null && dis.supr!="")?AppCouleur.spaceCadet:AppCouleur.banni,
                                   onPressed: () => {
                                     confSupr(dis)
                                   },

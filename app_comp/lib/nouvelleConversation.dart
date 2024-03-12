@@ -287,6 +287,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
 
 }
 traiteCode(String destinataire, String idUti, FirebaseFirestore db, BuildContext context, [bool tempo=false]) async {
+  print("ok");
   String idConv;
   final QuerySnapshot<Map<String, dynamic>> listeConv = await db.collection(MesConstantes.cheminListeMessages).get();
   if(listeConv.docs.any((element) => element.id.contains(idUti) && element.id.contains(destinataire))){
@@ -300,7 +301,7 @@ traiteCode(String destinataire, String idUti, FirebaseFirestore db, BuildContext
         {
           "utilisateur1": destinataire,
           "utilisateur2": idUti,
-          "notif":false,
+          "notif":"",
         }
     );
     await db.collection(MesConstantes.cheminMessages).doc(idConv).set({});    //TODO: très louche cette ligne
@@ -329,7 +330,6 @@ bool isNumeric(String s) {
     final DocumentSnapshot x = await db.collection(MesConstantes.cheminListeMessages).doc(MesConstantes.cheminListeCode).get();
     if(x.data()!= null ){
       final doc = x.data() as Map<String, dynamic>;
-      print(x.data());
       if((doc[MesConstantes.code] as List<dynamic>).length>int.parse(code)){
         await traiteCode((doc[MesConstantes.code] as List<dynamic>)[int.parse(code)].toString(), idUti,db,context, tempo);
       }else{
