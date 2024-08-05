@@ -110,8 +110,7 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                 },child:Text(messages[2]))),
                 Padding(padding: const EdgeInsets.all(20),
                   child:ElevatedButton(
-                      child: const Text("Valider",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
-                    style: ElevatedButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
                       backgroundColor: AppCouleur().eco,
                       foregroundColor : AppCouleur.white,
                       minimumSize: const Size.fromHeight(50),
@@ -128,7 +127,8 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
                         transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
                         ),
                       );
-                    }
+                    },
+                      child: const Text("Valider",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),)
                   ))
               ],),
               Center(child:(charge?
@@ -206,8 +206,9 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
       charge = true;
     });
     try{
-      if(barcodeScanRes.isNotEmpty && barcodeScanRes.length>5)analyselien(barcodeScanRes);
-      else{
+      if(barcodeScanRes.isNotEmpty && barcodeScanRes.length>5) {
+        analyselien(barcodeScanRes);
+      } else{
         Usine.montreBiscotte(context, 'QR-code non valide', this);
         setState(() {
           charge = false;
@@ -246,9 +247,9 @@ class _NouvConvState extends State<NouvConv> with TickerProviderStateMixin {
     }
     final List<QueryDocumentSnapshot<Map<String, dynamic>>> lesEnre = (await monPostier.prendMessagesParDefaut()).docs;
     if(lesEnre.isNotEmpty){
-      lesEnre.forEach((element) {
+      for (var element in lesEnre) {
         listeMessages.addAll({element.id:element.data()});
-      });
+      }
     }
   }
 

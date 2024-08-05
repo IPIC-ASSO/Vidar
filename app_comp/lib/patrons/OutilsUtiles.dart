@@ -145,8 +145,11 @@ Widget messagePoissonRouge(
                         iconSize: 40.0,
                         icon: Icon(pause?Icons.play_arrow:Icons.pause),
                         onPressed: () {
-                          if(pause)monTTS.speak(texte);
-                          else monTTS.pause();
+                          if(pause) {
+                            monTTS.speak(texte);
+                          } else {
+                            monTTS.pause();
+                          }
                           setState(() {
                             pause = !pause;
                           });
@@ -222,6 +225,6 @@ extension StringExtend on String {
     ),
     onPressed: onPressed,
     icon:  Icon(ico),
-    label: Text(texte,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17), ),
+    label: Text(texte,style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17), ),
   ),);
  }

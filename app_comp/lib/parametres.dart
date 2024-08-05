@@ -293,7 +293,7 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
               onPressed: ()=>{
                 showDialog(context: context, builder: (context)=>const AlertDialog(
                   title: Text("Notes de version"),
-                  content: Text("Version 2.1.7\n• Améliorations mineures de l'interface\n• Résolution de bugs affectant les messages pré-enregistrés et la création de nouvelles conversations\n• Nouveau tutoriel \n• Ajout d'un clavier emoticone\n• ajout de notifications dans l'application"),
+                  content: Text("Version 2.1.8\n• Améliorations mineures de l'interface\n• Résolution de bugs affectant les messages pré-enregistrés et la création de nouvelles conversations\n• Nouveau tutoriel \n• Ajout d'un clavier emoticone\n• ajout de notifications dans l'application"),
                 ))
               },
               icon: const Icon(Icons.sticky_note_2_sharp),
@@ -383,8 +383,8 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
       ),
       applicationIcon: Tab(icon: Image.asset("assets/images/IPIC_logo_petit.png",width: 40,)),
       applicationName: 'Vidar',
-      applicationVersion: '2.1.7',
-      applicationLegalese: '© 2023 IPIC-ASSO',
+      applicationVersion: '2.1.8',
+      applicationLegalese: '© 2024 IPIC-ASSO',
       aboutBoxChildren: aboutBoxChildren,
       child: Container(
         padding: const EdgeInsets.all(2),
@@ -438,8 +438,9 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
         shrinkWrap: true,
         children: List<Widget>.generate(lesvoix.length, (index){
             final indice = index;
-            if(index==0)
+            if(index==0) {
               return const Padding(padding: EdgeInsets.all(10),child: Text("Restez longtemps appuyez sur une voix pour l'écouter", style: TextStyle(fontStyle: FontStyle.italic),),);
+            }
             return GestureDetector(
               onLongPress: () async {
                 await monTTs.setVoice(lesvoix[index]);
@@ -484,10 +485,11 @@ class _ParametresState extends State<Parametres> with TickerProviderStateMixin {
     await monPostier.suprUtilisateur(id);
     await auth.currentUser!.delete().catchError((error, stackTrace) {
       ok = false;
-      if (error.toString=="requires-recent-login")
-          Usine.montreBiscotte(context, "Une erreur est survenue\nVotre dernière connexion remonte à trop longtemps. Déconnectez vous puis reconnectez vous.", this, false);
-      else
+      if (error.toString=="requires-recent-login") {
+        Usine.montreBiscotte(context, "Une erreur est survenue\nVotre dernière connexion remonte à trop longtemps. Déconnectez vous puis reconnectez vous.", this, false);
+      } else {
         Usine.montreBiscotte(context, "Une erreur est survenue", this, false);
+      }
       });
     if(ok){
       Usine.montreBiscotte(context, "Le compte a été supprimé avec succès", this,true);

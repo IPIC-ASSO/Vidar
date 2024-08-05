@@ -29,8 +29,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   //FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
-  if(kIsWeb)await FirebaseFirestore.instance.enablePersistence(new PersistenceSettings(synchronizeTabs: true));
-  else{
+  if(kIsWeb) {
+    await FirebaseFirestore.instance.enablePersistence(const PersistenceSettings(synchronizeTabs: true));
+  } else{
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
     PlatformDispatcher.instance.onError = (error, stack) {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);

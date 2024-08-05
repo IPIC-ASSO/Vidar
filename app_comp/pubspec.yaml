@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 2.1.7+23
+version: 2.1.8+24
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
@@ -48,9 +48,10 @@ dependencies:
   firebase_messaging: ^14.4.1
   firebase_crashlytics: ^3.3.5
   flutter_carousel_widget: ^2.2.0
-  emoji_picker_flutter: ^2.0.0
+  emoji_picker_flutter: ^2.1.0
 
 
+  firebase_core: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -61,7 +62,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-  firebase_core: ^2.5.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

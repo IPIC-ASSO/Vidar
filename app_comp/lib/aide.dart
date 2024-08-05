@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 
 import 'AppCouleur.dart';
@@ -59,7 +57,7 @@ class _AideState extends State<Aide> with TickerProviderStateMixin {
                                 enableInfiniteScroll: false,
                                 pauseAutoPlayInFiniteScroll: true,
                                 autoPlayInterval: const Duration(seconds: 5),
-                                slideIndicator: CircularSlideIndicator(
+                                slideIndicator: const CircularSlideIndicator(
                                   indicatorBackgroundColor: Colors.black,
                                   currentIndicatorColor: AppCouleur.droitier
                                 ),

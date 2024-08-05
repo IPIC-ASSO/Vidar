@@ -10,23 +10,23 @@ class Usine {
 
   static void montreBiscotte(BuildContext context, String message, TickerProvider ticket, [bool positif = false, bool court =false]) {
     log("appel");
-    OverlayEntry _overlayEntry;
-    _overlayEntry = createOverlayEntry(context, message, ticket, positif);
-    Overlay.of(context).insert(_overlayEntry);
+    OverlayEntry overlayEntry;
+    overlayEntry = createOverlayEntry(context, message, ticket, positif);
+    Overlay.of(context).insert(overlayEntry);
     TempsgrillePain = Timer( Duration(seconds:court?3:5), () {
-      _overlayEntry.remove();
+      overlayEntry.remove();
     });
   }
 
   static OverlayEntry createOverlayEntry(BuildContext context,
       String message, TickerProvider ticket,bool positif) {
-    AnimationController _controller = AnimationController(
+    AnimationController controller = AnimationController(
       vsync: ticket,
       duration: const Duration(milliseconds: 500),
     ); // <-- Se
-    _controller.forward().whenComplete(() async {
+    controller.forward().whenComplete(() async {
       await Future.delayed(const Duration(seconds: 3));
-      _controller.reverse();
+      controller.reverse();
     } );
     return OverlayEntry(
       builder: (context) => Positioned(
@@ -34,10 +34,10 @@ class Usine {
         width: MediaQuery.of(context).size.width/MediaQuery.of(context).size.height>1?MediaQuery.of(context).size.width/2:MediaQuery.of(context).size.width*0.7,
         left: MediaQuery.of(context).size.width/MediaQuery.of(context).size.height>1?MediaQuery.of(context).size.width*0.25:MediaQuery.of(context).size.width*0.15,
         child:AnimatedBuilder(
-          animation: _controller,
+          animation: controller,
           builder: (context, child) {
           return Transform.translate(
-          offset: Offset(0, 150 * _controller.value-100),
+          offset: Offset(0, 150 * controller.value-100),
           child:  Material(
             elevation: 10.0,
             borderRadius: BorderRadius.circular(10),

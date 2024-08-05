@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -203,8 +202,9 @@ class _MontreQrCodeState extends State<MontreQrCode> with TickerProviderStateMix
 
   ecoute() {
     ecouteur = db.collection(MesConstantes.cheminUtilisateur).doc(widget.idUt).snapshots().listen((event) async {
-      if(event.data()!["contact"]==null)nomInconnu="inconnnnnnnu";
-      else if(nomInconnu==null)nomInconnu=event.data()!["contact"];
+      if(event.data()!["contact"]==null) {
+        nomInconnu="inconnnnnnnu";
+      } else if(nomInconnu==null)nomInconnu=event.data()!["contact"];
       else{
         String destinataire = event.data()!["contact"];
         final QuerySnapshot<Map<String, dynamic>> listeConv = await db.collection(MesConstantes.cheminListeMessages).get();

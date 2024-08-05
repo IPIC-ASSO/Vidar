@@ -369,7 +369,7 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
                     setState(() {
                       _emojiShowing = false;
                     });
-                  };
+                  }
                   modifMessage(index);
                 },
                 child:messagePoissonRouge(
@@ -558,9 +558,9 @@ class _InterfaceDiscussionState extends State<InterfaceDiscussion> with TickerPr
     }
     final List<QueryDocumentSnapshot<Map<String, dynamic>>> lesEnre = (await monPostier.prendMessagesParDefaut()).docs;
     if(lesEnre.isNotEmpty){
-      lesEnre.forEach((element) {
+      for (var element in lesEnre) {
         listeMessagesEnr.addAll({element.id:element.data()});
-      });
+      }
     }
   }
 

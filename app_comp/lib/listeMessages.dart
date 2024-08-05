@@ -202,15 +202,17 @@ class _ListeMessagesState extends State<ListeMessages> with TickerProviderStateM
 
   Widget creeGroupe(String titre, Map<String,dynamic> messages,  [bool defaut = false]) {
       List<Widget> mesEnfants = [];
-      (messages as Map<String,dynamic>).forEach((key, value) {
+      (messages).forEach((key, value) {
         mesEnfants.add(creeMessage(titre, key,value.toString(),defaut ));
       });
-      if (mesEnfants.isEmpty)mesEnfants.add(
+      if (mesEnfants.isEmpty) {
+        mesEnfants.add(
         const Padding(
           padding: EdgeInsets.all(15),
           child: Text("Cette section est vide, créez un message avec l'icon vert",style: TextStyle(fontStyle:FontStyle.italic),textAlign: TextAlign.center,),
         )
       );
+      }
       return Card(
         child:Theme(
           data: ThemeData().copyWith(dividerColor: Colors.transparent),

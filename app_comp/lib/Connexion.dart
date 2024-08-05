@@ -394,8 +394,11 @@ class _ConnexionState extends State<Connexion> with TickerProviderStateMixin{
         DocumentReference docRefConv = db.collection(MesConstantes.cheminMessages).doc(element.id);
         DocumentReference docRef = db.collection(MesConstantes.cheminListeMessages).doc(element.id.replaceAll(widget.tempo, uti));
         final Discussion discussion = element.data();
-        if (discussion.utilisateur1 == widget.tempo)discussion.utilisateur1 = uti;
-        else discussion.utilisateur2 = uti;
+        if (discussion.utilisateur1 == widget.tempo) {
+          discussion.utilisateur1 = uti;
+        } else {
+          discussion.utilisateur2 = uti;
+        }
         theBat.set(docRef, discussion.toFirestore());
         //met à jour conv en elles même
         DocumentReference docRefnouvConv = db.collection(MesConstantes.cheminMessages).doc(element.id.replaceAll(widget.tempo, uti));

@@ -232,10 +232,10 @@ class laPoste {
     });
   }
 
-  void creeSection(String idUti, String txt_section) {
+  void creeSection(String idUti, String txtSection) {
 
     firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).update({
-      "${MesConstantes.messagesEnregistres}.$txt_section":{}
+      "${MesConstantes.messagesEnregistres}.$txtSection":{}
     });
   }
 

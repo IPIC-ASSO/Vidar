@@ -50,7 +50,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
           StreamBuilder(
               stream: monPostier.prendConv(user?.uid??""),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Discussion>> snapshot) {
-                if(snapshot.hasData && snapshot.data!.docs.length>0){
+                if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
                   List<Widget> enfants = [];
                   List<QueryDocumentSnapshot<Discussion>> lst =snapshot.data!.docs;
                   lst.sort((a,b){
@@ -58,18 +58,19 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                     return -1;
                   });
                   lst.forEach((element) async {
-                    final dis = element.data() as Discussion;
+                    final dis = element.data();
                     if((dis.supr==null || dis.supr!=user!.uid) && (dis.utilisateur1==user!.uid ||dis.utilisateur2==user!.uid)){
                       enfants.add(construitConv(dis));
                     }
                   });
-                  if (enfants.isEmpty)
+                  if (enfants.isEmpty) {
                     return const Padding(
                       padding: EdgeInsets.all(15),
                       child: Text("Aucune conversation enregistrée\nCommencez en une avec le petit bouton bleu clair", textAlign: TextAlign.center,),
                     );
+                  }
                   return Expanded(child: ListView(
-                    padding: EdgeInsets.only(bottom: 100),
+                    padding: const EdgeInsets.only(bottom: 100),
                     shrinkWrap: true,
                     children: enfants));
                 }else if(snapshot.hasError){
@@ -158,7 +159,7 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
                         Expanded(
                           flex: 0,
                             child: Padding(
-                              padding: EdgeInsets.all(3),
+                              padding: const EdgeInsets.all(3),
                               child: Visibility(
                                 visible: dis.notif==user?.uid,
                                 child:Icon(Icons.mail_outline_rounded, color: AppCouleur().eco,),
@@ -205,8 +206,9 @@ class _ConversationsState extends State<Conversations> with TickerProviderStateM
             TextButton(onPressed: (){
               Navigator.of(context).pop();
               laPoste(firebaseFirestore: FirebaseFirestore.instance).suprConv(dis.utilisateur1+dis.utilisateur2,user?.uid??"erreur",dis.supr).then((value){
-                if(value=="0")Usine.montreBiscotte(context, "Supprimé !", this, true,true);
-                else{
+                if(value=="0") {
+                  Usine.montreBiscotte(context, "Supprimé !", this, true,true);
+                } else{
                   log(value);
                   Usine.montreBiscotte(context, "Une erreur est survenue: $value", this);
                 }
