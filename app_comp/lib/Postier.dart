@@ -86,10 +86,6 @@ class laPoste {
     }
   }
 
-
-
-
-
   suprUtilisateur(idUti) async {
     await firebaseFirestore.collection(MesConstantes.cheminUtilisateur).doc(idUti).delete();
   }
